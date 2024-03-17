@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AoE2 Replay Packer</title>
+  <script type="module" crossorigin src="/assets/index-BIWNknRi.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-xrq9p5-4.css">
+</head>
+
+<body class="bg-pale">
+  <div class="lg:container lg:mx-auto lg:max-w-screen-lg">
+    <form method="post" id="replay_form" ons>
+      <div class="grid grid-cols-3 gap-4 place-content-center mt-10">
+        <div class="p-4 border-2 col-span-3">
+          <h1 class="text-3xl text-center">AoE2 Replay Pack Generator</h1>
+          <p>
+            This page will help you create a zip file of replays for submitting your match results. To use it follow,
+            these simple steps:
+          </p>
+          <ol class="mt-2 list-decimal list-inside">
+            <li>Fill in the player names</li>
+            <li>For each replay, click the "choose file" button and navigate to your replay
+              <ol class="list-decimal list-inside ml-4" type="a">
+                <li>Go to "%USERPROFILE%\Games\Age of Empires 2 DE"</li>
+                <li>Click the folder with a bunch of numbers</li>
+                <li>Go to the "savegame" folder</li>
+              </ol>
+            </li>
+            <li>Once all replays are selected, click download</li>
+          </ol>
+          <p class="mt-2">Note: if the match ended 2-0, simply leave the third file empty and a dummy file will
+            automatically be generated and used</p>
+          <p class="mt-2">Technical note: All of this is done in your browser, no data is uploaded anywhere.</p>
+        </div>
+        <div class="text-center p-4 border-2 col-span-3">
+          <h2 class="text-center text-2xl">Game Info</h2>
+          <input placeholder="Player 1 Name" class="border-1 bg-gray-100 p-2 rounded" type="text" id="player1_name"
+            name="player1_name"><span class="mx-10">vs</span>
+          <input placeholder="Player 2 Name" class="border-1 bg-gray-100 p-2 rounded" type="text" id="player2_name"
+            name="player2_name">
+        </div>
+        <div class="p-4 border-2">
+          <h3 class="text-center text-xl">Game 1</h3>
+          <input accept=".aoe2record" type="file" id="game1_replay" name="game1_replay">
+          <button disabled="disabled" class="btn btn-gray" id="game1_clear" name="game1_clear">Clear</button>
+        </div>
+        <div class="p-4 border-2">
+          <h3 class="text-center text-xl">Game 2</h3>
+          <input accept=".aoe2record" type="file" id="game2_replay" name="game2_replay">
+          <button disabled="disabled" class="btn btn-gray" id="game2_clear" name="game2_clear">Clear</button>
+        </div>
+        <div class="p-4 border-2">
+          <h3 class="text-center text-xl">Game 3</h3>
+          <input accept=".aoe2record" type="file" id="game3_replay" name="game3_replay">
+          <button disabled="disabled" class="btn btn-gray" id="game3_clear" name="game3_clear">Clear</button>
+        </div>
+        <div id="message_box" class="text-center p-4 border-2 col-span-3 hidden">
+        </div>
+        <div class="text-center p-4 border-2 col-span-3">
+          <button disabled="disabled" id="button_download" class="btn bg-blue-500 text-white text-2xl">Download</button>
+        </div>
+        <div class="text-center p-4 border-2 col-span-3">
+          <p>Created by <a class="underline" href="https://github.com/ZetaTwo">ZetaTwo</a></p>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+
+</html>
