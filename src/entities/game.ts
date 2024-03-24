@@ -30,10 +30,10 @@ export function zipFilename(player1: string, player2: string) {
 
 function toBase26(value: number) {
   let res = ''
-  value = Math.round(value)
+  value = Math.floor(value)
   do {
     const digit = value % 26
-    value = Math.round(value / 26)
+    value = Math.floor(value / 26)
     res += String.fromCharCode(0x61 + digit)
   } while (value > 0)
   return res
