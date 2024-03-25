@@ -13,7 +13,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: 'docs-v2'
+    outDir: 'docs'
   },
   base: ''
 })
