@@ -1,0 +1,139 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import type { Ref } from 'vue'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
+
+import GameBox from './GameBox.vue'
+import PreviewPane from './PreviewPane.vue'
+
+import { Game, Replay, zipFilename, computeReplayFilename } from '../entities/game'
+
+const player1 = ref('Player1')
+const player2 = ref('Player2')
+const games: Ref<Game[]> = ref([new Game(), new Game(), new Game()])
+
+function removeReplay(gameIdx: number, replayIdx: number) {
+  games.value[gameIdx].replays.splice(replayIdx, 1)
+  if (games.value[gameIdx].replays.length == 0) {
+    games.value.splice(gameIdx, 1)
+  }
+}
+
+function addReplay(gameIdx: number) {
+  games.value[gameIdx].replays.push(new Replay())
+}
+
+function updateReplay(gameIdx: number, replayIdx: number, file: File | null) {
+  games.value[gameIdx].replays[replayIdx].file = file
+}
+
+function addGame() {
+  games.value.push(new Game())
+}
+
+const downloadEnabled = computed(() => {
+  for (const game of games.value) {
+    for (const replay of game.replays) {
+      if (replay.file) {
+        return true
+      }
+    }
+  }
+  return false
+})
+
+function getFirstReplayFile(): File | null {
+  for (const game of games.value) {
+    for (const replay of game.replays) {
+      if (replay.file) {
+        return replay.file
+      }
+    }
+  }
+  return null
+}
+
+function getRandomInt(min: number, max: number) {
+  const minCeiled = Math.ceil(min)
+  const maxFloored = Math.floor(max)
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled) // The maximum is exclusive and the minimum is inclusive
+}
+
+function downloadZip() {
+  const zip = new JSZip()
+
+  const dummyBase = getFirstReplayFile()
+  if (!dummyBase) {
+    console.log('Could not find any valid replay files')
+    return
+  }
+
+  for (const [gameIdx, game] of games.value.entries()) {
+    for (const [replayIdx, replay] of game.replays.entries()) {
+      const replay_filename = computeReplayFilename(
+        player1.value,
+        player2.value,
+        game,
+        gameIdx,
+        replayIdx
+      )
+      if (replay.file) {
+        zip.file(replay_filename, replay.file)
+      } else {
+        const suffixArray = new Uint8Array(getRandomInt(1e5, 3e6))
+        //window.crypto.getRandomValues(array);
+        const dummyFile = new Blob([dummyBase, suffixArray])
+        zip.file(replay_filename, dummyFile)
+      }
+    }
+  }
+
+  zip.generateAsync({ type: 'blob' }).then(function (blob) {
+    saveAs(blob, zipFilename(player1.value, player2.value))
+  })
+}
+</script>
+
+<template>
+  <div class="text-center p-4 border-2 col-span-3 mt-4">
+    <h2 class="text-center text-2xl">Game Info</h2>
+    <div>Best of {{ games.length }}</div>
+    <input
+      placeholder="Player 1 Name"
+      class="border-1 bg-gray-100 p-2 rounded"
+      type="text"
+      v-model="player1"
+    /><span class="mx-10">vs</span>
+    <input
+      placeholder="Player 2 Name"
+      class="border-1 bg-gray-100 p-2 rounded"
+      type="text"
+      v-model="player2"
+    />
+  </div>
+  <GameBox
+    v-for="(game, gameIdx) in games"
+    :game="game"
+    :key="game.id"
+    :game-number="gameIdx"
+    @remove-replay="(replayIdx) => removeReplay(gameIdx, replayIdx)"
+    @add-replay="addReplay(gameIdx)"
+    @update-replay="(replayIdx, file) => updateReplay(gameIdx, replayIdx, file)"
+  />
+  <div class="text-center p-4 border-2 col-span-3 mt-4">
+    <button class="btn btn-gray" @click="addGame()">Add Game</button>
+  </div>
+  <div id="message_box" class="mt-4 text-center p-4 border-2 col-span-3 hidden"></div>
+  <div class="text-center p-4 border-2 col-span-3 mt-4">
+    <PreviewPane :games="games" :player1="player1" :player2="player2" />
+    <button
+      :disabled="!downloadEnabled"
+      class="btn text-2xl text-white"
+      :class="{ 'bg-blue-500': downloadEnabled, 'bg-blue-200': !downloadEnabled }"
+      @click="downloadZip"
+    >
+      Download
+    </button>
+  </div>
+</template>

@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 .btn {
-    @apply py-1 px-2 rounded;
+  @apply py-1 px-2 rounded;
 }
 
 .btn-gray {
-    @apply bg-gray-200 text-black;
+  @apply bg-gray-200 text-black;
 }
