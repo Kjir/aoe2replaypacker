@@ -29,5 +29,6 @@ jobs:
           BASE_URL: '${{ steps.pages.outputs.base_url }}'
         run: npm run build
 
-      - name: Run tests
-        run: npm test
+      # TODO: re-enable if we have tests
+      #- name: Run tests
+      #  run: npm test
