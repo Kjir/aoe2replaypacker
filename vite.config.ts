@@ -19,8 +19,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         v2: resolve(__dirname, 'v2/index.html')
       }
-    },
-    outDir: 'docs'
+    }
   },
-  base: ''
+  base: process.env.BASE_URL || ''
 })

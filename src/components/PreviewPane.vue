@@ -12,8 +12,8 @@ const props = defineProps<{
   <h2 class="text-center text-2xl">Preview</h2>
   <div class="text-left">
     {{ zipFilename(player1, player2) }}<br />
-    <template v-for="(game, gameIdx) in props.games">
-      <template v-for="(replay, replayIdx) in game.replays">
+    <template v-for="(game, gameIdx) in props.games" :key="game.id">
+      <template v-for="(replay, replayIdx) in game.replays" :key="replay.id">
         <template v-if="gameIdx == props.games.length - 1 && replayIdx == game.replays.length - 1">
           <span
             >└──{{
