@@ -90,9 +90,18 @@ function downloadZip() {
     }
   }
 
-  zip.generateAsync({ type: 'blob', comment: zipComment }).then(function (blob) {
-    saveAs(blob, zipFilename(player1.value, player2.value))
-  })
+  zip
+    .generateAsync({
+      type: 'blob',
+      comment: zipComment,
+      compression: 'DEFLATE',
+      compressionOptions: {
+        level: 6
+      }
+    })
+    .then(function (blob) {
+      saveAs(blob, zipFilename(player1.value, player2.value))
+    })
 }
 </script>
 
