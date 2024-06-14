@@ -4,6 +4,7 @@ import type { Ref } from 'vue'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 
+import GameInfo from './GameInfo.vue'
 import GameBox from './GameBox.vue'
 import PreviewPane from './PreviewPane.vue'
 
@@ -12,6 +13,7 @@ import { Game, Replay, zipFilename, computeReplayFilename } from '../entities/ga
 const player1 = ref('Player1')
 const player2 = ref('Player2')
 const games: Ref<Game[]> = ref([new Game(), new Game(), new Game()])
+const meta = ref({})
 
 function removeReplay(gameIdx: number, replayIdx: number) {
   games.value[gameIdx].replays.splice(replayIdx, 1)
@@ -89,6 +91,8 @@ function downloadZip() {
       }
     }
   }
+  const metaFile = new Blob([JSON.stringify(meta.value)], { type: 'application/json' })
+  zip.file('meta.json', metaFile)
 
   zip
     .generateAsync({
@@ -106,22 +110,12 @@ function downloadZip() {
 </script>
 
 <template>
-  <div class="text-center p-4 border-2 col-span-3 mt-4">
-    <h2 class="text-center text-2xl">Game Info</h2>
-    <div>Best of {{ games.length }}</div>
-    <input
-      placeholder="Player 1 Name"
-      class="border-1 bg-gray-100 p-2 rounded"
-      type="text"
-      v-model="player1"
-    /><span class="mx-10">vs</span>
-    <input
-      placeholder="Player 2 Name"
-      class="border-1 bg-gray-100 p-2 rounded"
-      type="text"
-      v-model="player2"
-    />
-  </div>
+  <GameInfo
+    :games="games"
+    v-model:player1="player1"
+    v-model:player2="player2"
+    @update-meta="($event) => (meta = $event)"
+  />
   <GameBox
     v-for="(game, gameIdx) in games"
     :game="game"
