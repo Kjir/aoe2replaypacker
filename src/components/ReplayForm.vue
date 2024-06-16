@@ -7,13 +7,14 @@ import { saveAs } from 'file-saver'
 import GameInfo from './GameInfo.vue'
 import GameBox from './GameBox.vue'
 import PreviewPane from './PreviewPane.vue'
+import type { ReplayMetadata } from '../entities/gamemeta'
 
 import { Game, Replay, zipFilename, computeReplayFilename } from '../entities/game'
 
 const player1 = ref('Player1')
 const player2 = ref('Player2')
 const games: Ref<Game[]> = ref([new Game(), new Game(), new Game()])
-const meta = ref({})
+const meta: Ref<ReplayMetadata> = ref({ maps: null, civs: null })
 
 function removeReplay(gameIdx: number, replayIdx: number) {
   games.value[gameIdx].replays.splice(replayIdx, 1)
@@ -92,7 +93,7 @@ function downloadZip() {
     }
   }
   const metaFile = new Blob([JSON.stringify(meta.value)], { type: 'application/json' })
-  zip.file('meta.json', metaFile)
+  zip.file('metadata.json', metaFile)
 
   zip
     .generateAsync({
@@ -114,7 +115,7 @@ function downloadZip() {
     :games="games"
     v-model:player1="player1"
     v-model:player2="player2"
-    @update-meta="($event) => (meta = $event)"
+    @update-meta="(newMeta: ReplayMetadata) => (meta = newMeta)"
   />
   <GameBox
     v-for="(game, gameIdx) in games"
@@ -130,7 +131,7 @@ function downloadZip() {
   </div>
   <div id="message_box" class="mt-4 text-center p-4 border-2 col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 col-span-3 mt-4">
-    <PreviewPane :games="games" :player1="player1" :player2="player2" />
+    <PreviewPane :games="games" :player1="player1" :player2="player2" :meta="meta" />
     <button
       :disabled="!downloadEnabled"
       class="btn text-2xl text-white"
