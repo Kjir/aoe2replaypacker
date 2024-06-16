@@ -2,6 +2,8 @@
 import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { Game } from '../entities/game'
+import type { Aoe2CmEvent } from '../entities/aoe2cm'
+import type { MapDraft, CivDraft } from '../entities/gamemeta'
 import debounce from 'lodash.debounce'
 
 const props = defineProps<{
@@ -14,12 +16,12 @@ const emit = defineEmits<{
   (e: 'update-meta', value: object): void
 }>()
 
-const maps = ref()
-const civs = ref()
+const mapsDraftURI = ref()
+const civDraftURI = ref()
 const meta: Ref<{
-  maps: { draft?: string; preset?: string; host?: string; guest?: string; admin_map?: string }
-  civs: { draft?: string; preset?: string; host?: string; guest?: string }
-}> = ref({ maps: {}, civs: {} })
+  maps: MapDraft | null
+  civs: CivDraft | null
+}> = ref({ maps: null, civs: null })
 
 const mapPresets = {
   BNdEh: 3,
@@ -44,27 +46,55 @@ const extractDraftId = (url: string) => {
 }
 
 const debouncedFetchMaps = debounce(async () => {
-  const draftId = extractDraftId(maps.value)
+  meta.value.maps = null
   errors.value.maps = null
+  const draftId = extractDraftId(mapsDraftURI.value)
+
+  if (draftId.length <= 0) {
+    emit('update-meta', meta.value)
+    return
+  }
+
   const response = await fetch(`https://aoe2cm.net/api/draft/${draftId}`)
+  if (!response.ok) {
+    errors.value.maps = `Map draft not found, ID/URL invalid`
+    emit('update-meta', meta.value)
+    return
+  }
   const json = await response.json()
   if (!(json.preset.presetId in mapPresets)) {
     errors.value.maps = `The draft is not a map draft from a valid TCC map preset (${json.preset.presetId})`
   }
+
+  const picks = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'pick')
+  const pickedMaps = picks.map((event: Aoe2CmEvent) => event.chosenOptionId.replace('-', ' '))
+
   meta.value.maps = {
     draft: draftId,
     preset: json.preset.presetId,
     host: json.nameHost,
     guest: json.nameGuest,
-    admin_map: json.events.slice(-1)[0].chosenOptionId.replaceAll('-', ' ')
+    maps: pickedMaps
   }
   emit('update-meta', meta.value)
 }, 300)
 
 const debouncedFetchCivs = debounce(async () => {
-  const draftId = extractDraftId(civs.value)
+  meta.value.civs = null
   errors.value.civs = null
+
+  const draftId = extractDraftId(civDraftURI.value)
+  if (draftId.length <= 0) {
+    emit('update-meta', meta.value)
+    return
+  }
+
   const response = await fetch(`https://aoe2cm.net/api/draft/${draftId}`)
+  if (!response.ok) {
+    errors.value.civs = `Civ draft not found, ID/URL invalid`
+    emit('update-meta', meta.value)
+    return
+  }
   const json = await response.json()
   if (!(json.preset.presetId in civPresets)) {
     errors.value.civs = `The draft is not a civ draft from a valid TCC civ preset (${json.preset.presetId})`
@@ -78,8 +108,8 @@ const debouncedFetchCivs = debounce(async () => {
   emit('update-meta', meta.value)
 }, 300)
 
-watch(maps, debouncedFetchMaps)
-watch(civs, debouncedFetchCivs)
+watch(mapsDraftURI, debouncedFetchMaps)
+watch(civDraftURI, debouncedFetchCivs)
 </script>
 
 <template>
@@ -99,34 +129,38 @@ watch(civs, debouncedFetchCivs)
       v-model="player2"
     />
     <h3 class="text-center text-xl mt-4">Drafts</h3>
+    <p>Input aoe2cm.net civ/map draft ID/URL (optional).</p>
     <div class="mb-6">
-      <label class="text-gray-700 text-sm font-bold mb-2" for="maps">
-        Maps Draft (ID or URL)
-      </label>
+      <label class="text-gray-700 text-sm font-bold mb-2" for="maps"> Maps Draft </label>
       <input
         class="border-1 bg-gray-100 p-2 rounded"
         id="maps"
         type="text"
         placeholder="e.g. XZedf"
-        v-model="maps"
+        v-model="mapsDraftURI"
       />
       <p v-if="errors.maps" class="text-red-500 text-xs italic">{{ errors.maps }}</p>
-      <p v-if="meta.maps.host">{{ meta.maps.host }} vs {{ meta.maps.guest }}</p>
-      <p v-if="meta.maps.admin_map">Admin pick: {{ meta.maps.admin_map }}</p>
+      <div v-if="meta.maps">
+        <p>{{ meta.maps.host }} vs {{ meta.maps.guest }}</p>
+        <p>Maps:</p>
+        <ul>
+          <li class="capitalize" v-for="(map, mapIdx) in meta.maps.maps" :key="mapIdx">
+            {{ map }}
+          </li>
+        </ul>
+      </div>
     </div>
     <div class="mb-6">
-      <label class="text-gray-700 text-sm font-bold mb-2" for="civs">
-        Civs Draft (ID or URL)
-      </label>
+      <label class="text-gray-700 text-sm font-bold mb-2" for="civs"> Civs Draft </label>
       <input
         class="border-1 bg-gray-100 p-2 rounded"
         id="civs"
         type="text"
         placeholder="e.g. vbvIP"
-        v-model="civs"
+        v-model="civDraftURI"
       />
       <p v-if="errors.civs" class="text-red-500 text-xs italic">{{ errors.civs }}</p>
-      <p v-if="meta.civs.host">{{ meta.civs.host }} vs {{ meta.civs.guest }}</p>
+      <p v-if="meta.civs">{{ meta.civs.host }} vs {{ meta.civs.guest }}</p>
     </div>
   </div>
 </template>
