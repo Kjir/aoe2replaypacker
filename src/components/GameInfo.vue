@@ -5,6 +5,7 @@ import { Game } from '../entities/game'
 import type { Aoe2CmEvent } from '../entities/aoe2cm'
 import type { ReplayMetadata } from '../entities/gamemeta'
 import debounce from 'lodash.debounce'
+import CivIcon from './CivIcon.vue'
 
 const props = defineProps<{
   games: Game[]
@@ -173,21 +174,15 @@ watch(civDraftURI, debouncedFetchCivs)
           <p>{{ meta.civs.host }} vs {{ meta.civs.guest }}</p>
           <p>Civilisations:</p>
           <ul class="pl-8">
-            <li
-              class="capitalize list-disc"
-              v-for="(civ, civIdx) in meta.civs.hostCivs"
-              :key="civIdx"
-            >
+            <li class="capitalize" v-for="(civ, civIdx) in meta.civs.hostCivs" :key="civIdx">
+              <CivIcon :civ="civ.toLowerCase()" />
               {{ civ }}
             </li>
           </ul>
-          <p>vs</p>
+          <p class="pl-20">vs</p>
           <ul class="pl-8">
-            <li
-              class="capitalize list-disc"
-              v-for="(civ, civIdx) in meta.civs.guestCivs"
-              :key="civIdx"
-            >
+            <li class="capitalize" v-for="(civ, civIdx) in meta.civs.guestCivs" :key="civIdx">
+              <CivIcon :civ="civ.toLowerCase()" />
               {{ civ }}
             </li>
           </ul>
