@@ -8,3 +8,15 @@ export type Aoe2CmEvent = {
     player: 'HOST' | 'GUEST' | 'NONE'
 }
 
+export type Aoe2CmDraftOption = {
+    category: string
+    i18nPrefix: string
+    id: string
+    imageUrls: {
+        animated_left: string
+        animated_right: string
+        emblem: string
+        unit: string
+    }
+    name: string
+}

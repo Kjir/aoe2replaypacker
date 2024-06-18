@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { Game } from '../entities/game'
-import type { Aoe2CmEvent } from '../entities/aoe2cm'
+import type { Aoe2CmEvent, Aoe2CmDraftOption } from '../entities/aoe2cm'
 import type { ReplayMetadata } from '../entities/gamemeta'
 import debounce from 'lodash.debounce'
 import CivIcon from './CivIcon.vue'
@@ -60,19 +60,32 @@ const debouncedFetchMaps = debounce(async () => {
     return
   }
   const json = await response.json()
+  if ('encodedCivilisations' in json.preset) {
+    errors.value.maps = 'This does not seem to be a map draft'
+    return
+  }
   if (!(json.preset.presetId in mapPresets)) {
     errors.value.maps = `The draft is not a map draft from a valid TCC map preset (${json.preset.presetId})`
   }
 
+  const availableMaps = (Object.values(json.preset.draftOptions) as [Aoe2CmDraftOption]).reduce(
+    (map, draftMap) => {
+      map[draftMap.id] = { name: draftMap.name, image: draftMap.imageUrls.emblem }
+      return map
+    },
+    {} as Record<string, { name: string; image: string }>
+  )
+
   const picks = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'pick')
-  const pickedMaps = picks.map((event: Aoe2CmEvent) => event.chosenOptionId.replace('-', ' '))
+  const pickedMaps = picks.map((event: Aoe2CmEvent) => event.chosenOptionId)
 
   meta.value.maps = {
     draft: draftId,
     preset: json.preset.presetId,
     host: json.nameHost,
     guest: json.nameGuest,
-    maps: pickedMaps
+    availableMaps: availableMaps,
+    pickedMaps: pickedMaps
   }
   emit('updateMeta', meta.value)
 }, 300)
@@ -93,7 +106,12 @@ const debouncedFetchCivs = debounce(async () => {
     emit('updateMeta', meta.value)
     return
   }
+
   const json = await response.json()
+  if (!('encodedCivilisations' in json.preset)) {
+    errors.value.civs = 'This does not seem to be a civ draft'
+    return
+  }
   if (!(json.preset.presetId in civPresets)) {
     errors.value.civs = `The draft is not a civ draft from a valid TCC civ preset (${json.preset.presetId})`
   }
@@ -101,10 +119,10 @@ const debouncedFetchCivs = debounce(async () => {
   const picks = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'pick')
   const pickedCivsHost = picks
     .filter((event: Aoe2CmEvent) => event.player == 'HOST')
-    .map((event: Aoe2CmEvent) => event.chosenOptionId.replace('-', ' '))
+    .map((event: Aoe2CmEvent) => event.chosenOptionId)
   const pickedCivsGuest = picks
     .filter((event: Aoe2CmEvent) => event.player == 'GUEST')
-    .map((event: Aoe2CmEvent) => event.chosenOptionId.replace('-', ' '))
+    .map((event: Aoe2CmEvent) => event.chosenOptionId)
 
   meta.value.civs = {
     draft: draftId,
@@ -151,11 +169,19 @@ watch(civDraftURI, debouncedFetchCivs)
         />
         <p v-if="errors.maps" class="text-red-500 text-xs italic">{{ errors.maps }}</p>
         <div class="text-left px-8 pt-4" v-if="meta.maps">
-          <p>{{ meta.maps.host }} vs {{ meta.maps.guest }}</p>
-          <p>Maps:</p>
-          <ul class="pl-8">
-            <li class="capitalize list-disc" v-for="(map, mapIdx) in meta.maps.maps" :key="mapIdx">
-              {{ map }}
+          <p class="text-center">{{ meta.maps.host }} vs {{ meta.maps.guest }}</p>
+          <ul class="pl-8 text-center">
+            <li v-for="(map, mapIdx) in meta.maps.pickedMaps" :key="mapIdx">
+              <div>
+                <img
+                  class="mx-auto"
+                  :src="'https://aoe2cm.net/' + meta.maps.availableMaps[map].image"
+                  :alt="meta.maps.availableMaps[map].name"
+                />
+              </div>
+              <div>
+                {{ meta.maps.availableMaps[map].name }}
+              </div>
             </li>
           </ul>
         </div>
@@ -172,16 +198,15 @@ watch(civDraftURI, debouncedFetchCivs)
         <p v-if="errors.civs" class="text-red-500 text-xs italic">{{ errors.civs }}</p>
         <div v-if="meta.civs" class="text-left px-8 pt-4">
           <p>{{ meta.civs.host }} vs {{ meta.civs.guest }}</p>
-          <p>Civilisations:</p>
           <ul class="pl-8">
-            <li class="capitalize" v-for="(civ, civIdx) in meta.civs.hostCivs" :key="civIdx">
+            <li class="capitalize mt-2" v-for="(civ, civIdx) in meta.civs.hostCivs" :key="civIdx">
               <CivIcon :civ="civ.toLowerCase()" />
               {{ civ }}
             </li>
           </ul>
           <p class="pl-20">vs</p>
           <ul class="pl-8">
-            <li class="capitalize" v-for="(civ, civIdx) in meta.civs.guestCivs" :key="civIdx">
+            <li class="capitalize mt-2" v-for="(civ, civIdx) in meta.civs.guestCivs" :key="civIdx">
               <CivIcon :civ="civ.toLowerCase()" />
               {{ civ }}
             </li>
