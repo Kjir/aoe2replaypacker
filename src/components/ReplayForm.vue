@@ -7,14 +7,20 @@ import { saveAs } from 'file-saver'
 import GameInfo from './GameInfo.vue'
 import GameBox from './GameBox.vue'
 import PreviewPane from './PreviewPane.vue'
-import type { ReplayMetadata } from '../entities/gamemeta'
+import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
 
 import { Game, Replay, zipFilename, computeReplayFilename } from '../entities/game'
+
+const props = defineProps<{
+  civPresets: string[] | null
+  mapPresets: string[] | null
+}>()
 
 const player1 = ref('Player1')
 const player2 = ref('Player2')
 const games: Ref<Game[]> = ref([new Game(), new Game(), new Game()])
 const meta: Ref<ReplayMetadata> = ref({ maps: null, civs: null })
+const metaErrors: Ref<ReplayErrors> = ref({ maps: null, civs: null })
 
 function removeReplay(gameIdx: number, replayIdx: number) {
   games.value[gameIdx].replays.splice(replayIdx, 1)
@@ -36,6 +42,18 @@ function addGame() {
 }
 
 const downloadEnabled = computed(() => {
+  if (metaErrors.value.civs || metaErrors.value.maps) {
+    return false
+  }
+
+  if (props.civPresets && !meta.value.civs) {
+    return false
+  }
+
+  if (props.mapPresets && !meta.value.maps) {
+    return false
+  }
+
   for (const game of games.value) {
     for (const replay of game.replays) {
       if (replay.file) {
@@ -115,7 +133,14 @@ function downloadZip() {
     :games="games"
     v-model:player1="player1"
     v-model:player2="player2"
-    @update-meta="(newMeta: ReplayMetadata) => (meta = newMeta)"
+    :civ-presets="civPresets"
+    :map-presets="mapPresets"
+    @update-meta="
+      (newErrors: ReplayErrors, newMeta: ReplayMetadata) => {
+        meta = newMeta
+        metaErrors = newErrors
+      }
+    "
   />
   <GameBox
     v-for="(game, gameIdx) in games"

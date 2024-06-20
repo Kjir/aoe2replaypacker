@@ -6,3 +6,8 @@ export type ReplayMetadata = {
     maps: MapDraft | null
     civs: CivDraft | null
 };
+
+export type ReplayErrors = {
+    maps: string | null
+    civs: string | null
+}

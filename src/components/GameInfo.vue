@@ -3,38 +3,27 @@ import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { Game } from '../entities/game'
 import type { Aoe2CmEvent, Aoe2CmDraftOption } from '../entities/aoe2cm'
-import type { ReplayMetadata } from '../entities/gamemeta'
+import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
 import debounce from 'lodash.debounce'
 import CivIcon from './CivIcon.vue'
 
 const props = defineProps<{
   games: Game[]
+  civPresets: string[] | null
+  mapPresets: string[] | null
 }>()
 
 const player1 = defineModel('player1')
 const player2 = defineModel('player2')
 const emit = defineEmits<{
-  updateMeta: [ReplayMetadata]
+  updateMeta: [ReplayErrors, ReplayMetadata]
 }>()
 
 const mapsDraftURI = ref()
 const civDraftURI = ref()
 const meta: Ref<ReplayMetadata> = ref({ maps: null, civs: null })
 
-const mapPresets = {
-  BNdEh: 3,
-  EbPGx: 5
-}
-
-const civPresets = {
-  IwarA: 3,
-  NurUH: 5
-}
-
-const errors: Ref<{
-  maps: string | null
-  civs: string | null
-}> = ref({
+const errors: Ref<ReplayErrors> = ref({
   maps: null,
   civs: null
 })
@@ -49,23 +38,27 @@ const debouncedFetchMaps = debounce(async () => {
   const draftId = extractDraftId(mapsDraftURI.value)
 
   if (draftId.length <= 0) {
-    emit('updateMeta', meta.value)
+    emit('updateMeta', errors.value, meta.value)
     return
   }
 
   const response = await fetch(`https://aoe2cm.net/api/draft/${draftId}`)
   if (!response.ok) {
     errors.value.maps = `Map draft not found, ID/URL invalid`
-    emit('updateMeta', meta.value)
+    emit('updateMeta', errors.value, meta.value)
     return
   }
   const json = await response.json()
   if ('encodedCivilisations' in json.preset) {
     errors.value.maps = 'This does not seem to be a map draft'
+    emit('updateMeta', errors.value, meta.value)
     return
   }
-  if (!(json.preset.presetId in mapPresets)) {
-    errors.value.maps = `The draft is not a map draft from a valid TCC map preset (${json.preset.presetId})`
+  if (props.mapPresets && !props.mapPresets.includes(json.preset.presetId)) {
+    const validPresetsString = props.mapPresets.join(', ')
+    errors.value.maps = `The draft preset (${json.preset.presetId}) is not a map draft from the required presets [${validPresetsString}]`
+    emit('updateMeta', errors.value, meta.value)
+    return
   }
 
   const availableMaps = (Object.values(json.preset.draftOptions) as [Aoe2CmDraftOption]).reduce(
@@ -87,7 +80,7 @@ const debouncedFetchMaps = debounce(async () => {
     availableMaps: availableMaps,
     pickedMaps: pickedMaps
   }
-  emit('updateMeta', meta.value)
+  emit('updateMeta', errors.value, meta.value)
 }, 300)
 
 const debouncedFetchCivs = debounce(async () => {
@@ -96,24 +89,29 @@ const debouncedFetchCivs = debounce(async () => {
 
   const draftId = extractDraftId(civDraftURI.value)
   if (draftId.length <= 0) {
-    emit('updateMeta', meta.value)
+    emit('updateMeta', errors.value, meta.value)
     return
   }
 
   const response = await fetch(`https://aoe2cm.net/api/draft/${draftId}`)
   if (!response.ok) {
     errors.value.civs = `Civ draft not found, ID/URL invalid`
-    emit('updateMeta', meta.value)
+    emit('updateMeta', errors.value, meta.value)
     return
   }
 
   const json = await response.json()
   if (!('encodedCivilisations' in json.preset)) {
     errors.value.civs = 'This does not seem to be a civ draft'
+    emit('updateMeta', errors.value, meta.value)
     return
   }
-  if (!(json.preset.presetId in civPresets)) {
-    errors.value.civs = `The draft is not a civ draft from a valid TCC civ preset (${json.preset.presetId})`
+
+  if (props.civPresets && !props.civPresets.includes(json.preset.presetId)) {
+    const validPresetsString = props.civPresets.join(', ')
+    errors.value.civs = `The draft preset (${json.preset.presetId}) is not a civ draft from the required presets [${validPresetsString}]`
+    emit('updateMeta', errors.value, meta.value)
+    return
   }
 
   const picks = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'pick')
@@ -132,7 +130,7 @@ const debouncedFetchCivs = debounce(async () => {
     hostCivs: pickedCivsHost,
     guestCivs: pickedCivsGuest
   }
-  emit('updateMeta', meta.value)
+  emit('updateMeta', errors.value, meta.value)
 }, 300)
 
 watch(mapsDraftURI, debouncedFetchMaps)
@@ -155,7 +153,9 @@ watch(civDraftURI, debouncedFetchCivs)
       type="text"
       v-model="player2"
     />
-    <h3 class="text-center text-xl mt-4">Drafts (optional)</h3>
+    <h3 class="text-center text-xl mt-4">
+      Drafts<template v-if="!mapPresets && !civPresets"> (optional)</template>
+    </h3>
     <p class="text-center">Input aoe2cm.net civ/map draft ID/URL.</p>
     <div class="grid grid-cols-2">
       <div class="mb-6">
