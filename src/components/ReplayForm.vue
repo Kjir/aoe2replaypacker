@@ -46,13 +46,15 @@ const downloadEnabled = computed(() => {
     return false
   }
 
-  if (props.civPresets && !meta.value.civs) {
+  // Force civ draft entry if preset is specified
+  /*if (props.civPresets && !meta.value.civs) {
     return false
-  }
+  }*/
 
-  if (props.mapPresets && !meta.value.maps) {
+  // Force map draft entry if preset is specified
+  /*if (props.mapPresets && !meta.value.maps) {
     return false
-  }
+  }*/
 
   for (const game of games.value) {
     for (const replay of game.replays) {
