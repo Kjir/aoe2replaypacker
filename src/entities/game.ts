@@ -1,3 +1,5 @@
+import unidecode from 'unidecode';
+
 let gameCounter = 0
 let replayCounter = 0
 
@@ -20,12 +22,21 @@ export class Replay {
   }
 }
 
+function normalizePlayerName(playerName: string, defaultName: string) {
+  const normalizedName = unidecode(playerName).replace(/\s/g, '');
+  if (normalizedName.length == 0) {
+    return defaultName;
+  } else {
+    return normalizedName;
+  }
+}
+
 function matchName(player1: string, player2: string) {
-  return `${player1}_vs_${player2}`
+  return `${normalizePlayerName(player1, 'Player1')}_vs_${normalizePlayerName(player2, 'Player2')}`
 }
 
 export function zipFilename(player1: string, player2: string) {
-  return `${matchName(player1, player2)}.zip`
+  return `${matchName(normalizePlayerName(player1, 'Player1'), normalizePlayerName(player2, 'Player2'))}.zip`
 }
 
 function toBase26(value: number) {
@@ -47,7 +58,7 @@ export function computeReplayFilename(
   replayIdx: number
 ) {
   const replaySubNumbering = game.replays.length > 1 ? toBase26(replayIdx) : ''
-  return `${matchName(player1, player2)}_G${gameIdx + 1}${replaySubNumbering}.aoe2record`
+  return `${matchName(normalizePlayerName(player1, 'Player1'), normalizePlayerName(player2, 'Player2'))}_G${gameIdx + 1}${replaySubNumbering}.aoe2record`
 }
 
 export function computeReplayFilenamePreview(
@@ -58,7 +69,7 @@ export function computeReplayFilenamePreview(
   replay: Replay,
   replayIdx: number
 ) {
-  const filename = computeReplayFilename(player1, player2, game, gameIdx, replayIdx)
+  const filename = computeReplayFilename(normalizePlayerName(player1, 'Player1'), normalizePlayerName(player2, 'Player2'), game, gameIdx, replayIdx)
   const dummyIndicator = replay.file ? '' : ' (dummy file)'
 
   return `${filename}${dummyIndicator}`
