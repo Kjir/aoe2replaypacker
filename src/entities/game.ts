@@ -22,8 +22,14 @@ export class Replay {
   }
 }
 
+
 function normalizePlayerName(playerName: string, defaultName: string) {
-  const normalizedName = unidecode(playerName).replace(/\s/g, '');
+  const asciiName = unidecode(playerName)
+  const noWhitespaceName = asciiName.replace(/\s/g, '')
+  // eslint-disable-next-line no-control-regex
+  const noUnprintableName = noWhitespaceName.replace(/[\x00-\x20]/g, '')
+  const normalizedName = noUnprintableName.replace(/[<>:"/\\|?*]/g, '')
+
   if (normalizedName.length == 0) {
     return defaultName;
   } else {
@@ -40,14 +46,14 @@ export function zipFilename(player1: string, player2: string) {
 }
 
 function toBase26(value: number) {
-  let res = ''
+  const res = []
   value = Math.floor(value)
   do {
     const digit = value % 26
     value = Math.floor(value / 26)
-    res += String.fromCharCode(0x61 + digit)
+    res.push(String.fromCharCode(0x61 + digit))
   } while (value > 0)
-  return res
+  return res.reverse().join('')
 }
 
 export function computeReplayFilename(
