@@ -23,7 +23,7 @@ export class Replay {
 }
 
 
-function normalizePlayerName(playerName: string, defaultName: string) {
+export function normalizePlayerName(playerName: string, defaultName: string) {
   const asciiName = unidecode(playerName)
   const noWhitespaceName = asciiName.replace(/\s/g, '')
   // eslint-disable-next-line no-control-regex
@@ -37,7 +37,7 @@ function normalizePlayerName(playerName: string, defaultName: string) {
   }
 }
 
-function matchName(player1: string, player2: string) {
+export function matchName(player1: string, player2: string) {
   return `${normalizePlayerName(player1, 'Player1')}_vs_${normalizePlayerName(player2, 'Player2')}`
 }
 
@@ -45,7 +45,7 @@ export function zipFilename(player1: string, player2: string) {
   return `${matchName(normalizePlayerName(player1, 'Player1'), normalizePlayerName(player2, 'Player2'))}.zip`
 }
 
-function toBase26(value: number) {
+export function toBase26(value: number, width: number) {
   const res = []
   value = Math.floor(value)
   do {
@@ -53,7 +53,11 @@ function toBase26(value: number) {
     value = Math.floor(value / 26)
     res.push(String.fromCharCode(0x61 + digit))
   } while (value > 0)
-  return res.reverse().join('')
+  return res.reverse().join('').padStart(width, 'a')
+}
+
+export function logn(x: number, y: number) {
+  return Math.log(x) / Math.log(y);
 }
 
 export function computeReplayFilename(
@@ -61,9 +65,10 @@ export function computeReplayFilename(
   player2: string,
   game: Game,
   gameIdx: number,
-  replayIdx: number
+  replayIdx: number,
 ) {
-  const replaySubNumbering = game.replays.length > 1 ? toBase26(replayIdx) : ''
+  const numReplays = game.replays.length;
+  const replaySubNumbering = numReplays > 1 ? toBase26(replayIdx, Math.ceil(logn(numReplays, 26))) : ''
   return `${matchName(normalizePlayerName(player1, 'Player1'), normalizePlayerName(player2, 'Player2'))}_G${gameIdx + 1}${replaySubNumbering}.aoe2record`
 }
 
@@ -73,7 +78,7 @@ export function computeReplayFilenamePreview(
   game: Game,
   gameIdx: number,
   replay: Replay,
-  replayIdx: number
+  replayIdx: number,
 ) {
   const filename = computeReplayFilename(normalizePlayerName(player1, 'Player1'), normalizePlayerName(player2, 'Player2'), game, gameIdx, replayIdx)
   const dummyIndicator = replay.file ? '' : ' (dummy file)'
