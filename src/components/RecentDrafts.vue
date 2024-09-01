@@ -15,6 +15,12 @@ const civDraftURI = defineModel<string>('civDraft')
 const mapDraftId = computed(() => extractDraftId(mapDraftURI.value))
 const civDraftId = computed(() => extractDraftId(civDraftURI.value))
 
+enum DraftType {
+  Unknown,
+  Map,
+  Civ
+}
+
 type draft = {
   draftId: string
   presetId: string
@@ -30,9 +36,8 @@ const recentDrafts = await (async () => {
     (draft) => civPresets.includes(draft.presetId) || mapPresets.includes(draft.presetId)
   )
 })()
-console.log(recentDrafts)
 
-const selectDraft = (draft: draft) => {
+function selectDraft(draft: draft) {
   if (mapPresets.includes(draft.presetId)) {
     if (mapDraftURI.value == draft.draftId) {
       mapDraftURI.value = ''
@@ -47,21 +52,43 @@ const selectDraft = (draft: draft) => {
     }
   }
 }
+
+function getDraftType(draft: draft) {
+  if (mapPresets.includes(draft.presetId)) {
+    return DraftType.Map
+  } else if (civPresets.includes(draft.presetId)) {
+    return DraftType.Civ
+  } else {
+    return DraftType.Unknown
+  }
+}
+
+function getDraftTypeLabel(draft: draft) {
+  const draftType = getDraftType(draft)
+  if (draftType == DraftType.Civ) {
+    return 'Civs:'
+  } else if (draftType == DraftType.Map) {
+    return 'Maps:'
+  } else {
+    return ''
+  }
+}
 </script>
 
 <template>
   <div class="text-center p-4 border-2 col-span-3 mt-4 h-80 overflow-auto">
     <h2 class="text-center text-2xl">Recent Drafts</h2>
-    <ul role="list" class="divide-y divide-gray-100">
+    <ul role="list" class="divide-y divide-gray-100" v-if="recentDrafts.length > 0">
       <li class="flex justify-between" v-for="draft in recentDrafts" :key="draft.draftId">
         <button
           class="flex-auto text-start hover:bg-slate-100"
           :class="{ 'bg-slate-300': [mapDraftId, civDraftId].includes(draft.draftId) }"
           @click="selectDraft(draft)"
         >
-          <div class="min-w-100 flex-auto">
+          <div class="min-w-100 flex-auto px-4">
+            <span class="mt-1 text-xs text-gray-500 m-3"> {{ getDraftTypeLabel(draft) }}</span>
             <span class="text-sm font-semibold leading-6 text-gray-900">{{ draft.nameHost }}</span>
-            <span class="mt-1 truncate text-xs leading-5 text-gray-500 m-3">vs</span>
+            <span class="mt-1 text-xs leading-5 text-gray-500 m-3">vs</span>
             <span class="text-sm font-semibold leading-6 text-gray-900">{{ draft.nameGuest }}</span>
             <span class="mt-1 truncate text-xs leading-5 text-gray-500 m-3"
               >{{ draft.title }} ({{ draft.draftId }})</span
@@ -70,7 +97,6 @@ const selectDraft = (draft: draft) => {
         </button>
       </li>
     </ul>
-    <!-- <p v-for="draft in recentDrafts">{{ draft.title }} - {{ draft.nameHost }} vs {{ draft.nameGuest }} - -->
-    <!--   {{ draft.draftId }}</p> -->
+    <p v-else class="text-gray-500">No recent drafts found for the selected presets</p>
   </div>
 </template>
