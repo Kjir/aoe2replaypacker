@@ -6,7 +6,7 @@ import type { Aoe2CmEvent, Aoe2CmDraftOption } from '../entities/aoe2cm'
 import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
 import debounce from 'lodash.debounce'
 import CivIcon from './CivIcon.vue'
-import { extractDraftId } from '../utils'
+import { extractDraftId } from '../entities/draft'
 
 const props = defineProps<{
   games: Game[]
