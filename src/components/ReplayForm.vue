@@ -178,8 +178,13 @@ function downloadZip() {
     <ZipPreviewPane :games="games" :player1="player1" :player2="player2" :meta="meta" />
     <button
       :disabled="!downloadEnabled"
-      class="btn text-2xl text-white"
-      :class="{ 'bg-blue-500': downloadEnabled, 'bg-blue-200': !downloadEnabled }"
+      class="btn text-2xl text-white dark:text-black"
+      :class="{
+        'bg-blue-500': downloadEnabled,
+        'bg-blue-200': !downloadEnabled,
+        'dark:bg-blue-700': downloadEnabled,
+        'dark:bg-blue-300': !downloadEnabled
+      }"
       @click="downloadZip"
     >
       Download

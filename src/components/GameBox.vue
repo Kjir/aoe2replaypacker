@@ -17,7 +17,7 @@ defineEmits<{
 
 <template>
   <div class="border-2 mt-4 grid grid-cols-4 divide-x-2">
-    <div class="p-4 col-span-1 bg-slate-100">
+    <div class="p-4 col-span-1 bg-slate-100 dark:bg-slate-800">
       <h3 class="text-center text-xl">Game {{ props.gameNumber + 1 }}</h3>
     </div>
     <div class="col-span-3">

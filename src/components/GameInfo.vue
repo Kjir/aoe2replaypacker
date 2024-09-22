@@ -171,13 +171,13 @@ watch(meta, () => {
     <div>Best of {{ props.games.length }}</div>
     <input
       placeholder="Player 1 Name"
-      class="border-1 bg-gray-100 p-2 rounded"
+      class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded"
       type="text"
       v-model="player1"
     /><span class="mx-10">vs</span>
     <input
       placeholder="Player 2 Name"
-      class="border-1 bg-gray-100 p-2 rounded"
+      class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded"
       type="text"
       v-model="player2"
     />
@@ -187,15 +187,19 @@ watch(meta, () => {
     <p class="text-center">Input aoe2cm.net civ/map draft ID/URL.</p>
     <div class="grid grid-cols-2">
       <div class="mb-6">
-        <label class="text-gray-700 text-sm font-bold mb-2" for="maps"> Map draft</label>
+        <label class="text-gray-700 dark:text-gray-200 text-sm font-bold mb-2" for="maps">
+          Map draft</label
+        >
         <input
-          class="border-1 bg-gray-100 p-2 rounded ml-2"
+          class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded ml-2"
           id="maps"
           type="text"
           placeholder="e.g. XZedf"
           v-model="mapsDraftURI"
         />
-        <p v-if="errors.maps" class="text-red-500 text-xs italic">{{ errors.maps }}</p>
+        <p v-if="errors.maps" class="text-red-500 dark:text-red-500 text-xs italic">
+          {{ errors.maps }}
+        </p>
         <div class="text-left px-8 pt-4" v-if="meta.maps">
           <p class="text-center">{{ meta.maps.host }} vs {{ meta.maps.guest }}</p>
           <ul class="pl-8 text-center">
@@ -215,15 +219,19 @@ watch(meta, () => {
         </div>
       </div>
       <div class="mb-6">
-        <label class="text-gray-700 text-sm font-bold mb-2" for="civs"> Civ draft</label>
+        <label class="text-gray-700 dark:text-gray-200 text-sm font-bold mb-2" for="civs">
+          Civ draft</label
+        >
         <input
-          class="border-1 bg-gray-100 p-2 rounded ml-2"
+          class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded ml-2"
           id="civs"
           type="text"
           placeholder="e.g. vbvIP"
           v-model="civDraftURI"
         />
-        <p v-if="errors.civs" class="text-red-500 text-xs italic">{{ errors.civs }}</p>
+        <p v-if="errors.civs" class="text-red-500 dark:text-red-500 text-xs italic">
+          {{ errors.civs }}
+        </p>
         <div v-if="meta.civs" class="text-left px-8 pt-4">
           <p>{{ meta.civs.host }} vs {{ meta.civs.guest }}</p>
           <ul class="pl-8">
