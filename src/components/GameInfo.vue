@@ -29,6 +29,14 @@ const errors: Ref<ReplayErrors> = ref({
   civs: null
 })
 
+function mapImageUrl(imageUri: string) {
+  if (URL.canParse(imageUri)) {
+    return imageUri
+  } else {
+    return `https://aoe2cm.net/${imageUri}`
+  }
+}
+
 const debouncedFetchMaps = debounce(async () => {
   meta.value.maps = null
   errors.value.maps = null
@@ -195,7 +203,7 @@ watch(meta, () => {
               <div>
                 <img
                   class="mx-auto"
-                  :src="'https://aoe2cm.net/' + meta.maps.availableMaps[map].image"
+                  :src="mapImageUrl(meta.maps.availableMaps[map].image)"
                   :alt="meta.maps.availableMaps[map].name"
                 />
               </div>
