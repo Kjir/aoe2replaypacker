@@ -6,7 +6,7 @@ import { saveAs } from 'file-saver'
 
 import GameInfo from './GameInfo.vue'
 import GameBox from './GameBox.vue'
-import PreviewPane from './PreviewPane.vue'
+import ZipPreviewPane from './ZipPreviewPane.vue'
 import RecentDrafts from './RecentDrafts.vue'
 import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
 
@@ -175,7 +175,7 @@ function downloadZip() {
   </div>
   <div id="message_box" class="mt-4 text-center p-4 border-2 col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 col-span-3 mt-4">
-    <PreviewPane :games="games" :player1="player1" :player2="player2" :meta="meta" />
+    <ZipPreviewPane :games="games" :player1="player1" :player2="player2" :meta="meta" />
     <button
       :disabled="!downloadEnabled"
       class="btn text-2xl text-white"
