@@ -166,6 +166,14 @@ function downloadZip() {
     :map-presets="mapPresets"
     @update-meta="
       (newErrors: ReplayErrors, newMeta: ReplayMetadata) => {
+        if (newMeta?.maps?.pickedMaps?.length) {
+          const numOfMaps = newMeta.maps.pickedMaps.length
+          if (numOfMaps % 2 == 0) {
+            setGames(numOfMaps - 1)
+          } else {
+            setGames(numOfMaps)
+          }
+        }
         meta = newMeta
         metaErrors = newErrors
       }
