@@ -9,3 +9,7 @@
 .btn-gray {
   @apply bg-gray-200 text-black;
 }
+
+.btn-gray-disabled {
+  @apply bg-gray-200 text-gray-400 cursor-not-allowed;
+}

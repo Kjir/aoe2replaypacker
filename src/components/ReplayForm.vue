@@ -5,6 +5,7 @@ import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 
 import GameInfo from './GameInfo.vue'
+import SetInfo from './SetInfo.vue'
 import GameBox from './GameBox.vue'
 import ZipPreviewPane from './ZipPreviewPane.vue'
 import RecentDrafts from './RecentDrafts.vue'
@@ -42,6 +43,15 @@ function updateReplay(gameIdx: number, replayIdx: number, file: File | null) {
 
 function addGame() {
   games.value.push(new Game())
+}
+
+function setGames(gamesNumber: number) {
+  while (games.value.length < gamesNumber) {
+    addGame()
+  }
+  if (games.value.length > gamesNumber) {
+    games.value = games.value.slice(0, gamesNumber)
+  }
 }
 
 const downloadEnabled = computed(() => {
@@ -161,6 +171,7 @@ function downloadZip() {
       }
     "
   />
+  <SetInfo :games-count="games.length" @set-games="setGames" />
   <GameBox
     v-for="(game, gameIdx) in games"
     :game="game"
@@ -170,9 +181,6 @@ function downloadZip() {
     @add-replay="addReplay(gameIdx)"
     @update-replay="(replayIdx, file) => updateReplay(gameIdx, replayIdx, file)"
   />
-  <div class="text-center p-4 border-2 col-span-3 mt-4">
-    <button class="btn btn-gray" @click="addGame()">Add Game</button>
-  </div>
   <div id="message_box" class="mt-4 text-center p-4 border-2 col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 col-span-3 mt-4">
     <ZipPreviewPane :games="games" :player1="player1" :player2="player2" :meta="meta" />

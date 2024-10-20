@@ -43,13 +43,13 @@ function clearFile() {
     <div class="p-4 col-span-1">
       <button v-if="replayFile" @click="clearFile" class="btn btn-gray">Clear file</button>
       <button
-        v-else-if="game.replays.length == 1"
+        :disabled="game.replays.length == 1"
         @click="$emit('removeReplay')"
-        class="btn btn-gray"
+        class="btn"
+        :class="game.replays.length > 1 ? 'btn-gray' : 'btn-gray-disabled'"
       >
-        Remove game
+        Remove replay
       </button>
-      <button v-else @click="$emit('removeReplay')" class="btn btn-gray">Remove replay</button>
     </div>
   </div>
 </template>
