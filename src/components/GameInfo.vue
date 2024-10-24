@@ -166,7 +166,7 @@ watch(meta, () => {
 </script>
 
 <template>
-  <div class="text-center p-4 border-2 col-span-3 mt-4">
+  <div class="text-center p-4 border-2 mt-4">
     <h2 class="text-center text-2xl">Game Info</h2>
     <div>Best of {{ props.games.length }}</div>
     <input

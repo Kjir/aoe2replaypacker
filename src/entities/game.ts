@@ -1,4 +1,4 @@
-import unidecode from 'unidecode';
+import unidecode from 'unidecode'
 import { logn, toBase26 } from '../lib/maths'
 
 let gameCounter = 0
@@ -22,7 +22,6 @@ export class Replay {
     this.file = null
   }
 }
-
 
 export function normalizePlayerName(playerName: string, defaultName: string) {
   const asciiName = unidecode(playerName)
@@ -51,10 +50,11 @@ export function computeReplayFilename(
   player2: string,
   game: Game,
   gameIdx: number,
-  replayIdx: number,
+  replayIdx: number
 ) {
-  const numReplays = game.replays.length;
-  const replaySubNumbering = numReplays > 1 ? toBase26(replayIdx, Math.ceil(logn(numReplays, 26))) : ''
+  const numReplays = game.replays.length
+  const replaySubNumbering =
+    numReplays > 1 ? toBase26(replayIdx, Math.ceil(logn(numReplays, 26))) : ''
   return `${matchName(normalizePlayerName(player1, 'Player1'), normalizePlayerName(player2, 'Player2'))}_G${gameIdx + 1}${replaySubNumbering}.aoe2record`
 }
 
@@ -64,7 +64,7 @@ export function computeReplayFilenamePreview(
   game: Game,
   gameIdx: number,
   replay: Replay,
-  replayIdx: number,
+  replayIdx: number
 ) {
   const filename = computeReplayFilename(
     normalizePlayerName(player1, 'Player1'),

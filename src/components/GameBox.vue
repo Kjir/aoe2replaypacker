@@ -30,8 +30,15 @@ defineEmits<{
           @remove-replay="$emit('removeReplay', idx)"
           @update-replay="(file) => $emit('updateReplay', idx, file)"
         />
-        <div class="p-2">
-          <button @click="$emit('addReplay')" class="btn btn-gray">Add extra replay</button>
+        <div class="p-2 grid grid-cols-[auto_2fr] gap-4">
+          <button @click="$emit('addReplay')" class="btn btn-gray">
+            Add restore for game {{ props.gameNumber + 1 }}
+          </button>
+          <div
+            class="p-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
+          >
+            Add more replays if you had to restore a dropped game.
+          </div>
         </div>
       </div>
     </div>
