@@ -16,7 +16,8 @@ const mapDraftPresets = urlParams.get('mappresets')?.split(',') || null
     <footer>
       <div class="text-center p-4 border-2 col-span-3 mt-4">
         <p>
-          Created by <a class="underline" href="https://github.com/ZetaTwo">ZetaTwo</a> -
+          Created by <a class="underline" href="https://github.com/ZetaTwo">ZetaTwo</a> &amp;
+          <a class="underline" href="https://github.com/Kjir">Beargwyn</a> -
           <a class="underline" href="https://github.com/ZetaTwo/aoe2replaypacker">Source code</a>
         </p>
       </div>
