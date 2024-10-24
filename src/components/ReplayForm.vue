@@ -8,9 +8,11 @@ import GameInfo from './GameInfo.vue'
 import GameBox from './GameBox.vue'
 import ZipPreviewPane from './ZipPreviewPane.vue'
 import RecentDrafts from './RecentDrafts.vue'
+import DiscordMessage from './DiscordMessage.vue'
 import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
 
 import { Game, Replay, zipFilename, computeReplayFilename } from '../entities/game'
+import { extractDraftUrl } from '../entities/draft'
 
 const props = defineProps<{
   civPresets: string[] | null
@@ -131,6 +133,13 @@ function downloadZip() {
       saveAs(blob, zipFilename(player1.value, player2.value))
     })
 }
+
+const discordMessage = computed(
+  () => `${player1.value} vs ${player2.value}
+Best of ${games.value.length}
+Map draft: ${extractDraftUrl(mapDraft.value)}
+Civ draft: ${extractDraftUrl(civDraft.value)}`
+)
 </script>
 
 <template>
@@ -190,4 +199,6 @@ function downloadZip() {
       Download
     </button>
   </div>
+
+  <DiscordMessage :discord-message="discordMessage" />
 </template>
