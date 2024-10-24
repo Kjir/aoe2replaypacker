@@ -40,3 +40,14 @@ export const extractDraftId = (url?: string) => {
     }
     return url.replace(/https:\/\/aoe2cm\.net\/(draft|spectate)\//, '').replace(/\/$/, '')
 }
+
+export const extractDraftUrl = (url?: string) => {
+    if (!url) {
+        return ''
+    }
+    const draftId = extractDraftId(url);
+    if (!draftId) {
+        return ''
+    }
+    return `https://aoe2cm.net/draft/${draftId}`
+}

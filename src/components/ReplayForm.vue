@@ -12,6 +12,7 @@ import DiscordMessage from './DiscordMessage.vue'
 import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
 
 import { Game, Replay, zipFilename, computeReplayFilename } from '../entities/game'
+import { extractDraftUrl } from '../entities/draft'
 
 const props = defineProps<{
   civPresets: string[] | null
@@ -136,8 +137,8 @@ function downloadZip() {
 const discordMessage = computed(
   () => `${player1.value} vs ${player2.value}
 Best of ${games.value.length}
-Map draft: ${mapDraft.value}
-Civ draft: ${civDraft.value}`
+Map draft: ${extractDraftUrl(mapDraft.value)}
+Civ draft: ${extractDraftUrl(civDraft.value)}`
 )
 </script>
 
@@ -199,7 +200,5 @@ Civ draft: ${civDraft.value}`
     </button>
   </div>
 
-  <div class="text-center p-4 border-2 col-span-3 mt-4">
-    <DiscordMessage :discord-message="discordMessage" />
-  </div>
+  <DiscordMessage :discord-message="discordMessage" />
 </template>
