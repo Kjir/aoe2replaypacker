@@ -40,7 +40,7 @@ watch(bestOf, (newBestOf, oldBestOf) => {
 <template>
   <div class="mt-4 text-center">
     <ul class="grid w-full gap-6 md:grid-cols-5">
-      <li v-for="count in [3, 5, 7, 9]">
+      <li v-for="count in [3, 5, 7, 9]" :key="count" :value="count">
         <input
           type="radio"
           :id="`bo${count}`"
