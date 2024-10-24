@@ -13,6 +13,14 @@ watch(customGameCount, async (newCount, oldCount) => {
   if (newCount == oldCount) {
     return
   }
+  if (newCount < 0) {
+    customGameCount.value = 0
+    return
+  }
+  if (newCount > 99) {
+    customGameCount.value = 99
+    return
+  }
   if (bestOf.value != 'custom') {
     return
   }
@@ -81,7 +89,6 @@ watch(bestOf, (newBestOf, oldBestOf) => {
                 min="1"
                 max="99"
                 maxlength="2"
-                oninput="this.value=this.value.slice(0,this.maxLength)"
               />
             </div>
           </div>
