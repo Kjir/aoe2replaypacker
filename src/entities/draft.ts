@@ -39,7 +39,7 @@ export const extractDraftId = (url?: string) => {
   }
   try {
     const parsed_url = new URL(url)
-    return parsed_url.pathname.split('/').at(2)
+    return parsed_url.pathname.split('/').at(2) ?? ''
   } catch {
     return url
   }
