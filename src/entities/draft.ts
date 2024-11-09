@@ -37,16 +37,21 @@ export const extractDraftId = (url?: string) => {
   if (!url) {
     return ''
   }
-  return url.replace(/https:\/\/(www\.)?aoe2cm\.net\/(draft|spectate)\/([^\/\?]*)\/?\??.*/, '$3').replace(/\/$/, '')
+  try {
+    const parsed_url = new URL(url)
+    return parsed_url.pathname.split('/').at(2)
+  } catch {
+    return url
+  }
 }
 
 export const extractDraftUrl = (url?: string) => {
-    if (!url) {
-        return ''
-    }
-    const draftId = extractDraftId(url);
-    if (!draftId) {
-        return ''
-    }
-    return `https://aoe2cm.net/draft/${draftId}`
+  if (!url) {
+    return ''
+  }
+  const draftId = extractDraftId(url)
+  if (!draftId) {
+    return ''
+  }
+  return `https://aoe2cm.net/draft/${draftId}`
 }
