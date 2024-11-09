@@ -21,5 +21,5 @@ export type Aoe2CmDraftOption = {
 }
 
 interface Aoe2CmApi {
-  getDraft(draftUri: string): string;
+  getDraft(draftUri: string): string
 }
