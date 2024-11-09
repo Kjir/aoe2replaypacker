@@ -37,7 +37,7 @@ export const extractDraftId = (url?: string) => {
   if (!url) {
     return ''
   }
-  return url.replace(/https:\/\/aoe2cm\.net\/(draft|spectate)\//, '').replace(/\/$/, '')
+  return url.replace(/https:\/\/(www\.)?aoe2cm\.net\/(draft|spectate)\/([^\/\?]*)\/?\??.*/, '$3').replace(/\/$/, '')
 }
 
 export const extractDraftUrl = (url?: string) => {
