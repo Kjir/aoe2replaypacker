@@ -238,7 +238,7 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
     </button>
     <div
       v-if="downloadWarning"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-gray-800 dark:text-amber-400"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
     >
       WARNING: You have selected "play all" but not provided all replays.
     </div>
