@@ -30,3 +30,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# Downlaoded stats repo
+.tcc-stats/

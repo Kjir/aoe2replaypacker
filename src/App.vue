@@ -1,10 +1,27 @@
 <script setup lang="ts">
 import InstructionBox from './components/InstructionBox.vue'
 import ReplayForm from './components/ReplayForm.vue'
+import tournamentsData from 'virtual:tournaments-data'
+
+function getPresets(params: URLSearchParams): [string[] | null, string[] | null] {
+  const civDraftPresets = params.get('civpresets')?.split(',') || []
+  const mapDraftPresets = params.get('mappresets')?.split(',') || []
+  const tournamentId = params.get('tournament')
+  if (tournamentId) {
+    const tournament = tournamentsData[tournamentId]
+    if (tournament) {
+      civDraftPresets?.push(...tournament.civs)
+      mapDraftPresets?.push(...tournament.maps)
+    }
+  }
+  return [
+    civDraftPresets.length > 0 ? civDraftPresets : null,
+    mapDraftPresets.length > 0 ? mapDraftPresets : null
+  ]
+}
 
 const urlParams = new URLSearchParams(window.location.search)
-const civDraftPresets = urlParams.get('civpresets')?.split(',') || null
-const mapDraftPresets = urlParams.get('mappresets')?.split(',') || null
+const [civDraftPresets, mapDraftPresets] = getPresets(urlParams)
 </script>
 
 <template>
