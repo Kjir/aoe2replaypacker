@@ -22,6 +22,7 @@ const props = defineProps<{
 
 const player1 = ref('Player1')
 const player2 = ref('Player2')
+const boPa = ref<'best-of' | 'play-all'>('best-of')
 const mapDraft: Ref<string> = ref('')
 const civDraft: Ref<string> = ref('')
 const games: Ref<Game[]> = ref([new Game(), new Game(), new Game()])
@@ -55,6 +56,22 @@ function setGames(gamesNumber: number) {
     games.value = games.value.slice(0, gamesNumber)
   }
 }
+
+const downloadWarning = computed(() => {
+  if (boPa.value == 'best-of') {
+    return false
+  }
+
+  for (const game of games.value) {
+    for (const replay of game.replays) {
+      if (!replay.file) {
+        return true
+      }
+    }
+  }
+
+  return false
+})
 
 const downloadEnabled = computed(() => {
   if (metaErrors.value.civs || metaErrors.value.maps) {
@@ -173,6 +190,7 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
     v-model:civ-draft="civDraft"
     :civ-presets="civPresets"
     :map-presets="mapPresets"
+    :bo-pa="boPa"
     @update-meta="
       (newErrors: ReplayErrors, newMeta: ReplayMetadata) => {
         if (newMeta?.maps?.pickedMaps?.length) {
@@ -188,7 +206,11 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
       }
     "
   />
-  <SetInfo :games-count="games.length" @set-games="setGames" />
+  <SetInfo
+    :games-count="games.length"
+    @set-games="setGames"
+    @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
+  />
   <GameBox
     v-for="(game, gameIdx) in games"
     :game="game"
@@ -214,6 +236,12 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
     >
       Download
     </button>
+    <div
+      v-if="downloadWarning"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-gray-800 dark:text-amber-400"
+    >
+      WARNING: You have selected "play all" but not provided all replays.
+    </div>
   </div>
 
   <DiscordMessage :discord-message="discordMessage" />

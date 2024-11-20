@@ -12,6 +12,7 @@ const props = defineProps<{
   games: Game[]
   civPresets: string[] | null
   mapPresets: string[] | null
+  boPa: 'best-of' | 'play-all'
 }>()
 
 const player1 = defineModel('player1')
@@ -168,7 +169,11 @@ watch(meta, () => {
 <template>
   <div class="text-center p-4 border-2 mt-4">
     <h2 class="text-center text-2xl">Game Info</h2>
-    <div>Best of {{ props.games.length }}</div>
+    <div>
+      <template v-if="boPa == 'best-of'">Best of</template>
+      <template v-else>Play all</template>
+      {{ props.games.length }}
+    </div>
     <input
       placeholder="Player 1 Name"
       class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded"
