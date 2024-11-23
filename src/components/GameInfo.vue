@@ -207,11 +207,11 @@ watch(meta, () => {
         </p>
         <div class="text-left px-8 pt-4" v-if="meta.maps">
           <p class="text-center">{{ meta.maps.host }} vs {{ meta.maps.guest }}</p>
-          <ul class="pl-8 text-center">
-            <li v-for="(map, mapIdx) in meta.maps.pickedMaps" :key="mapIdx">
-              <div>
+          <ul class="text-center flex w-full flex-wrap justify-center">
+            <li class="mx-2" v-for="(map, mapIdx) in meta.maps.pickedMaps" :key="mapIdx">
+              <div class="aspect-square h-36">
                 <img
-                  class="mx-auto"
+                  class="mx-auto w-full h-full"
                   :src="mapImageUrl(meta.maps.availableMaps[map].image)"
                   :alt="meta.maps.availableMaps[map].name"
                 />
