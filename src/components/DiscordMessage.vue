@@ -24,7 +24,7 @@ async function copyDiscordMessage() {
       <div class="w-full max-w-lg text-left">
         <p class="mb-4">
           Complete your submission by upload the file in the correct discord channel and use the
-          following message as a template:
+          following message as a template. Remember to <strong>replace the score</strong> and to <strong>tag your opponent</strong>:
         </p>
         <div class="relative bg-gray-100 rounded-lg dark:bg-gray-600 p-4 pt-12">
           <div>
