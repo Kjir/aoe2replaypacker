@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { Ref } from 'vue'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
@@ -26,7 +26,12 @@ const boPa = ref<'best-of' | 'play-all'>('best-of')
 const mapDraft: Ref<string> = ref('')
 const civDraft: Ref<string> = ref('')
 const games: Ref<Game[]> = ref([new Game(), new Game(), new Game()])
-const meta: Ref<ReplayMetadata> = ref({ maps: null, civs: null })
+const meta: Ref<ReplayMetadata> = ref({
+  maps: null,
+  civs: null,
+  player1_score: null,
+  player2_score: null
+})
 const metaErrors: Ref<ReplayErrors> = ref({ maps: null, civs: null })
 
 function removeReplay(gameIdx: number, replayIdx: number) {
@@ -82,6 +87,21 @@ const leftScore = computed(() => {
 })
 const rightScore = computed(() => {
   return games.value.filter((game) => game.winner == 'right').length
+})
+
+watch([leftScore, rightScore], ([newLeftScore, newRightScore], [oldLeftScore, oldRightScore]) => {
+  if (newLeftScore == oldLeftScore && newRightScore == oldRightScore) {
+    return
+  }
+
+  if (newLeftScore == 0 && newRightScore == 0) {
+    meta.value.player1_score = null
+    meta.value.player2_score = null
+    return
+  }
+
+  meta.value.player1_score = newLeftScore
+  meta.value.player2_score = newRightScore
 })
 
 const downloadWarningScore = computed(() => {
