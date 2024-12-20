@@ -1,6 +1,8 @@
 import unidecode from 'unidecode'
 import { logn, toBase26 } from '../lib/maths'
 
+const UNICODE_NORMALIZATION = false // Setting this to true doubles the code size
+
 let gameCounter = 0
 let replayCounter = 0
 
@@ -26,7 +28,10 @@ export class Replay {
 }
 
 export function normalizePlayerName(playerName: string, defaultName: string) {
-  const asciiName = unidecode(playerName)
+  const asciiName = UNICODE_NORMALIZATION
+    ? unidecode(playerName)
+    : playerName.replace(/[^\x00-\x7F]/g, '')
+
   const noWhitespaceName = asciiName.replace(/\s/g, '')
   // eslint-disable-next-line no-control-regex
   const noUnprintableName = noWhitespaceName.replace(/[\x00-\x20]/g, '')

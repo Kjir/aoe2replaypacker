@@ -19,6 +19,16 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html')
+      },
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('unidecode')) {
+              return 'vendor_unidecode'
+            }
+            return 'vendor'
+          }
+        }
       }
     }
   },
