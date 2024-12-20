@@ -23,7 +23,12 @@ const emit = defineEmits<{
   updateMeta: [ReplayErrors, ReplayMetadata]
 }>()
 
-const meta: Ref<ReplayMetadata> = ref({ maps: null, civs: null })
+const meta: Ref<ReplayMetadata> = ref({
+  maps: null,
+  civs: null,
+  player1_score: null,
+  player2_score: null
+})
 
 const errors: Ref<ReplayErrors> = ref({
   maps: null,
@@ -87,7 +92,9 @@ const debouncedFetchMaps = debounce(async () => {
       availableMaps: availableMaps,
       pickedMaps: pickedMaps
     },
-    civs: meta.value.civs
+    civs: meta.value.civs,
+    player1_score: meta.value.player1_score,
+    player2_score: meta.value.player2_score
   }
   emit('updateMeta', errors.value, meta.value)
 }, 300)
@@ -140,7 +147,9 @@ const debouncedFetchCivs = debounce(async () => {
       guest: json.nameGuest,
       hostCivs: pickedCivsHost,
       guestCivs: pickedCivsGuest
-    }
+    },
+    player1_score: meta.value.player1_score,
+    player2_score: meta.value.player2_score
   }
   emit('updateMeta', errors.value, meta.value)
 }, 300)
