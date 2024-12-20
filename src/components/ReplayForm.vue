@@ -44,6 +44,10 @@ function updateReplay(gameIdx: number, replayIdx: number, file: File | null) {
   games.value[gameIdx].replays[replayIdx].file = file
 }
 
+function updateWinner(gameIdx: number, winner: 'left' | 'none' | 'right') {
+  games.value[gameIdx].winner = winner
+}
+
 function addGame() {
   games.value.push(new Game())
 }
@@ -68,6 +72,28 @@ const downloadWarningReplayMissing = computed(() => {
         return true
       }
     }
+  }
+
+  return false
+})
+
+const leftScore = computed(() => {
+  return games.value.filter((game) => game.winner == 'left').length
+})
+const rightScore = computed(() => {
+  return games.value.filter((game) => game.winner == 'right').length
+})
+
+const downloadWarningScore = computed(() => {
+  if (boPa.value == 'play-all') {
+    return false
+  }
+
+  if (2 * leftScore.value > games.value.length + 1) {
+    return true
+  }
+  if (2 * rightScore.value > games.value.length + 1) {
+    return true
   }
 
   return false
@@ -187,7 +213,7 @@ function downloadZip() {
 
 const discordMessage = computed(() => {
   const boPaLabel = boPa.value == 'best-of' ? 'Best of' : 'Play all'
-  return `${player1.value} || 0 - 0 || ${player2.value}
+  return `${player1.value} || ${leftScore.value} - ${rightScore.value} || ${player2.value}
 ${boPaLabel} ${games.value.length}
 Map draft: ${extractDraftUrl(mapDraft.value)}
 Civ draft: ${extractDraftUrl(civDraft.value)}`
@@ -241,9 +267,12 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
     :game="game"
     :key="game.id"
     :game-number="gameIdx"
+    :left-player="player1"
+    :right-player="player2"
     @remove-replay="(replayIdx) => removeReplay(gameIdx, replayIdx)"
     @add-replay="addReplay(gameIdx)"
     @update-replay="(replayIdx, file) => updateReplay(gameIdx, replayIdx, file)"
+    @set-winner="(winner) => updateWinner(gameIdx, winner)"
   />
   <div id="message_box" class="mt-4 text-center p-4 border-2 col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 col-span-3 mt-4">
@@ -278,6 +307,12 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
       class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
     >
       WARNING: You have not provided a map draft link.
+    </div>
+    <div
+      v-if="downloadWarningScore"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
+    >
+      WARNING: The score does not make sense for a best-of set.
     </div>
   </div>
 

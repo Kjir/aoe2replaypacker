@@ -6,10 +6,12 @@ let replayCounter = 0
 
 export class Game {
   replays: Replay[] = []
+  winner: 'left' | 'none' | 'right'
   id: number
 
   constructor() {
     this.id = gameCounter++
+    this.winner = 'none'
     this.replays = [new Replay()]
   }
 }
