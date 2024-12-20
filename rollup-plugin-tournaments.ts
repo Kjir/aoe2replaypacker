@@ -3,8 +3,7 @@ import { promisify } from 'util'
 import { join as joinPath } from 'path'
 import { parse as parseYaml } from 'yaml'
 import { Dir } from 'fs'
-import { readFile, readdir, opendir } from 'fs/promises'
-import { Plugin } from 'vite'
+import { readFile, opendir } from 'fs/promises'
 
 const execFileAsync = promisify(execFile)
 
