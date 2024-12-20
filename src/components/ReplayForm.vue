@@ -57,7 +57,7 @@ function setGames(gamesNumber: number) {
   }
 }
 
-const downloadWarning = computed(() => {
+const downloadWarningReplayMissing = computed(() => {
   if (boPa.value == 'best-of') {
     return false
   }
@@ -71,6 +71,30 @@ const downloadWarning = computed(() => {
   }
 
   return false
+})
+
+const downloadWarningCivDraftMissing = computed(() => {
+  if (!props.civPresets || props.civPresets.length == 0) {
+    return false
+  }
+
+  if (civDraft.value.length > 0) {
+    return false
+  }
+
+  return true
+})
+
+const downloadWarningMapDraftMissing = computed(() => {
+  if (!props.mapPresets || props.mapPresets.length == 0) {
+    return false
+  }
+
+  if (mapDraft.value.length > 0) {
+    return false
+  }
+
+  return true
 })
 
 const downloadEnabled = computed(() => {
@@ -238,10 +262,22 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
       Download
     </button>
     <div
-      v-if="downloadWarning"
+      v-if="downloadWarningReplayMissing"
       class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
     >
       WARNING: You have selected "play all" but not provided all replays.
+    </div>
+    <div
+      v-if="downloadWarningCivDraftMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
+    >
+      WARNING: You have not provided a civilization draft link.
+    </div>
+    <div
+      v-if="downloadWarningMapDraftMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
+    >
+      WARNING: You have not provided a map draft link.
     </div>
   </div>
 
