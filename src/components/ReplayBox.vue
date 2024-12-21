@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 import { Game } from '../entities/game'
+import wasm from 'aoe2rec-js?init'
 
 defineProps<{
   replayNumber: number
@@ -23,6 +24,16 @@ function changeReplay(event: Event) {
     return
   }
   const file = files[0]
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    wasm().then((instance) => {
+      console.log(event)
+      const rec = instance.parse_rec(event.target.result);
+      console.log(rec)
+      })
+  };
+  reader.readAsArrayBuffer(file);
   replayFile.value = file
   emit('updateReplay', file)
 }
