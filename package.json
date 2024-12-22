@@ -14,7 +14,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "aoe2rec-js": "^0.1.0",
+    "aoe2rec-js": "^0.1.2",
     "lodash.debounce": "^4.0.8",
     "pinia": "^2.2.6",
     "vue": "^3.4.21"

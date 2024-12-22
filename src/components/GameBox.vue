@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import ReplayBox from './ReplayBox.vue'
-import { ref, useId, watch } from 'vue'
+import { ref, useId, watch, computed } from 'vue'
 import { Game } from '../entities/game'
+import { useGamesStore } from '@/stores/games'
+import { civs } from '@/entities/civs'
+import CivIcon from '@/components/CivIcon.vue'
 
 const props = defineProps<{
   gameNumber: number
@@ -17,6 +20,8 @@ const emit = defineEmits<{
   setWinner: ['left' | 'none' | 'right']
 }>()
 
+const gamesStore = useGamesStore();
+
 const id = useId()
 const winner = ref<'left' | 'none' | 'right'>('none')
 watch(winner, (newWinner, oldWinner) => {
@@ -24,6 +29,22 @@ watch(winner, (newWinner, oldWinner) => {
     return
   }
   emit('setWinner', newWinner)
+})
+
+const gameInfo = computed(() => {
+  const name = props.game.replays[0]?.file?.name
+  if (!name || !(name in gamesStore.games)) {
+    return
+  }
+  const info = gamesStore.games[name]
+  const gs = info.zheader.game_settings
+  return {
+    player1: gs.players[0].name,
+    civ1: civs[gs.players[0].civ_id]?.name,
+    player2: gs.players[1].name,
+    civ2: civs[gs.players[1].civ_id]?.name,
+    mapName: gs.rms_strings[1].split(":")[2].replace(/\.rms$/, "")
+  }
 })
 </script>
 
@@ -85,6 +106,9 @@ watch(winner, (newWinner, oldWinner) => {
             <div class="text-center w-19/20 text-lg truncate font-semibold">{{ rightPlayer }}</div>
           </label>
         </div>
+      </div>
+      <div v-if="gameInfo" class="w-full">
+        {{gameInfo.player1}} <CivIcon :civ="gameInfo.civ1.toLowerCase()" /> vs <CivIcon :civ="gameInfo.civ2.toLowerCase()" /> {{gameInfo.player2}} on {{gameInfo.mapName}}
       </div>
     </div>
     <div class="col-span-3">
