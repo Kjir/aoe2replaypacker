@@ -4,6 +4,7 @@ import { ref, useId, watch, computed } from 'vue'
 import { Game } from '../entities/game'
 import { useGamesStore } from '@/stores/games'
 import { civs } from '@/entities/civs'
+import { maps } from '@/entities/maps'
 import CivIcon from '@/components/CivIcon.vue'
 
 const props = defineProps<{
@@ -38,12 +39,13 @@ const gameInfo = computed(() => {
   }
   const info = gamesStore.games[name]
   const gs = info.zheader.game_settings
+  const mapName = maps[gs.resolved_map_id] ?? gs.rms_strings[1].split(":")[2].replace(/\.rms$/, "");
   return {
     player1: gs.players[0].name,
     civ1: civs[gs.players[0].civ_id]?.name,
     player2: gs.players[1].name,
     civ2: civs[gs.players[1].civ_id]?.name,
-    mapName: gs.rms_strings[1].split(":")[2].replace(/\.rms$/, "")
+    mapName 
   }
 })
 </script>
