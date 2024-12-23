@@ -20,6 +20,7 @@ export type Aoe2CmDraftOption = {
   name: string
 }
 
-interface Aoe2CmApi { // eslint-disable-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface Aoe2CmApi {
   getDraft(draftUri: string): string
 }
