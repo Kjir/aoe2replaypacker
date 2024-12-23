@@ -1,3 +1,4 @@
 import type { InjectionKey } from 'vue'
 
-const aoe2cmApiKey: InjectionKey<string> = Symbol('aoe2cmApi') // eslint-disable-line @typescript-eslint/no-unused-vars
+// TODO: continue this refactoring
+const aoe2cmApiKey: InjectionKey<string> = Symbol('aoe2cmApi')

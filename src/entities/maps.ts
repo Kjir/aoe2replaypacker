@@ -1,4 +1,4 @@
-export const maps: Record<number, string> = {
+export const mapNames: Record<number, string> = {
   9: 'Arabia',
   10: 'Archipelago',
   11: 'Baltic',

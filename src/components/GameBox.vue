@@ -106,36 +106,45 @@ const gamesInfo = computed(() => {
           </label>
         </div>
       </div>
-      <div v-for="game in gamesInfo" :key="game.date.valueOf()" class="w-full">
-        <a
-          :href="`https://aoe2insights.com/user/relic/${game?.profile1}`"
-          class="text-blue-600 dark:text-blue-500 hover:underline"
-          target="_blank"
-          >{{ game?.player1 }}</a
-        >
-        <CivIcon v-if="game" :civ="game.civ1.toLowerCase()" /> vs
-        <CivIcon v-if="game" :civ="game.civ2.toLowerCase()" />
-        <a
-          :href="`https://aoe2insights.com/user/relic/${game?.profile2}`"
-          class="text-blue-600 dark:text-blue-500 hover:underline"
-          target="_blank"
-          >{{ game?.player2 }}</a
-        >
-        on {{ game?.mapName }} (<abbr
-          v-if="game"
-          :title="
-            intlFormat(game.date, {
-              weekday: 'short',
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
-              second: 'numeric'
-            })
-          "
-          >{{ formatDistanceToNow(game.date) }} ago</abbr
-        >)
+      <div v-for="game in gamesInfo" :key="game.date.valueOf()">
+        <div class="w-full flex flex-row justify-evenly">
+          <div class="overflow-hidden">
+            <a
+              :href="`https://aoe2insights.com/user/relic/${game?.profile1}`"
+              class="text-blue-600 dark:text-blue-500 hover:underline"
+              target="_blank"
+              >{{ game?.player1 }}</a
+            >
+            <CivIcon v-if="game" :civ="game.civ1.toLowerCase()" />
+          </div>
+          <div class="text-center text-lg shrink">vs</div>
+          <div class="overflow-hidden">
+            <CivIcon v-if="game" :civ="game.civ2.toLowerCase()" />
+            <a
+              :href="`https://aoe2insights.com/user/relic/${game?.profile2}`"
+              class="text-blue-600 dark:text-blue-500 hover:underline"
+              target="_blank"
+              >{{ game?.player2 }}</a
+            >
+          </div>
+        </div>
+        <div class="w-full text-center">
+          on {{ game?.mapName }} (<abbr
+            v-if="game"
+            :title="
+              intlFormat(game.date, {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric'
+              })
+            "
+            >{{ formatDistanceToNow(game.date) }} ago</abbr
+          >)
+        </div>
       </div>
     </div>
     <div class="col-span-3">

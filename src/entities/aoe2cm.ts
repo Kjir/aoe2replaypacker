@@ -20,7 +20,7 @@ export type Aoe2CmDraftOption = {
   name: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// TODO: continue work on this refactoring
 interface Aoe2CmApi {
   getDraft(draftUri: string): string
 }

@@ -63,8 +63,12 @@ const icon = computed(() => {
   const iconName = civs[props.civ]
   return civIcons[`../assets/civs/menu_techtree_${iconName}.png`]
 })
+
+const civTitle = computed(() => {
+  return props.civ.charAt(0).toUpperCase() + props.civ.substring(1).toLowerCase()
+})
 </script>
 
 <template>
-  <img class="inline" :src="icon" :alt="props.civ" />
+  <img class="inline" :src="icon" :alt="civTitle" :title="civTitle" />
 </template>

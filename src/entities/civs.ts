@@ -1,146 +1,50 @@
-export const civs: Record<number, { name: string }> = {
-  1: {
-    name: 'Britons'
-  },
-  2: {
-    name: 'Franks'
-  },
-  3: {
-    name: 'Goths'
-  },
-  4: {
-    name: 'Teutons'
-  },
-  5: {
-    name: 'Japanese'
-  },
-  6: {
-    name: 'Chinese'
-  },
-  7: {
-    name: 'Byzantines'
-  },
-  8: {
-    name: 'Persians'
-  },
-  9: {
-    name: 'Saracens'
-  },
-  10: {
-    name: 'Turks'
-  },
-  11: {
-    name: 'Vikings'
-  },
-  12: {
-    name: 'Mongols'
-  },
-  13: {
-    name: 'Celts'
-  },
-  14: {
-    name: 'Spanish'
-  },
-  15: {
-    name: 'Aztecs'
-  },
-  16: {
-    name: 'Mayans'
-  },
-  17: {
-    name: 'Huns'
-  },
-  18: {
-    name: 'Koreans'
-  },
-  19: {
-    name: 'Italians'
-  },
-  20: {
-    name: 'Hindustanis'
-  },
-  21: {
-    name: 'Incas'
-  },
-  22: {
-    name: 'Magyars'
-  },
-  23: {
-    name: 'Slavs'
-  },
-  24: {
-    name: 'Portuguese'
-  },
-  25: {
-    name: 'Ethiopians'
-  },
-  26: {
-    name: 'Malians'
-  },
-  27: {
-    name: 'Berbers'
-  },
-  28: {
-    name: 'Khmer'
-  },
-  29: {
-    name: 'Malay'
-  },
-  30: {
-    name: 'Burmese'
-  },
-  31: {
-    name: 'Vietnamese'
-  },
-  32: {
-    name: 'Bulgarians'
-  },
-  33: {
-    name: 'Tatars'
-  },
-  34: {
-    name: 'Cumans'
-  },
-  35: {
-    name: 'Lithuanians'
-  },
-  36: {
-    name: 'Burgundians'
-  },
-  37: {
-    name: 'Sicilians'
-  },
-  38: {
-    name: 'Poles'
-  },
-  39: {
-    name: 'Bohemians'
-  },
-  40: {
-    name: 'Dravidians'
-  },
-  41: {
-    name: 'Bengalis'
-  },
-  42: {
-    name: 'Gurjaras'
-  },
-  43: {
-    name: 'Romans'
-  },
-  44: {
-    name: 'Armenians'
-  },
-  45: {
-    name: 'Georgians'
-  },
-  46: {
-    name: 'Achaemenids'
-  },
-  47: {
-    name: 'Athenians'
-  },
-  48: {
-    name: 'Spartans'
-  }
+export const civNames: Record<number, string> = {
+  1: 'Britons',
+  2: 'Franks',
+  3: 'Goths',
+  4: 'Teutons',
+  5: 'Japanese',
+  6: 'Chinese',
+  7: 'Byzantines',
+  8: 'Persians',
+  9: 'Saracens',
+  10: 'Turks',
+  11: 'Vikings',
+  12: 'Mongols',
+  13: 'Celts',
+  14: 'Spanish',
+  15: 'Aztecs',
+  16: 'Mayans',
+  17: 'Huns',
+  18: 'Koreans',
+  19: 'Italians',
+  20: 'Hindustanis',
+  21: 'Incas',
+  22: 'Magyars',
+  23: 'Slavs',
+  24: 'Portuguese',
+  25: 'Ethiopians',
+  26: 'Malians',
+  27: 'Berbers',
+  28: 'Khmer',
+  29: 'Malay',
+  30: 'Burmese',
+  31: 'Vietnamese',
+  32: 'Bulgarians',
+  33: 'Tatars',
+  34: 'Cumans',
+  35: 'Lithuanians',
+  36: 'Burgundians',
+  37: 'Sicilians',
+  38: 'Poles',
+  39: 'Bohemians',
+  40: 'Dravidians',
+  41: 'Bengalis',
+  42: 'Gurjaras',
+  43: 'Romans',
+  44: 'Armenians',
+  45: 'Georgians',
+  46: 'Achaemenids',
+  47: 'Athenians',
+  48: 'Spartans'
 }
