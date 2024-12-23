@@ -26,7 +26,7 @@ function changeReplay(event: Event) {
     return
   }
   const file = files[0]
-  gamesStore.parseGame(file);
+  gamesStore.parseGame(file)
 
   replayFile.value = file
   emit('updateReplay', file)
@@ -47,8 +47,12 @@ function clearFile() {
     </div>
     <div class="p-4 col-span-1">
       <button v-if="replayFile" @click="clearFile" class="btn btn-gray">Clear file</button>
-      <button :disabled="game.replays.length == 1" @click="$emit('removeReplay')" class="btn"
-        :class="game.replays.length > 1 ? 'btn-gray' : 'btn-gray-disabled'">
+      <button
+        :disabled="game.replays.length == 1"
+        @click="$emit('removeReplay')"
+        class="btn"
+        :class="game.replays.length > 1 ? 'btn-gray' : 'btn-gray-disabled'"
+      >
         Remove replay
       </button>
     </div>

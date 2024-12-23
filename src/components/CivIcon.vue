@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 const civs: Record<string, string> = {
   armenians: 'armenians',
   aztecs: 'aztecs',
@@ -56,9 +58,11 @@ const civIcons = import.meta.glob('../assets/civs/*.png', {
 const props = defineProps<{
   civ: string
 }>()
-const iconName = civs[props.civ]
 
-const icon = civIcons[`../assets/civs/menu_techtree_${iconName}.png`]
+const icon = computed(() => {
+  const iconName = civs[props.civ]
+  return civIcons[`../assets/civs/menu_techtree_${iconName}.png`]
+})
 </script>
 
 <template>

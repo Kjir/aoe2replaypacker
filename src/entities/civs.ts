@@ -1,146 +1,146 @@
-export const civs = {
+export const civs: Record<number, { name: string }> = {
   1: {
-    "name": "Britons"
+    name: 'Britons'
   },
   2: {
-    "name": "Franks"
+    name: 'Franks'
   },
   3: {
-    "name": "Goths"
+    name: 'Goths'
   },
   4: {
-    "name": "Teutons"
+    name: 'Teutons'
   },
   5: {
-    "name": "Japanese"
+    name: 'Japanese'
   },
   6: {
-    "name": "Chinese"
+    name: 'Chinese'
   },
   7: {
-    "name": "Byzantines"
+    name: 'Byzantines'
   },
   8: {
-    "name": "Persians"
+    name: 'Persians'
   },
   9: {
-    "name": "Saracens"
+    name: 'Saracens'
   },
   10: {
-    "name": "Turks"
+    name: 'Turks'
   },
   11: {
-    "name": "Vikings"
+    name: 'Vikings'
   },
   12: {
-    "name": "Mongols"
+    name: 'Mongols'
   },
   13: {
-    "name": "Celts"
+    name: 'Celts'
   },
   14: {
-    "name": "Spanish"
+    name: 'Spanish'
   },
   15: {
-    "name": "Aztecs"
+    name: 'Aztecs'
   },
   16: {
-    "name": "Mayans"
+    name: 'Mayans'
   },
   17: {
-    "name": "Huns"
+    name: 'Huns'
   },
   18: {
-    "name": "Koreans"
+    name: 'Koreans'
   },
   19: {
-    "name": "Italians"
+    name: 'Italians'
   },
   20: {
-    "name": "Hindustanis"
+    name: 'Hindustanis'
   },
   21: {
-    "name": "Incas"
+    name: 'Incas'
   },
   22: {
-    "name": "Magyars"
+    name: 'Magyars'
   },
   23: {
-    "name": "Slavs"
+    name: 'Slavs'
   },
   24: {
-    "name": "Portuguese"
+    name: 'Portuguese'
   },
   25: {
-    "name": "Ethiopians"
+    name: 'Ethiopians'
   },
   26: {
-    "name": "Malians"
+    name: 'Malians'
   },
   27: {
-    "name": "Berbers"
+    name: 'Berbers'
   },
   28: {
-    "name": "Khmer"
+    name: 'Khmer'
   },
   29: {
-    "name": "Malay"
+    name: 'Malay'
   },
   30: {
-    "name": "Burmese"
+    name: 'Burmese'
   },
   31: {
-    "name": "Vietnamese"
+    name: 'Vietnamese'
   },
   32: {
-    "name": "Bulgarians"
+    name: 'Bulgarians'
   },
   33: {
-    "name": "Tatars"
+    name: 'Tatars'
   },
   34: {
-    "name": "Cumans"
+    name: 'Cumans'
   },
   35: {
-    "name": "Lithuanians"
+    name: 'Lithuanians'
   },
   36: {
-    "name": "Burgundians"
+    name: 'Burgundians'
   },
   37: {
-    "name": "Sicilians"
+    name: 'Sicilians'
   },
   38: {
-    "name": "Poles"
+    name: 'Poles'
   },
   39: {
-    "name": "Bohemians"
+    name: 'Bohemians'
   },
   40: {
-    "name": "Dravidians"
+    name: 'Dravidians'
   },
   41: {
-    "name": "Bengalis"
+    name: 'Bengalis'
   },
   42: {
-    "name": "Gurjaras"
+    name: 'Gurjaras'
   },
   43: {
-    "name": "Romans"
+    name: 'Romans'
   },
   44: {
-    "name": "Armenians"
+    name: 'Armenians'
   },
   45: {
-    "name": "Georgians"
+    name: 'Georgians'
   },
   46: {
-    "name": "Achaemenids"
+    name: 'Achaemenids'
   },
   47: {
-    "name": "Athenians"
+    name: 'Athenians'
   },
   48: {
-    "name": "Spartans"
+    name: 'Spartans'
   }
-};
+}

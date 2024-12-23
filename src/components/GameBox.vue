@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatDistanceToNow, intlFormat } from 'date-fns'
 import ReplayBox from './ReplayBox.vue'
 import { ref, useId, watch, computed } from 'vue'
 import { Game } from '../entities/game'
@@ -21,7 +22,7 @@ const emit = defineEmits<{
   setWinner: ['left' | 'none' | 'right']
 }>()
 
-const gamesStore = useGamesStore();
+const gamesStore = useGamesStore()
 
 const id = useId()
 const winner = ref<'left' | 'none' | 'right'>('none')
@@ -32,21 +33,16 @@ watch(winner, (newWinner, oldWinner) => {
   emit('setWinner', newWinner)
 })
 
-const gameInfo = computed(() => {
-  const name = props.game.replays[0]?.file?.name
-  if (!name || !(name in gamesStore.games)) {
-    return
-  }
-  const info = gamesStore.games[name]
-  const gs = info.zheader.game_settings
-  const mapName = maps[gs.resolved_map_id] ?? gs.rms_strings[1].split(":")[2].replace(/\.rms$/, "");
-  return {
-    player1: gs.players[0].name,
-    civ1: civs[gs.players[0].civ_id]?.name,
-    player2: gs.players[1].name,
-    civ2: civs[gs.players[1].civ_id]?.name,
-    mapName 
-  }
+const gamesInfo = computed(() => {
+  return props.game.replays
+    .map((replay) => {
+      const name = replay.file?.name
+      if (!name || !(name in gamesStore.gamesInfo)) {
+        return
+      }
+      return gamesStore.gamesInfo[name]
+    })
+    .filter((game) => !!game)
 })
 </script>
 
@@ -109,8 +105,34 @@ const gameInfo = computed(() => {
           </label>
         </div>
       </div>
-      <div v-if="gameInfo" class="w-full">
-        {{gameInfo.player1}} <CivIcon :civ="gameInfo.civ1.toLowerCase()" /> vs <CivIcon :civ="gameInfo.civ2.toLowerCase()" /> {{gameInfo.player2}} on {{gameInfo.mapName}}
+      <div v-for="game in gamesInfo" class="w-full">
+        <a
+          :href="`https://aoe2insights.com/user/relic/${game.profile1}`"
+          class="text-blue-600 dark:text-blue-500 hover:underline"
+          target="_blank"
+          >{{ game.player1 }}</a
+        >
+        <CivIcon :civ="game.civ1.toLowerCase()" /> vs <CivIcon :civ="game.civ2.toLowerCase()" />
+        <a
+          :href="`https://aoe2insights.com/user/relic/${game.profile2}`"
+          class="text-blue-600 dark:text-blue-500 hover:underline"
+          target="_blank"
+          >{{ game.player2 }}</a
+        >
+        on {{ game.mapName }} (<abbr
+          :title="
+            intlFormat(game.date, {
+              weekday: 'short',
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+              second: 'numeric'
+            })
+          "
+          >{{ formatDistanceToNow(game.date) }} ago</abbr
+        >)
       </div>
     </div>
     <div class="col-span-3">
