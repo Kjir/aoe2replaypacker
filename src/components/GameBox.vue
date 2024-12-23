@@ -4,8 +4,6 @@ import ReplayBox from './ReplayBox.vue'
 import { ref, useId, watch, computed } from 'vue'
 import { Game } from '../entities/game'
 import { useGamesStore } from '@/stores/games'
-import { civs } from '@/entities/civs'
-import { maps } from '@/entities/maps'
 import CivIcon from '@/components/CivIcon.vue'
 
 const props = defineProps<{
@@ -105,7 +103,7 @@ const gamesInfo = computed(() => {
           </label>
         </div>
       </div>
-      <div v-for="game in gamesInfo" class="w-full">
+      <div v-for="game in gamesInfo" :key="game.date" class="w-full">
         <a
           :href="`https://aoe2insights.com/user/relic/${game.profile1}`"
           class="text-blue-600 dark:text-blue-500 hover:underline"
