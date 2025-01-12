@@ -5,12 +5,15 @@ const emit = defineEmits<{
   setGames: [number]
   setBoPa: ['best-of' | 'play-all']
 }>()
+
 const props = defineProps<{
   gamesCount: number
 }>()
+
 const customGameCount = ref(9)
 const bestOf = ref<number | 'custom'>(props.gamesCount)
 const boPa = ref<'best-of' | 'play-all'>('best-of')
+
 watch(customGameCount, async (newCount, oldCount) => {
   if (newCount == oldCount) {
     return
@@ -28,6 +31,18 @@ watch(customGameCount, async (newCount, oldCount) => {
   }
   emit('setGames', newCount)
 })
+
+watch(
+  () => props.gamesCount,
+  (newGamesCount, oldGamesCount) => {
+    console.log('gamesCount', newGamesCount, oldGamesCount)
+    if (newGamesCount == oldGamesCount) {
+      return
+    }
+    bestOf.value = newGamesCount
+  }
+)
+
 watch(bestOf, (newBestOf, oldBestOf) => {
   if (newBestOf == oldBestOf) {
     return
@@ -38,6 +53,7 @@ watch(bestOf, (newBestOf, oldBestOf) => {
     emit('setGames', newBestOf)
   }
 })
+
 watch(boPa, (newBoPa, oldBoPa) => {
   if (newBoPa == oldBoPa) {
     return
@@ -79,7 +95,7 @@ watch(boPa, (newBoPa, oldBoPa) => {
             />
             <label
               for="play-all"
-              class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-l border-r-2 border-y-2 border-l-0 rounded-r-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+              class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-l border-r-2 border-y-2 rounded-r-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
             >
               <div class="text-center w-full text-lg font-semibold">Play all</div>
             </label>
