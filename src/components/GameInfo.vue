@@ -153,8 +153,8 @@ const debouncedFetchCivs = debounce(async () => {
     .filter((event: Aoe2CmEvent) => event.player == 'GUEST')
     .map((event: Aoe2CmEvent) => event.chosenOptionId)
 
-  const resultCivsHost = Array.from(new Set(pickedCivsHost).difference(new Set(snipedCivsHost)))
-  const resultCivsGuest = Array.from(new Set(pickedCivsGuest).difference(new Set(snipedCivsGuest)))
+  const resultCivsHost = Array.from(new Set(pickedCivsHost).difference(new Set(snipedCivsGuest)))
+  const resultCivsGuest = Array.from(new Set(pickedCivsGuest).difference(new Set(snipedCivsHost)))
 
   meta.value = {
     maps: meta.value.maps,
