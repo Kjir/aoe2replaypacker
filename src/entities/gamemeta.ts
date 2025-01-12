@@ -3,7 +3,7 @@ export type MapDraft = {
   preset: string
   host: string
   guest: string
-  pickedMaps: [string]
+  pickedMaps: string[]
   availableMaps: Record<string, { name: string; image: string }>
 }
 export type CivDraft = {
@@ -11,8 +11,8 @@ export type CivDraft = {
   preset: string
   host: string
   guest: string
-  hostCivs: [string]
-  guestCivs: [string]
+  hostCivs: string[]
+  guestCivs: string[]
 }
 
 export type ReplayMetadata = {

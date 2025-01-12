@@ -83,8 +83,8 @@ const debouncedFetchMaps = debounce(async () => {
   const picks = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'pick')
   const snipes = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'snipe')
 
-  const pickedMaps = picks.map((event: Aoe2CmEvent) => event.chosenOptionId)
-  const snipedMaps = snipes.map((event: Aoe2CmEvent) => event.chosenOptionId)
+  const pickedMaps: [string] = picks.map((event: Aoe2CmEvent) => event.chosenOptionId)
+  const snipedMaps: [string] = snipes.map((event: Aoe2CmEvent) => event.chosenOptionId)
 
   const resultMaps = Array.from(new Set(pickedMaps).difference(new Set(snipedMaps)))
 
@@ -137,19 +137,19 @@ const debouncedFetchCivs = debounce(async () => {
 
   const picks = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'pick')
   const snipes = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'snipe')
-  const pickedCivsHost = picks
+  const pickedCivsHost: [string] = picks
     .filter((event: Aoe2CmEvent) => event.player == 'HOST')
     .map((event: Aoe2CmEvent) => event.chosenOptionId)
 
-  const snipedCivsHost = snipes
+  const snipedCivsHost: [string] = snipes
     .filter((event: Aoe2CmEvent) => event.player == 'HOST')
     .map((event: Aoe2CmEvent) => event.chosenOptionId)
 
-  const pickedCivsGuest = picks
+  const pickedCivsGuest: [string] = picks
     .filter((event: Aoe2CmEvent) => event.player == 'GUEST')
     .map((event: Aoe2CmEvent) => event.chosenOptionId)
 
-  const snipedCivsGuest = snipes
+  const snipedCivsGuest: [string] = snipes
     .filter((event: Aoe2CmEvent) => event.player == 'GUEST')
     .map((event: Aoe2CmEvent) => event.chosenOptionId)
 
