@@ -10,7 +10,7 @@
     "test:unit": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "lint": "eslint . --fix",
     "format": "prettier --write src/"
   },
   "dependencies": {
@@ -34,9 +34,10 @@
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.10.0",
+    "eslint": "^9.18.0",
     "eslint-plugin-vue": "^9.31.0",
     "file-saver": "^2.0.5",
+    "jiti": "^2.4.2",
     "jsdom": "^26.0.0",
     "jszip": "^3.10.1",
     "npm-run-all2": "^7.0.2",

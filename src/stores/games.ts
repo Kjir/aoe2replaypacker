@@ -1,11 +1,26 @@
-import { computed, ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 import { defineStore } from 'pinia'
 import { parse_rec } from 'aoe2rec-js'
 import { mapNames } from '@/entities/maps'
 import { civNames } from '@/entities/civs'
 
+type Replay = {
+  zheader: {
+    game_settings: {
+      resolved_map_id: number
+      rms_strings: string[]
+      players: {
+        name: string
+        profile_id: string
+        civ_id: number
+      }[]
+    }
+    timestamp: number
+  }
+}
+
 export const useGamesStore = defineStore('games', () => {
-  const games: Record<string, any> = ref({})
+  const games: Ref<Record<string, Replay>> = ref({})
   async function parseGame(file: File) {
     const reader = new FileReader()
     reader.addEventListener(
@@ -16,7 +31,7 @@ export const useGamesStore = defineStore('games', () => {
           return
         }
         try {
-          const rec: any = parse_rec(event.target.result as ArrayBuffer)
+          const rec: Replay = parse_rec(event.target.result as ArrayBuffer)
           games.value = { ...games.value, [file.name]: rec }
         } catch (error) {
           console.error('Failed to parse')
@@ -31,24 +46,23 @@ export const useGamesStore = defineStore('games', () => {
   const gamesInfo = computed(() => {
     return Object.fromEntries(
       Object.entries(games.value).map(([name, info]) => {
-        const gs = (info as any).zheader.game_settings
-        Object.getOwnPropertyNames(mapNames)
-        const map_id = gs.resolved_map_id as number
-        const mapName: string =
-          mapNames[map_id] ?? gs.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
-        const ts = (info as any).zheader.timestamp
-        const startDate = new Date(ts * 1000)
+        const game_settings = info.zheader.game_settings
+        const map_id = game_settings.resolved_map_id
+        const mapName: string = mapNames[map_id] ?? game_settings.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
+        const startDate = new Date(info.zheader.timestamp * 1000)
+
+        const players = game_settings.players;
 
         return [
           name,
           {
             date: startDate,
-            player1: gs.players[0].name,
-            profile1: gs.players[0].profile_id,
-            civ1: civNames[gs.players[0].civ_id],
-            player2: gs.players[1].name,
-            profile2: gs.players[1].profile_id,
-            civ2: civNames[gs.players[1].civ_id],
+            player1: players[0].name,
+            profile1: players[0].profile_id,
+            civ1: civNames[players[0].civ_id],
+            player2: players[1].name,
+            profile2: players[1].profile_id,
+            civ2: civNames[players[1].civ_id],
             mapName
           }
         ]

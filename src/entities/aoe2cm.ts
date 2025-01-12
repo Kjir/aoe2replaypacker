@@ -21,6 +21,6 @@ export type Aoe2CmDraftOption = {
 }
 
 // TODO: continue work on this refactoring
-interface Aoe2CmApi {
+/*interface Aoe2CmApi {
   getDraft(draftUri: string): string
-}
+}*/

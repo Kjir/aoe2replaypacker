@@ -18,8 +18,8 @@ export type CivDraft = {
 export type ReplayMetadata = {
   maps: MapDraft | null
   civs: CivDraft | null
-  player1_score: Number | null
-  player2_score: Number | null
+  player1_score: number | null
+  player2_score: number | null
 }
 
 export type ReplayErrors = {

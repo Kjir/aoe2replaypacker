@@ -32,9 +32,14 @@ async function getTournamentDirectories(): Promise<Dir> {
   }
 }
 
-async function getTournamentData(): Promise<Record<string, any>> {
+type Tournament = {
+  maps: string[],
+  civs: string[],
+}
+
+async function getTournamentData(): Promise<Record<string, Tournament>> {
   const tournamentsDir = await getTournamentDirectories()
-  const tournaments: Record<string, any> = {}
+  const tournaments: Record<string, Tournament> = {}
   for await (const dirent of tournamentsDir) {
     if (!dirent.isDirectory()) {
       continue
@@ -61,7 +66,6 @@ export default function tournamentsData() {
     },
     async load(id: string) {
       if (id === resolvedModuleId) {
-        console
         console.log('Loading tournaments data')
         const data = await getTournamentData()
         return `export default ${JSON.stringify(data)}`
