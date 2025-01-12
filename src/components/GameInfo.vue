@@ -81,7 +81,12 @@ const debouncedFetchMaps = debounce(async () => {
   )
 
   const picks = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'pick')
+  const snipes = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'snipe')
+
   const pickedMaps = picks.map((event: Aoe2CmEvent) => event.chosenOptionId)
+  const snipedMaps = snipes.map((event: Aoe2CmEvent) => event.chosenOptionId)
+
+  const resultMaps = Array.from(new Set(pickedMaps).difference(new Set(snipedMaps)))
 
   meta.value = {
     maps: {
@@ -90,7 +95,7 @@ const debouncedFetchMaps = debounce(async () => {
       host: json.nameHost,
       guest: json.nameGuest,
       availableMaps: availableMaps,
-      pickedMaps: pickedMaps
+      pickedMaps: resultMaps
     },
     civs: meta.value.civs,
     player1_score: meta.value.player1_score,
@@ -131,12 +136,25 @@ const debouncedFetchCivs = debounce(async () => {
   }
 
   const picks = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'pick')
+  const snipes = json.events.filter((event: Aoe2CmEvent) => event.actionType == 'snipe')
   const pickedCivsHost = picks
     .filter((event: Aoe2CmEvent) => event.player == 'HOST')
     .map((event: Aoe2CmEvent) => event.chosenOptionId)
+
+  const snipedCivsHost = snipes
+    .filter((event: Aoe2CmEvent) => event.player == 'HOST')
+    .map((event: Aoe2CmEvent) => event.chosenOptionId)
+
   const pickedCivsGuest = picks
     .filter((event: Aoe2CmEvent) => event.player == 'GUEST')
     .map((event: Aoe2CmEvent) => event.chosenOptionId)
+
+  const snipedCivsGuest = snipes
+    .filter((event: Aoe2CmEvent) => event.player == 'GUEST')
+    .map((event: Aoe2CmEvent) => event.chosenOptionId)
+
+  const resultCivsHost = Array.from(new Set(pickedCivsHost).difference(new Set(snipedCivsHost)))
+  const resultCivsGuest = Array.from(new Set(pickedCivsGuest).difference(new Set(snipedCivsGuest)))
 
   meta.value = {
     maps: meta.value.maps,
@@ -145,8 +163,8 @@ const debouncedFetchCivs = debounce(async () => {
       preset: json.preset.presetId,
       host: json.nameHost,
       guest: json.nameGuest,
-      hostCivs: pickedCivsHost,
-      guestCivs: pickedCivsGuest
+      hostCivs: resultCivsHost,
+      guestCivs: resultCivsGuest
     },
     player1_score: meta.value.player1_score,
     player2_score: meta.value.player2_score
