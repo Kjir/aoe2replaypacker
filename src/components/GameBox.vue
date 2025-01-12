@@ -64,7 +64,7 @@ const gamesInfo = computed(() => {
           />
           <label
             :for="`${id}_left`"
-            class="inline-flex items-center justify-between w-full pl-2 text-gray-500 bg-white border-l-2 border-y-2 rounded-l-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+            class="inline-flex items-center justify-between w-full pl-2 text-gray-500 bg-white border-l-2 border-y-2 border-r rounded-l-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
           >
             <div class="text-center w-19/20 truncate text-lg font-semibold">
               {{ leftPlayer }}
@@ -100,7 +100,7 @@ const gamesInfo = computed(() => {
           />
           <label
             :for="`${id}_right`"
-            class="inline-flex items-center justify-between w-full pl-2 text-gray-500 bg-white border-l border-r-2 border-y-2 border-l-0 rounded-r-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
+            class="inline-flex items-center justify-between w-full pl-2 text-gray-500 bg-white border-r-2 border-y-2 border-l rounded-r-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
           >
             <div class="text-center w-19/20 text-lg truncate font-semibold">{{ rightPlayer }}</div>
           </label>
