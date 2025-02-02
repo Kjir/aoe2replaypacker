@@ -1,3 +1,13 @@
+<script setup lang="ts">
+import { useGamesStore } from '@/stores/games'
+
+const gamesStore = useGamesStore()
+
+const props = defineProps<{
+  game: string
+}>()
+
+</script>
 <template>
   <div class="flex justify-end">
     <button
@@ -24,7 +34,7 @@
     </button>
     <button
       class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
-      type="button" title="Remove game">
+      type="button" title="Remove game" @click="gamesStore.removeGame(game)">
       <span class="sr-only">Remove game</span>
       <svg class="w-6 h-6 text-red-400 dark:text-red-300" aria-hidden="true" fill="none" stroke="currentColor"
         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

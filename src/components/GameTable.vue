@@ -13,7 +13,7 @@ const gamesStore = useGamesStore()
       yet.</p>
     <div v-else v-for="(game, index) in Object.values(gamesStore.gamesInfo)" :key="game.date.valueOf()"
       class="w-full max-w-4xl p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 relative">
-      <GameToolbox class="absolute right-4" />
+      <GameToolbox class="absolute right-4" :game="game.name" />
       <h3 class="text-center text-2xl">Game {{ index + 1 }}</h3>
       <h4 class="text-center text-lg">{{ game?.mapName }}</h4>
       <p class="text-center text-sm text-gray-500 dark:text-gray-400"><abbr v-if="game" :title="intlFormat(game.date, {

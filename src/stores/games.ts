@@ -44,6 +44,10 @@ export const useGamesStore = defineStore('games', () => {
     reader.readAsArrayBuffer(file)
   }
 
+  function removeGame(name: string) {
+    games.value = Object.fromEntries(Object.entries(games.value).filter(([file_name, _rec]) => file_name != name));
+  }
+
   const gamesInfo = computed(() => {
     return Object.fromEntries(
       Object.entries(games.value).map(([name, info]) => {
@@ -57,6 +61,7 @@ export const useGamesStore = defineStore('games', () => {
         return [
           name,
           {
+            name,
             date: startDate,
             player1: players[0].name,
             profile1: players[0].profile_id,
@@ -74,5 +79,5 @@ export const useGamesStore = defineStore('games', () => {
   })
 
   const hasGames = computed(() => Object.values(games.value).length > 0);
-  return { games, parseGame, gamesInfo, hasGames }
+  return { games, parseGame, gamesInfo, hasGames, removeGame }
 })
