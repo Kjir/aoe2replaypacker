@@ -7,6 +7,8 @@ import { saveAs } from 'file-saver'
 import GameInfo from './GameInfo.vue'
 import SetInfo from './SetInfo.vue'
 import GameBox from './GameBox.vue'
+import GameDropzone from './GameDropzone.vue'
+import GameTable from './GameTable.vue'
 import ZipPreviewPane from './ZipPreviewPane.vue'
 import RecentDrafts from './RecentDrafts.vue'
 import DiscordMessage from './DiscordMessage.vue'
@@ -242,96 +244,62 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
 
 <template>
   <Suspense>
-    <RecentDrafts
-      v-if="mapPresets || civPresets"
-      :civ-presets="civPresets"
-      :map-presets="mapPresets"
-      v-model:map-draft="mapDraft"
-      v-model:civ-draft="civDraft"
-    />
+    <RecentDrafts v-if="mapPresets || civPresets" :civ-presets="civPresets" :map-presets="mapPresets"
+      v-model:map-draft="mapDraft" v-model:civ-draft="civDraft" />
     <template #fallback>
       <div class="text-center p-4 border-2 col-span-3 mt-4 h-80">Loading Drafts...</div>
     </template>
   </Suspense>
-  <GameInfo
-    :games="games"
-    v-model:player1="player1"
-    v-model:player2="player2"
-    v-model:map-draft="mapDraft"
-    v-model:civ-draft="civDraft"
-    :civ-presets="civPresets"
-    :map-presets="mapPresets"
-    :bo-pa="boPa"
-    @update-meta="
-      (newErrors: ReplayErrors, newMeta: ReplayMetadata) => {
-        if (newMeta?.maps?.pickedMaps?.length) {
-          const numOfMaps = newMeta.maps.pickedMaps.length
-          if (numOfMaps % 2 == 0) {
-            setGames(numOfMaps - 1)
-          } else {
-            setGames(numOfMaps)
-          }
+  <GameInfo :games="games" v-model:player1="player1" v-model:player2="player2" v-model:map-draft="mapDraft"
+    v-model:civ-draft="civDraft" :civ-presets="civPresets" :map-presets="mapPresets" :bo-pa="boPa" @update-meta="(newErrors: ReplayErrors, newMeta: ReplayMetadata) => {
+      if (newMeta?.maps?.pickedMaps?.length) {
+        const numOfMaps = newMeta.maps.pickedMaps.length
+        if (numOfMaps % 2 == 0) {
+          setGames(numOfMaps - 1)
+        } else {
+          setGames(numOfMaps)
         }
-        meta = newMeta
-        metaErrors = newErrors
       }
-    "
-  />
-  <SetInfo
-    :games-count="games.length"
-    @set-games="setGames"
-    @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
-  />
-  <GameBox
-    v-for="(game, gameIdx) in games"
-    :game="game"
-    :key="game.id"
-    :game-number="gameIdx"
-    :left-player="player1"
-    :right-player="player2"
-    @remove-replay="(replayIdx) => removeReplay(gameIdx, replayIdx)"
-    @add-replay="addReplay(gameIdx)"
-    @update-replay="(replayIdx, file) => updateReplay(gameIdx, replayIdx, file)"
-    @set-winner="(winner) => updateWinner(gameIdx, winner)"
-  />
-  <div id="message_box" class="mt-4 text-center p-4 border-2 col-span-3 hidden"></div>
-  <div class="text-center p-4 border-2 col-span-3 mt-4">
+      meta = newMeta
+      metaErrors = newErrors
+    }
+      " />
+  <SetInfo :games-count="games.length" @set-games="setGames" @set-bo-pa="(newBoPa) => (boPa = newBoPa)" />
+
+
+  <GameDropzone />
+  <!--
+  <GameBox v-for="(game, gameIdx) in games" :game="game" :key="game.id" :game-number="gameIdx" :left-player="player1"
+    :right-player="player2" @remove-replay="(replayIdx) => removeReplay(gameIdx, replayIdx)"
+    @add-replay="addReplay(gameIdx)" @update-replay="(replayIdx, file) => updateReplay(gameIdx, replayIdx, file)"
+    @set-winner="(winner) => updateWinner(gameIdx, winner)" />
+  -->
+  <GameTable />
+  <div id="message_box" class="mt-4 text-center p-4 border-2 rounded-lg col-span-3 hidden"></div>
+  <div class="text-center p-4 border-2 rounded-lg col-span-3 mt-4">
     <ZipPreviewPane :games="games" :player1="player1" :player2="player2" :meta="meta" />
-    <button
-      :disabled="!downloadEnabled"
-      class="btn text-2xl text-white dark:text-black"
-      :class="{
-        'bg-blue-500': downloadEnabled,
-        'bg-blue-200': !downloadEnabled,
-        'dark:bg-blue-700': downloadEnabled,
-        'dark:bg-blue-300': !downloadEnabled
-      }"
-      @click="downloadZip"
-    >
+    <button :disabled="!downloadEnabled" class="btn text-2xl text-white dark:text-black" :class="{
+      'bg-blue-500': downloadEnabled,
+      'bg-blue-200': !downloadEnabled,
+      'dark:bg-blue-700': downloadEnabled,
+      'dark:bg-blue-300': !downloadEnabled
+    }" @click="downloadZip">
       Download
     </button>
-    <div
-      v-if="downloadWarningReplayMissing"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningReplayMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: You have selected "play all" but not provided all replays.
     </div>
-    <div
-      v-if="downloadWarningCivDraftMissing"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningCivDraftMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: You have not provided a civilization draft link.
     </div>
-    <div
-      v-if="downloadWarningMapDraftMissing"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningMapDraftMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: You have not provided a map draft link.
     </div>
-    <div
-      v-if="downloadWarningScore"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningScore"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: The score does not make sense for a best-of set.
     </div>
   </div>

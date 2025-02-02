@@ -50,7 +50,7 @@ const civs: Record<string, string> = {
 }
 
 const civIcons = import.meta.glob('../assets/civs/*.png', {
-  query: { w: 26, h: 26, format: 'webp' },
+  query: { w: 40, h: 40, format: 'webp' },
   import: 'default',
   eager: true
 }) as Record<string, string>

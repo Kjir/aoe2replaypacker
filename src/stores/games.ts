@@ -13,6 +13,7 @@ type Replay = {
         name: string
         profile_id: string
         civ_id: number
+        color_id: number
       }[]
     }
     timestamp: number
@@ -60,14 +61,18 @@ export const useGamesStore = defineStore('games', () => {
             player1: players[0].name,
             profile1: players[0].profile_id,
             civ1: civNames[players[0].civ_id],
+            color1: players[0].color_id + 1,
             player2: players[1].name,
             profile2: players[1].profile_id,
             civ2: civNames[players[1].civ_id],
+            color2: players[1].color_id + 1,
             mapName
           }
         ]
       })
     )
   })
-  return { games, parseGame, gamesInfo }
+
+  const hasGames = computed(() => Object.values(games.value).length > 0);
+  return { games, parseGame, gamesInfo, hasGames }
 })

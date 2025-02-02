@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 border-2 col-span-3 mb-4">
+  <div class="p-4 border-2 rounded-lg col-span-3 mb-4">
     <h1 class="text-3xl text-center">AoE2 Replay Pack Generator</h1>
     <p>
       This page will help you create a zip file of replays for submitting your match results. To use

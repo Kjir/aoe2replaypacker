@@ -31,6 +31,7 @@ function changeReplay(event: Event) {
   replayFile.value = file
   emit('updateReplay', file)
 }
+
 function clearFile() {
   replayFile.value = null
   if (fileInput.value) {

@@ -31,7 +31,7 @@ const [civDraftPresets, mapDraftPresets] = getPresets(urlParams)
       <ReplayForm :civ-presets="civDraftPresets" :map-presets="mapDraftPresets" />
     </main>
     <footer>
-      <div class="text-center p-4 border-2 col-span-3 mt-4">
+      <div class="text-center p-4 border-2 rounded-lg col-span-3 mt-4">
         <p>
           Created by <a class="underline" href="https://github.com/ZetaTwo">ZetaTwo</a> &amp;
           <a class="underline" href="https://github.com/Kjir">Beargwyn</a> -
