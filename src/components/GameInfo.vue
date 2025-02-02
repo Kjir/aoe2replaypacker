@@ -201,10 +201,18 @@ watch(meta, () => {
       <template v-else>Play all</template>
       {{ props.games.length }}
     </div>
-    <input placeholder="Player 1 Name" class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded" type="text"
-      v-model="player1" /><span class="mx-10">vs</span>
-    <input placeholder="Player 2 Name" class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded" type="text"
-      v-model="player2" />
+    <input
+      placeholder="Player 1 Name"
+      class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded"
+      type="text"
+      v-model="player1"
+    /><span class="mx-10">vs</span>
+    <input
+      placeholder="Player 2 Name"
+      class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded"
+      type="text"
+      v-model="player2"
+    />
     <h3 class="text-center text-xl mt-4">
       Drafts<template v-if="!mapPresets && !civPresets"> (optional)</template>
     </h3>
@@ -212,9 +220,15 @@ watch(meta, () => {
     <div class="grid grid-cols-2">
       <div class="mb-6">
         <label class="text-gray-700 dark:text-gray-200 text-sm font-bold mb-2" for="maps">
-          Map draft</label>
-        <input class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded ml-2" id="maps" type="text"
-          placeholder="e.g. XZedf" v-model="mapsDraftURI" />
+          Map draft</label
+        >
+        <input
+          class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded ml-2"
+          id="maps"
+          type="text"
+          placeholder="e.g. XZedf"
+          v-model="mapsDraftURI"
+        />
         <p v-if="errors.maps" class="text-red-500 dark:text-red-500 text-xs italic">
           {{ errors.maps }}
         </p>
@@ -223,8 +237,11 @@ watch(meta, () => {
           <ul class="text-center flex w-full flex-wrap justify-center">
             <li class="mx-2" v-for="(map, mapIdx) in meta.maps.pickedMaps" :key="mapIdx">
               <div class="aspect-square h-36">
-                <img class="mx-auto w-full h-full" :src="mapImageUrl(meta.maps.availableMaps[map].image)"
-                  :alt="meta.maps.availableMaps[map].name" />
+                <img
+                  class="mx-auto w-full h-full"
+                  :src="mapImageUrl(meta.maps.availableMaps[map].image)"
+                  :alt="meta.maps.availableMaps[map].name"
+                />
               </div>
               <div>
                 {{ meta.maps.availableMaps[map].name }}
@@ -235,9 +252,15 @@ watch(meta, () => {
       </div>
       <div class="mb-6">
         <label class="text-gray-700 dark:text-gray-200 text-sm font-bold mb-2" for="civs">
-          Civ draft</label>
-        <input class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded ml-2" id="civs" type="text"
-          placeholder="e.g. vbvIP" v-model="civDraftURI" />
+          Civ draft</label
+        >
+        <input
+          class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded ml-2"
+          id="civs"
+          type="text"
+          placeholder="e.g. vbvIP"
+          v-model="civDraftURI"
+        />
         <p v-if="errors.civs" class="text-red-500 dark:text-red-500 text-xs italic">
           {{ errors.civs }}
         </p>

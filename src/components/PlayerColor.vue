@@ -2,13 +2,20 @@
 const props = defineProps<{
   color: number
 }>()
-
 </script>
 <template>
   <div
-    :class="['text-center', 'text-gray-800', 'font-bold', 'border-2', 'grid', 'content-center', $style[`player-color-${color}`]]">
-    <span>{{ color
-      }}</span>
+    :class="[
+      'text-center',
+      'text-gray-800',
+      'font-bold',
+      'border-2',
+      'grid',
+      'content-center',
+      $style[`player-color-${color}`]
+    ]"
+  >
+    <span>{{ color }}</span>
   </div>
 </template>
 <style lang="css" module>

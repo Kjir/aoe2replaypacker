@@ -1,5 +1,7 @@
 import unidecode from 'unidecode'
 import { logn, toBase26 } from '../lib/maths'
+import { mapNames } from './maps'
+import { civNames } from './civs'
 
 const UNICODE_NORMALIZATION = false // Setting this to true doubles the code size
 
@@ -10,20 +12,74 @@ export class Game {
   replays: Replay[] = []
   winner: 'left' | 'none' | 'right'
   id: number
+  date?: Date
+  mapName?: string
+  player1?: string
+  profile1?: string
+  civ1?: string
+  color1?: number
+  player2?: string
+  profile2?: string
+  civ2?: string
+  color2?: number
 
-  constructor() {
+  constructor(replays: Replay[] | null = null) {
     this.id = gameCounter++
     this.winner = 'none'
-    this.replays = [new Replay()]
+    if (Array.isArray(replays)) {
+      this.replays = replays
+    } else {
+      this.replays = [new Replay()]
+    }
+
+    if (this.replays.length > 0 && this.replays[0].rec) {
+      const rec = this.replays[0].rec
+      const game_settings = rec.zheader.game_settings
+      const map_id = game_settings.resolved_map_id
+      const players = game_settings.players
+      this.date = new Date(rec.zheader.timestamp * 1000)
+      this.mapName =
+        mapNames[map_id] ?? game_settings.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
+      this.player1 = players[0].name
+      this.profile1 = players[0].profile_id
+      this.civ1 = civNames[players[0].civ_id]
+      this.color1 = players[0].color_id + 1
+      this.player2 = players[1].name
+      this.profile2 = players[1].profile_id
+      this.civ2 = civNames[players[1].civ_id]
+      this.color2 = players[1].color_id + 1
+    }
+  }
+
+  isDummy() {
+    return this.replays.length == 0 || this.replays.findIndex((replay) => !!replay.rec) == -1
   }
 }
 
 export class Replay {
   id: number
   file: File | null
-  constructor() {
+  rec: ParsedReplay | null
+  constructor(file: File | null = null, rec: ParsedReplay | null = null) {
     this.id = replayCounter++
-    this.file = null
+    this.file = file
+    this.rec = rec
+  }
+}
+
+export type ParsedReplay = {
+  zheader: {
+    game_settings: {
+      resolved_map_id: number
+      rms_strings: string[]
+      players: {
+        name: string
+        profile_id: string
+        civ_id: number
+        color_id: number
+      }[]
+    }
+    timestamp: number
   }
 }
 

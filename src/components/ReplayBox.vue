@@ -26,7 +26,7 @@ function changeReplay(event: Event) {
     return
   }
   const file = files[0]
-  gamesStore.parseGame(file)
+  gamesStore.parseRec(file)
 
   replayFile.value = file
   emit('updateReplay', file)

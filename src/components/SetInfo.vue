@@ -35,7 +35,6 @@ watch(customGameCount, async (newCount, oldCount) => {
 watch(
   () => props.gamesCount,
   (newGamesCount, oldGamesCount) => {
-    console.log('gamesCount', newGamesCount, oldGamesCount)
     if (newGamesCount == oldGamesCount) {
       return
     }
