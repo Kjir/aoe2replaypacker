@@ -86,6 +86,7 @@ jobs:
         run: |
           mkdir dist
           mkdir dist/beta
+          ls -R
           tar -C dist -xf "${{ steps.download-main.outputs.download-path }}/github-pages-main"
           tar -C dist/beta -xf "${{ steps.download-beta.outputs.download-path }}/github-pages-main"
 
