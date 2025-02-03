@@ -10,15 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
+        id: checkout
         uses: actions/checkout@v4
 
       - name: Setup NodeJS
+        id: setup-node
         uses: actions/setup-node@v4
 
       - name: Install dependencies
+        id: install-dependencies
         run: npm install
 
       - name: Build site
+        id: build
         #env:
         #  BASE_URL: '${{ steps.pages.outputs.base_url }}'
         run: npm run build
@@ -28,37 +32,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
+        id: checkout
         uses: actions/checkout@v4
 
       - name: Setup NodeJS
+        id: setup-node
         uses: actions/setup-node@v4
 
       - name: Install dependencies
+        id: install-dependencies
         run: npm install
 
       - name: Run linting
+        id: lint
         run: npm run lint
-
-      - name: Build site
-        #env:
-        #  BASE_URL: '${{ steps.pages.outputs.base_url }}'
-        run: npm run build
-
-      - name: Run tests
-        run: npm run test:unit
 
   test:
     name: Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
+        id: checkout
         uses: actions/checkout@v4
 
       - name: Setup NodeJS
+        id: setup-node
         uses: actions/setup-node@v4
 
       - name: Install dependencies
+        id: install-dependencies
         run: npm install
 
       - name: Run tests
+        id: test
         run: npm run test:unit
