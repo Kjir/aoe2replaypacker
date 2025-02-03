@@ -12,42 +12,22 @@ const props = defineProps<{
     <button
       class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
       type="button"
-      title="Move up"
+      title="Remove game"
+      @click="gamesStore.removeGame(game)"
     >
-      <span class="sr-only">Move up</span>
       <svg
-        class="w-6 h-6 text-gray-500 dark:text-gray-400"
+        class="w-6 h-6 inline-block"
         aria-hidden="true"
-        viewBox="0 0 24 24"
         fill="currentColor"
+        viewBox="0 0 1920 1920"
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
+          d="M790.589 1750.588v56.471h56.47V1920H677.647v-169.412h112.942Zm417.794 56.471V1920h-180.662v-112.941h180.662Zm361.433 0V1920h-180.662v-112.941h180.662ZM1920 1750.588V1920h-169.412v-112.941h56.471v-56.471H1920ZM1581.177 338.824v225.882h-112.942V451.765H451.765v1016.47h112.941v112.942H338.824V338.824h1242.353ZM1920 1389.265v180.662h-112.941v-180.662H1920Zm-1129.412-.111v180.662H677.647v-180.662h112.941ZM1242.353 0v225.882h-112.941v-112.94H112.941v1016.47h112.941v112.94H0V0h1242.353ZM1920 1027.831v180.661h-112.941v-180.661H1920Zm-1129.412-.11v180.662H677.647v-180.662h112.941ZM1920 677.647v169.412h-112.941v-56.47h-56.471V677.647H1920Zm-1072.942 0v112.942h-56.47v56.47h-112.94V677.647h169.41Zm361.434 0v112.941h-180.661V677.647h180.661Zm361.435 0v112.941h-180.662V677.647h180.662Z"
           fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M12 3C12.2652 3 12.5196 3.10536 12.7071 3.29289L19.7071 10.2929C20.0976 10.6834 20.0976 11.3166 19.7071 11.7071C19.3166 12.0976 18.6834 12.0976 18.2929 11.7071L13 6.41421V20C13 20.5523 12.5523 21 12 21C11.4477 21 11 20.5523 11 20V6.41421L5.70711 11.7071C5.31658 12.0976 4.68342 12.0976 4.29289 11.7071C3.90237 11.3166 3.90237 10.6834 4.29289 10.2929L11.2929 3.29289C11.4804 3.10536 11.7348 3 12 3Z"
         ></path>
       </svg>
-    </button>
-    <button
-      class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
-      type="button"
-      title="Move down"
-    >
-      <span class="sr-only">Move down</span>
-      <svg
-        class="w-6 h-6 text-gray-500 dark:text-gray-400"
-        aria-hidden="true"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M12 3C12.5523 3 13 3.44772 13 4V17.5858L18.2929 12.2929C18.6834 11.9024 19.3166 11.9024 19.7071 12.2929C20.0976 12.6834 20.0976 13.3166 19.7071 13.7071L12.7071 20.7071C12.3166 21.0976 11.6834 21.0976 11.2929 20.7071L4.29289 13.7071C3.90237 13.3166 3.90237 12.6834 4.29289 12.2929C4.68342 11.9024 5.31658 11.9024 5.70711 12.2929L11 17.5858V4C11 3.44772 11.4477 3 12 3Z"
-        ></path>
-      </svg>
+      <span class="h-6 p-3">Clear info</span>
     </button>
     <button
       class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
@@ -55,9 +35,8 @@ const props = defineProps<{
       title="Remove game"
       @click="gamesStore.removeGame(game)"
     >
-      <span class="sr-only">Remove game</span>
       <svg
-        class="w-6 h-6 text-red-400 dark:text-red-300"
+        class="w-6 h-6 text-red-400 dark:text-red-300 inline-block"
         aria-hidden="true"
         fill="none"
         stroke="currentColor"
@@ -78,6 +57,7 @@ const props = defineProps<{
           stroke-linejoin="round"
         ></path>
       </svg>
+      <span class="h-6 p-3">Remove game</span>
     </button>
   </div>
 </template>

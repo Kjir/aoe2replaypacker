@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { Ref } from 'vue'
 import { useGamesStore } from '@/stores/games'
 
 const gamesStore = useGamesStore()
