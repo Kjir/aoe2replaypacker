@@ -13,7 +13,9 @@ export const useGamesStore = defineStore('games', () => {
     games.value = games.value.filter((game) => !game.isDummy())
 
     const game = new Game([new Replay(file, rec)])
-    games.value.push(game)
+    games.value = [...games.value, game].sort(
+      (game1, game2) => (game1?.date?.getTime() ?? 0) - (game2?.date?.getTime() ?? 0)
+    )
     if (games.value.length > gameCount.value) {
       setGamesNumber(games.value.length)
     } else {
