@@ -6,7 +6,6 @@ import { saveAs } from 'file-saver'
 
 import GameInfo from './GameInfo.vue'
 import SetInfo from './SetInfo.vue'
-import GameBox from './GameBox.vue'
 import GameDropzone from './GameDropzone.vue'
 import GameTable from './GameTable.vue'
 import ZipPreviewPane from './ZipPreviewPane.vue'
@@ -15,7 +14,7 @@ import DiscordMessage from './DiscordMessage.vue'
 import { useGamesStore } from '@/stores/games'
 import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
 
-import { Game, Replay, zipFilename, computeReplayFilename } from '../entities/game'
+import { zipFilename, computeReplayFilename } from '../entities/game'
 import { extractDraftUrl } from '../entities/draft'
 
 const props = defineProps<{
@@ -37,25 +36,6 @@ const meta: Ref<ReplayMetadata> = ref({
   player2_score: null
 })
 const metaErrors: Ref<ReplayErrors> = ref({ maps: null, civs: null })
-
-function removeReplay(gameIdx: number, replayIdx: number) {
-  gamesStore.games[gameIdx].replays.splice(replayIdx, 1)
-  if (gamesStore.games[gameIdx].replays.length == 0) {
-    gamesStore.games.splice(gameIdx, 1)
-  }
-}
-
-function addReplay(gameIdx: number) {
-  gamesStore.games[gameIdx].replays.push(new Replay())
-}
-
-function updateReplay(gameIdx: number, replayIdx: number, file: File | null) {
-  gamesStore.games[gameIdx].replays[replayIdx].file = file
-}
-
-function updateWinner(gameIdx: number, winner: 'left' | 'none' | 'right') {
-  gamesStore.games[gameIdx].winner = winner
-}
 
 const downloadWarningReplayMissing = computed(() => {
   if (boPa.value == 'best-of') {
@@ -275,12 +255,6 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
   />
 
   <GameDropzone />
-  <!--
-  <GameBox v-for="(game, gameIdx) in games" :game="game" :key="game.id" :game-number="gameIdx" :left-player="player1"
-    :right-player="player2" @remove-replay="(replayIdx) => removeReplay(gameIdx, replayIdx)"
-    @add-replay="addReplay(gameIdx)" @update-replay="(replayIdx, file) => updateReplay(gameIdx, replayIdx, file)"
-    @set-winner="(winner) => updateWinner(gameIdx, winner)" />
-  -->
   <GameTable />
   <div id="message_box" class="mt-4 text-center p-4 border-2 rounded-lg col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 rounded-lg col-span-3 mt-4">

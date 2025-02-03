@@ -12,10 +12,10 @@ const props = defineProps<{
       'border-2',
       'grid',
       'content-center',
-      $style[`player-color-${color}`]
+      $style[`player-color-${props.color}`]
     ]"
   >
-    <span>{{ color }}</span>
+    <span>{{ props.color }}</span>
   </div>
 </template>
 <style lang="css" module>
