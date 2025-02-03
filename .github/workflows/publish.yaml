@@ -65,7 +65,7 @@ jobs:
           name: 'github-pages-${{ matrix.page.branch }}'
 
   package:
-    name: Package pages
+    name: Package Pages
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -88,7 +88,6 @@ jobs:
         run: |
           mkdir dist
           mkdir dist/beta
-          ls -R
           tar -C dist -xf "${{ steps.download-main.outputs.download-path }}/artifact.tar"
           tar -C dist/beta -xf "${{ steps.download-beta.outputs.download-path }}/artifact.tar"
 
@@ -107,7 +106,5 @@ jobs:
     needs: package
     steps:
       - name: Deploy to GitHub Pages
-        # Temp to test that it works
-        if: false
         id: deployment
         uses: actions/deploy-pages@v4
