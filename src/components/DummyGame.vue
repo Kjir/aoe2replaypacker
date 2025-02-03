@@ -11,8 +11,14 @@ const props = defineProps<{
     <h3 class="text-center text-2xl">Game {{ props.index + 1 }}</h3>
     <h4 class="text-center text-lg">Placeholder game</h4>
     <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-      This a placeholder for a game that wasn't played, either because the opponent conceded the
-      Admin Win, or because the set already has a winner from the previous games.
+      This is a placeholder for a game not played, e.g. because of an admin win, or because the set
+      already has a winner from the previous games.
+    </p>
+    <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+      <strong
+        >The replay packer will automatically generate a savegame to avoid spoilers for
+        casters.</strong
+      >
     </p>
   </div>
 </template>
