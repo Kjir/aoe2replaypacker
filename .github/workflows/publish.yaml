@@ -79,15 +79,15 @@ jobs:
         id: download-beta
         uses: actions/download-artifact@v4
         with:
-          name: 'github-pages-beta'
+          name: 'github-pages-main'
 
       - name: Repackage artifacts
         id: repackage
         run: |
           mkdir dist
           mkdir dist/beta
-          tar -C dist -xf ${{ steps.download-main.outputs.download-path }}
-          tar -C dist/beta -xf ${{ steps.download-beta.outputs.download-path }}
+          tar -C dist -xf "${{ steps.download-main.outputs.download-path }}/github-pages-main"
+          tar -C dist/beta -xf "${{ steps.download-beta.outputs.download-path }}/github-pages-main"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
