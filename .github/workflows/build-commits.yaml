@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -13,10 +14,6 @@ jobs:
 
       - name: Setup NodeJS
         uses: actions/setup-node@v4
-
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
 
       - name: Install dependencies
         run: npm install
