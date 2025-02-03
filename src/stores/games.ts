@@ -47,9 +47,14 @@ export const useGamesStore = defineStore('games', () => {
     })
   }
 
-  function removeGame(index: number) {
+  function clearGame(index: number) {
     games.value = games.value.filter((_game, game_index) => index != game_index)
     setGamesNumber(gameCount.value)
+  }
+
+  function removeGame(index: number) {
+    games.value = games.value.filter((_game, game_index) => index != game_index)
+    setGamesNumber(gameCount.value - 1)
   }
 
   function setGamesNumber(gamesNumber: number) {
@@ -61,5 +66,5 @@ export const useGamesStore = defineStore('games', () => {
   }
 
   const hasGames = computed(() => Object.values(recs.value).length > 0)
-  return { addRec, parseRec, games, hasGames, removeGame, setGamesNumber, gameCount }
+  return { addRec, parseRec, games, hasGames, clearGame, removeGame, setGamesNumber, gameCount }
 })
