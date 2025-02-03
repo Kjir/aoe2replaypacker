@@ -29,30 +29,36 @@ jobs:
         page: [{ branch: 'main', base_url: '' }, { branch: 'beta', base_url: '/beta' }]
     steps:
       - name: Checkout main branch
+        id: checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ matrix.page.branch }}
 
       - name: Setup NodeJS
+        id: setup-node
         uses: actions/setup-node@v4
 
       - name: Setup Pages
-        id: pages
+        id: setup-pages
         uses: actions/configure-pages@v5
 
       - name: Install dependencies
+        id: install-dependencies
         run: npm install
 
       - name: Run linting
+        id: run-lint
         run: npm run lint
 
       - name: Build site
+        id: build
         env:
           BASE_URL: '${{ matrix.page.base_url }}'
         #  BASE_URL: '${{ steps.pages.outputs.base_url }}'
         run: npm run build
 
       - name: Upload artifact
+        id: upload-artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
@@ -64,21 +70,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download main artifact
+        id: download-main
         uses: actions/download-artifact@v4
         with:
           name: 'github-pages-main'
 
       - name: Download beta artifact
+        id: download-beta
         uses: actions/download-artifact@v4
         with:
           name: 'github-pages-beta'
 
       - name: Repackage artifacts
+        id: repackage
         run: |
           mkdir dist
           mkdir dist/beta
-          tar -C dist -xf github-pages-main
-          tar -C dist/beta -xf github-pages-beta
+          tar -C dist -xf ${{ steps.download-main.outputs.download-path }}
+          tar -C dist/beta -xf ${{ steps.download-beta.outputs.download-path }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
