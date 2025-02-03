@@ -74,12 +74,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: 'github-pages-main'
+          path: 'github-pages-main'
 
       - name: Download beta artifact
         id: download-beta
         uses: actions/download-artifact@v4
         with:
-          name: 'github-pages-main'
+          name: 'github-pages-beta'
+          path: 'github-pages-beta'
 
       - name: Repackage artifacts
         id: repackage
@@ -87,8 +89,8 @@ jobs:
           mkdir dist
           mkdir dist/beta
           ls -R
-          tar -C dist -xf "${{ steps.download-main.outputs.download-path }}/github-pages-main"
-          tar -C dist/beta -xf "${{ steps.download-beta.outputs.download-path }}/github-pages-main"
+          tar -C dist -xf "${{ steps.download-main.outputs.download-path }}/artifact.tar"
+          tar -C dist/beta -xf "${{ steps.download-beta.outputs.download-path }}/artifact.tar"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
