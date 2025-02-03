@@ -18,6 +18,24 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build site
+        #env:
+        #  BASE_URL: '${{ steps.pages.outputs.base_url }}'
+        run: npm run build
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Run linting
         run: npm run lint
 
@@ -25,6 +43,22 @@ jobs:
         #env:
         #  BASE_URL: '${{ steps.pages.outputs.base_url }}'
         run: npm run build
+
+      - name: Run tests
+        run: npm run test:unit
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Run tests
         run: npm run test:unit
