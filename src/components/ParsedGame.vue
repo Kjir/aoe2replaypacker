@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { formatDistanceToNow, intlFormat } from 'date-fns'
-import CivIcon from '@/components/CivIcon.vue'
-import PlayerColor from '@/components/PlayerColor.vue'
 import GameReorder from '@/components/GameReorder.vue'
 import GameToolbox from '@/components/GameToolbox.vue'
 import type { Game } from '@/entities/game'
+import GameTeam from '@/components/GameTeam.vue'
 
 const props = defineProps<{
   index: number
@@ -33,44 +32,8 @@ const props = defineProps<{
         >{{ formatDistanceToNow(props.game.date) }} ago</abbr
       >
     </p>
-    <div class="w-full flex flex-row justify-center gap-12">
-      <div class="flex items-center gap-4">
-        <PlayerColor :color="props.game.color1 ?? 0" class="w-9 h-9" />
-        <div
-          class="w-[150px] text-center overflow-hidden text-ellipsis font-medium dark:text-white"
-        >
-          <a
-            :href="`https://aoe2insights.com/user/relic/${props.game.profile1}`"
-            class="text-blue-500 dark:text-blue-400 hover:underline"
-            target="_blank"
-            >{{ props.game.player1 }}</a
-          >
-          <!--<div class="text-sm text-gray-500 dark:text-gray-400">Joined in August 2014</div>-->
-        </div>
-        <CivIcon
-          v-if="props.game.civ1"
-          :civ="props.game.civ1.toLowerCase()"
-          class="w-10 h-10 rounded-full"
-        />
-      </div>
-      <div class="flex items-center gap-4">
-        <CivIcon
-          v-if="props.game.civ2"
-          :civ="props.game.civ2.toLowerCase()"
-          class="w-10 h-10 rounded-full"
-        />
-        <div
-          class="w-[150px] text-center overflow-hidden text-ellipsis font-medium dark:text-white"
-        >
-          <a
-            :href="`https://aoe2insights.com/user/relic/${props.game.profile2}`"
-            class="text-blue-600 dark:text-blue-500 hover:underline"
-            target="_blank"
-            >{{ props.game.player2 }}</a
-          >
-        </div>
-        <PlayerColor :color="props.game.color2 ?? 0" class="w-9 h-9" />
-      </div>
+    <div class="w-full grid grid-cols-2 gap-12 justify-items-center mt-4 mb-4">
+      <GameTeam v-for="team in props.game.teams" :key="team.id" :team="team" />
     </div>
   </div>
 </template>

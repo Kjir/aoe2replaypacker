@@ -8,20 +8,38 @@ const UNICODE_NORMALIZATION = false // Setting this to true doubles the code siz
 let gameCounter = 0
 let replayCounter = 0
 
+export class Player {
+  name: string
+  profile: string
+  civ: string
+  team_id: number
+  color: number
+
+  constructor(name: string, profile: string, civ: string, team_id: number, color: number) {
+    this.name = name
+    this.profile = profile
+    this.civ = civ
+    this.team_id = team_id
+    this.color = color
+  }
+}
+
+export class Team {
+  id: number
+  players: Player[]
+  constructor(team_id: number, players: Player[]) {
+    this.id = team_id
+    this.players = players
+  }
+}
+
 export class Game {
   replays: Replay[] = []
   winner: 'left' | 'none' | 'right'
   id: number
   date?: Date
   mapName?: string
-  player1?: string
-  profile1?: string
-  civ1?: string
-  color1?: number
-  player2?: string
-  profile2?: string
-  civ2?: string
-  color2?: number
+  teams?: Team[]
 
   constructor(replays: Replay[] | null = null) {
     this.id = gameCounter++
@@ -36,18 +54,10 @@ export class Game {
       const rec = this.replays[0].rec
       const game_settings = rec.zheader.game_settings
       const map_id = game_settings.resolved_map_id
-      const players = game_settings.players
       this.date = new Date(rec.zheader.timestamp * 1000)
       this.mapName =
         mapNames[map_id] ?? game_settings.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
-      this.player1 = players[0].name
-      this.profile1 = players[0].profile_id
-      this.civ1 = civNames[players[0].civ_id]
-      this.color1 = players[0].color_id + 1
-      this.player2 = players[1].name
-      this.profile2 = players[1].profile_id
-      this.civ2 = civNames[players[1].civ_id]
-      this.color2 = players[1].color_id + 1
+      this.teams = getTeams(rec)
     }
   }
 
@@ -77,6 +87,7 @@ export type ParsedReplay = {
         profile_id: string
         civ_id: number
         color_id: number
+        resolved_team_id: number
       }[]
     }
     timestamp: number
@@ -140,4 +151,27 @@ export function computeReplayFilenamePreview(
   const dummyIndicator = replay.file ? '' : ' (dummy file)'
 
   return `${filename}${dummyIndicator}`
+}
+
+function getTeams(replay: ParsedReplay) {
+  const players = replay.zheader.game_settings.players
+  const parsedPlayers = players.map((player, index) => {
+    const resolved_team_id = player.resolved_team_id
+    const team_id = resolved_team_id == 1 ? 9 + index : resolved_team_id
+    return new Player(
+      player.name,
+      player.profile_id,
+      civNames[player.civ_id],
+      team_id,
+      player.color_id + 1
+    )
+  })
+  const team_ids = new Set(parsedPlayers.map((player) => player.team_id))
+  return Array.from(team_ids).map(
+    (team_id) =>
+      new Team(
+        team_id,
+        parsedPlayers.filter((player) => player.team_id == team_id)
+      )
+  )
 }
