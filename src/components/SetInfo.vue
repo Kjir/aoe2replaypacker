@@ -39,7 +39,16 @@ watch(
     if (newGamesCount == oldGamesCount) {
       return
     }
-    bestOf.value = newGamesCount
+
+    if (bestOf.value != newGamesCount) {
+      customGameCount.value = newGamesCount
+    }
+
+    if (bestOf.value != 'custom' && [3, 5, 7].includes(newGamesCount)) {
+      bestOf.value = newGamesCount
+    } else {
+      bestOf.value = 'custom'
+    }
   }
 )
 
@@ -111,7 +120,7 @@ watch(boPa, (newBoPa, oldBoPa) => {
           :value="count"
           class="hidden peer"
           required
-          :checked="bestOf != 'custom' && props.gamesCount == count"
+          :checked="bestOf == count"
         />
         <label
           :for="`bo${count}`"
