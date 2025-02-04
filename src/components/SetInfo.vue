@@ -75,56 +75,28 @@ watch(boPa, (newBoPa, oldBoPa) => {
       <li class="basis-3/11">
         <div class="block">
           <div class="inline-flex w-1/2">
-            <input
-              type="radio"
-              id="best-of"
-              name="bo-pa"
-              class="hidden peer"
-              value="best-of"
-              v-model="boPa"
-              :checked="boPa == 'best-of'"
-            />
-            <label
-              for="best-of"
-              class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-r border-l-2 border-y-2 rounded-l-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-            >
+            <input type="radio" id="best-of" name="bo-pa" class="hidden peer" value="best-of" v-model="boPa"
+              :checked="boPa == 'best-of'" />
+            <label for="best-of"
+              class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-r border-l-2 border-y-2 rounded-l-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
               <div class="text-center w-full text-lg font-semibold">Best of</div>
             </label>
           </div>
           <div class="inline-flex w-1/2">
-            <input
-              type="radio"
-              id="play-all"
-              name="bo-pa"
-              class="hidden peer"
-              value="play-all"
-              v-model="boPa"
-              :checked="boPa == 'play-all'"
-            />
-            <label
-              for="play-all"
-              class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-l border-r-2 border-y-2 rounded-r-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-            >
+            <input type="radio" id="play-all" name="bo-pa" class="hidden peer" value="play-all" v-model="boPa"
+              :checked="boPa == 'play-all'" />
+            <label for="play-all"
+              class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-l border-r-2 border-y-2 rounded-r-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
               <div class="text-center w-full text-lg font-semibold">Play all</div>
             </label>
           </div>
         </div>
       </li>
       <li class="basis-2/11" v-for="count in [3, 5, 7]" :key="count" :value="count">
-        <input
-          type="radio"
-          :id="`bo${count}`"
-          name="bo"
-          v-model="bestOf"
-          :value="count"
-          class="hidden peer"
-          required
-          :checked="bestOf == count"
-        />
-        <label
-          :for="`bo${count}`"
-          class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-        >
+        <input type="radio" :id="`bo${count}`" name="bo" v-model="bestOf" :value="count" class="hidden peer" required
+          :checked="bestOf == count" />
+        <label :for="`bo${count}`"
+          class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
           <div class="block w-full">
             <div class="text-center w-full text-lg font-semibold">{{ count }} Games</div>
           </div>
@@ -132,33 +104,16 @@ watch(boPa, (newBoPa, oldBoPa) => {
       </li>
 
       <li class="basis-2/11">
-        <input
-          type="radio"
-          id="bo-custom"
-          name="bo"
-          v-model="bestOf"
-          value="custom"
-          class="hidden peer"
-          :checked="bestOf == 'custom'"
-        />
-        <label
-          for="bo-custom"
-          class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-        >
+        <input type="radio" id="bo-custom" name="bo" v-model="bestOf" value="custom" class="hidden peer"
+          :checked="bestOf == 'custom'" />
+        <label for="bo-custom"
+          class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
           <div class="block w-full">
             <div class="w-full text-lg font-semibold">
               <input
                 class="p-0 w-8 bg-transparent border text-gray-800 text-center focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white"
-                style="-moz-appearance: textfield"
-                type="number"
-                aria-roledescription="Number field"
-                v-model="customGameCount"
-                value="9"
-                data-hs-input-number-input=""
-                min="1"
-                max="99"
-                maxlength="2"
-              />
+                style="-moz-appearance: textfield" type="number" aria-roledescription="Number field"
+                v-model="customGameCount" value="9" data-hs-input-number-input="" min="1" max="99" maxlength="2" />
               Games
             </div>
           </div>
