@@ -7,19 +7,24 @@
     </p>
     <ol class="mt-2 list-decimal list-inside">
       <li>Fill in the player names</li>
+      <li>If applicable, fill out map and civ drafts</li>
       <li>
-        For each replay, click the "choose file" button and navigate to your replay
+        Add replays by clicking the add replay button and navigating to the replay directory
         <ol class="list-decimal list-inside ml-4" type="a">
           <li>Go to "%USERPROFILE%\Games\Age of Empires 2 DE"</li>
           <li>Click the folder with a bunch of numbers</li>
           <li>Go to the "savegame" folder</li>
         </ol>
       </li>
-      <li>Once all replays are selected, click download</li>
+      <li>For each game, check that the game info is correct and select the correct winner</li>
+      <li>
+        Now you can download the zip file with your replays as well as copy the Discord message
+        template for easy reporting of the results
+      </li>
     </ol>
     <p class="mt-2">
-      Note: if the match ended 2-0, simply leave the third file empty and a dummy file will
-      automatically be generated and used
+      Note: You only need to select actual game replays. The tool will add automatically generate
+      dummy files as needed.
     </p>
     <p class="mt-2">
       Technical note: All of this is done in your browser, no data is uploaded anywhere.
