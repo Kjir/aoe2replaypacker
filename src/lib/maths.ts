@@ -12,3 +12,9 @@ export function toBase26(value: number, width: number) {
 export function logn(x: number, y: number) {
   return Math.log(x) / Math.log(y)
 }
+
+export function getRandomInt(min: number, max: number) {
+  const minCeiled = Math.ceil(min)
+  const maxFloored = Math.floor(max)
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled) // The maximum is exclusive and the minimum is inclusive
+}

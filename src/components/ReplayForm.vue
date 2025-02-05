@@ -16,6 +16,7 @@ import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
 
 import { zipFilename, computeReplayFilename } from '../entities/game'
 import { extractDraftUrl } from '../entities/draft'
+import { getRandomInt } from '../lib/maths'
 
 const props = defineProps<{
   civPresets: string[] | null
@@ -148,12 +149,6 @@ function getFirstReplayFile(): File | null {
     }
   }
   return null
-}
-
-function getRandomInt(min: number, max: number) {
-  const minCeiled = Math.ceil(min)
-  const maxFloored = Math.floor(max)
-  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled) // The maximum is exclusive and the minimum is inclusive
 }
 
 function downloadZip() {
