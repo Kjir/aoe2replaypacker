@@ -17,6 +17,9 @@ export default {
       },
       width: {
         '19/20': '95%'
+      },
+      transitionProperty: {
+        'max-height': 'max-height'
       }
     }
   },
