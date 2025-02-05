@@ -25,8 +25,8 @@ function toggleOpen() {
     >
       <p>To use it follow, these simple steps:</p>
       <ol class="mt-2 list-decimal list-inside">
-        <li>Fill in the player names</li>
         <li>If applicable, fill out map and civ drafts</li>
+        <li>Unless already done via the draft, fill out the player names</li>
         <li>
           Add replays by clicking the add replay button and navigating to the replay directory
           <ol class="list-decimal list-inside ml-4" type="a">
