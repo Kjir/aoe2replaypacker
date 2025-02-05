@@ -43,7 +43,7 @@ describe('computeReplayFilename', () => {
   it('creates some replay file names', () => {
     const game1 = new Game()
     for (let i = 0; i < 30; i++) {
-      game1.replays.push(new Replay())
+      game1.replays.push({} as Replay) // Actual object is irrelevant
     }
 
     expect(computeReplayFilename('Playe<>r 3', ' Pl ay::er 4 ', game1, 0, 27)).toBe(
@@ -62,7 +62,7 @@ describe('computeReplayFilenamePreview', () => {
   it('create some replay file names', () => {
     const game1 = new Game()
     for (let i = 0; i < 30; i++) {
-      game1.replays.push(new Replay())
+      game1.replays.push({} as Replay) // Actual object is irrelevant
     }
     game1.replays[27].file = new File([''], 'testfile.aoe2record', {
       type: 'application/octet-stream'
