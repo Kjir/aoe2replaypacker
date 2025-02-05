@@ -130,7 +130,6 @@ type ActionOperation = {
 type timestamp = number
 
 export type ParsedReplay = {
-  operations: never[] | null
   zheader: {
     game_settings: {
       resolved_map_id: number
