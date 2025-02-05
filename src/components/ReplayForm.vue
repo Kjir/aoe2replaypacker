@@ -244,7 +244,7 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
     "
   />
   <SetInfo
-    :games-count="gamesStore.gameCount"
+    :games-count="gamesStore.games.length"
     @set-games="gamesStore.setGamesNumber"
     @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
   />

@@ -6,21 +6,19 @@ import { Game, Replay, type ParsedReplay } from '@/entities/game'
 export const useGamesStore = defineStore('games', () => {
   const recordings: Ref<Record<string, ParsedReplay>> = ref({})
   const games: Ref<Game[]> = ref([])
-  const gameCount: Ref<number> = ref(3)
 
   async function addRec(file: File) {
     const recording = await parseRec(file)
-    games.value = games.value.filter((game) => !game.isDummy())
+    const gameTypes = Object.groupBy(games.value, (game) => game.isDummy() ? 'dummy' : 'real');
 
-    const game = new Game([new Replay(file, recording)])
-    games.value = [...games.value, game].sort(
+    const newGame = new Game([new Replay(file, recording)])
+    const realGames = [...gameTypes['real'] || [], newGame]
+    const sortedGames = realGames.sort(
       (game1, game2) => (game1?.date?.getTime() ?? 0) - (game2?.date?.getTime() ?? 0)
     )
-    if (games.value.length > gameCount.value) {
-      setGamesNumber(games.value.length)
-    } else {
-      setGamesNumber(gameCount.value)
-    }
+
+    games.value = [...sortedGames, ...gameTypes['dummy']?.slice(0, -1) || []]
+    setGamesNumber(games.value.length)
   }
 
   async function parseRec(file: File) {
@@ -51,16 +49,15 @@ export const useGamesStore = defineStore('games', () => {
 
   function clearGame(index: number) {
     games.value = games.value.filter((_game, game_index) => index != game_index)
-    setGamesNumber(gameCount.value)
+    games.value.push(new Game())
   }
 
   function removeGame(index: number) {
     games.value = games.value.filter((_game, game_index) => index != game_index)
-    setGamesNumber(gameCount.value - 1)
+    setGamesNumber(games.value.length)
   }
 
   function setGamesNumber(gamesNumber: number) {
-    gameCount.value = gamesNumber
     games.value = games.value.slice(0, gamesNumber)
     while (games.value.length < gamesNumber) {
       games.value.push(new Game())
@@ -68,5 +65,5 @@ export const useGamesStore = defineStore('games', () => {
   }
 
   const hasGames = computed(() => Object.values(recordings.value).length > 0)
-  return { addRec, parseRec, games, hasGames, clearGame, removeGame, setGamesNumber, gameCount }
+  return { addRec, parseRec, games, hasGames, clearGame, removeGame, setGamesNumber }
 })
