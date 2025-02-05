@@ -30,7 +30,7 @@ export const useGamesStore = defineStore('games', () => {
         'loadend',
         (event) => {
           if (!event.target || !event.target.result) {
-            console.log('Could not find target')
+            console.error('Could not find target')
             return
           }
           try {

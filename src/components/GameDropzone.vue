@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useGamesStore } from '@/stores/games'
 
 const gamesStore = useGamesStore()
-const fileInput = ref<HTMLInputElement | null>(null)
 
 function changeReplay(event: Event) {
   const files = (event.target as HTMLInputElement).files
@@ -55,7 +53,6 @@ function handleDrop(event: DragEvent) {
       </div>
       <input
         id="dropzone-file"
-        ref="fileInput"
         accept=".aoe2record"
         multiple
         type="file"
