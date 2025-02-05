@@ -54,30 +54,30 @@ export class Game {
       this.replays = [new Replay()]
     }
 
-    if (this.replays.length > 0 && this.replays[0].rec) {
-      const rec = this.replays[0].rec
-      const game_settings = rec.zheader.game_settings
+    if (this.replays.length > 0 && this.replays[0].recording) {
+      const recording = this.replays[0].recording
+      const game_settings = recording.zheader.game_settings
       const map_id = game_settings.resolved_map_id
-      this.date = new Date(rec.zheader.timestamp * 1000)
+      this.date = new Date(recording.zheader.timestamp * 1000)
       this.mapName =
         mapNames[map_id] ?? game_settings.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
-      this.teams = getTeams(rec)
+      this.teams = getTeams(recording)
     }
   }
 
   isDummy() {
-    return this.replays.length == 0 || this.replays.findIndex((replay) => !!replay.rec) == -1
+    return this.replays.length == 0 || this.replays.findIndex((replay) => !!replay.recording) == -1
   }
 }
 
 export class Replay {
   id: number
   file: File | null
-  rec: ParsedReplay | null
-  constructor(file: File | null = null, rec: ParsedReplay | null = null) {
+  recording: ParsedReplay | null
+  constructor(file: File | null = null, recording: ParsedReplay | null = null) {
     this.id = replayCounter++
     this.file = file
-    this.rec = rec
+    this.recording = recording
   }
 }
 
@@ -102,7 +102,7 @@ export function normalizePlayerName(playerName: string, defaultName: string) {
   const asciiName = UNICODE_NORMALIZATION
     ? unidecode(playerName)
     : // eslint-disable-next-line no-control-regex
-      playerName.replace(/[^\x00-\x7F]/g, '')
+    playerName.replace(/[^\x00-\x7F]/g, '')
 
   const noWhitespaceName = asciiName.replace(/\s/g, '')
   // eslint-disable-next-line no-control-regex

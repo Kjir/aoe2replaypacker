@@ -4,15 +4,15 @@ import { parse_rec } from 'aoe2rec-js'
 import { Game, Replay, type ParsedReplay } from '@/entities/game'
 
 export const useGamesStore = defineStore('games', () => {
-  const recs: Ref<Record<string, ParsedReplay>> = ref({})
+  const recordings: Ref<Record<string, ParsedReplay>> = ref({})
   const games: Ref<Game[]> = ref([])
   const gameCount: Ref<number> = ref(3)
 
   async function addRec(file: File) {
-    const rec = await parseRec(file)
+    const recording = await parseRec(file)
     games.value = games.value.filter((game) => !game.isDummy())
 
-    const game = new Game([new Replay(file, rec)])
+    const game = new Game([new Replay(file, recording)])
     games.value = [...games.value, game].sort(
       (game1, game2) => (game1?.date?.getTime() ?? 0) - (game2?.date?.getTime() ?? 0)
     )
@@ -34,9 +34,9 @@ export const useGamesStore = defineStore('games', () => {
             return
           }
           try {
-            const rec: ParsedReplay = parse_rec(event.target.result as ArrayBuffer)
-            recs.value = { ...recs.value, [file.name]: rec }
-            resolve(rec)
+            const recording: ParsedReplay = parse_rec(event.target.result as ArrayBuffer)
+            recordings.value = { ...recordings.value, [file.name]: recording }
+            resolve(recording)
           } catch (error) {
             console.error('Failed to parse')
             console.error(error)
@@ -67,6 +67,6 @@ export const useGamesStore = defineStore('games', () => {
     }
   }
 
-  const hasGames = computed(() => Object.values(recs.value).length > 0)
+  const hasGames = computed(() => Object.values(recordings.value).length > 0)
   return { addRec, parseRec, games, hasGames, clearGame, removeGame, setGamesNumber, gameCount }
 })
