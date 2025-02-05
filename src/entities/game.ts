@@ -67,7 +67,7 @@ export class Game {
     if (Array.isArray(replays)) {
       this.replays = replays
     } else {
-      this.replays = [new Replay()]
+      this.replays = []
     }
 
     if (this.replays.length > 0 && this.replays[0].recording) {
@@ -99,9 +99,9 @@ export class Game {
 
 export class Replay {
   id: number
-  file: File | null
-  recording: ParsedReplay | null
-  constructor(file: File | null = null, recording: ParsedReplay | null = null) {
+  file: File
+  recording: ParsedReplay
+  constructor(file: File, recording: ParsedReplay) {
     this.id = replayCounter++
     this.file = file
     this.recording = recording
@@ -235,10 +235,7 @@ function getTeams(replay: ParsedReplay, resignations: player_id[]) {
   )
 }
 
-function parseOperations(replay: ParsedReplay | null) {
-  if (!replay) {
-    return { duration: 0, resignations: [] }
-  }
+function parseOperations(replay: ParsedReplay) {
   return replay.operations.reduce(
     (operationStats, operation) => {
       if ('Sync' in operation) {
