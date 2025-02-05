@@ -69,13 +69,13 @@ describe('computeReplayFilenamePreview', () => {
     })
 
     expect(
-      computeReplayFilenamePreview('Playe<>r 3', ' Pl ay::er 4 ', game1, 0, game1.replays[27], 27)
+      computeReplayFilenamePreview('Playe<>r 3', ' Pl ay::er 4 ', game1, 0, false, 27)
     ).toBe('Player3_vs_Player4_G1bb.aoe2record')
     expect(
-      computeReplayFilenamePreview('Playe<>r 3', ' Pl ay::er 4 ', game1, 1, game1.replays[25], 25)
+      computeReplayFilenamePreview('Playe<>r 3', ' Pl ay::er 4 ', game1, 1, true, 25)
     ).toBe('Player3_vs_Player4_G2az.aoe2record (dummy file)')
     expect(
-      computeReplayFilenamePreview('Playe<>r 3', ' Pl ay::er 4 ', game1, 2, game1.replays[28], 28)
+      computeReplayFilenamePreview('Playe<>r 3', ' Pl ay::er 4 ', game1, 2, true, 28)
     ).toBe('Player3_vs_Player4_G3bc.aoe2record (dummy file)')
   })
 })
