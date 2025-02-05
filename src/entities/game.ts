@@ -77,9 +77,11 @@ export class Game {
       this.date = new Date(recording.zheader.timestamp * 1000)
       this.mapName =
         mapNames[map_id] ?? game_settings.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
+      const lastRecording = this.replays[this.replays.length - 1].recording
       const { duration, resignations } = parseOperations(
-        this.replays[this.replays.length - 1].recording
+        lastRecording
       )
+      lastRecording.operations = []
       this.duration = duration
       this.resignations = resignations
       this.teams = getTeams(recording, resignations)
