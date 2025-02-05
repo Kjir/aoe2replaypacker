@@ -14,9 +14,23 @@ function changeReplay(event: Event) {
     gamesStore.addRec(file)
   }
 }
+
+function handleDrop(event: DragEvent) {
+  if (!event?.dataTransfer?.files) {
+    return
+  }
+  for (const file of event.dataTransfer.files) {
+    gamesStore.addRec(file)
+  }
+}
 </script>
 <template>
-  <div class="flex items-center justify-center w-full mt-4">
+  <div
+    class="flex items-center justify-center w-full mt-4"
+    @dragenter.prevent
+    @dragover.prevent
+    @drop.prevent="handleDrop($event)"
+  >
     <label
       for="dropzone-file"
       class="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -35,7 +49,7 @@ function changeReplay(event: Event) {
           ></path>
         </svg>
         <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-          <span class="font-semibold">Click to add game(s)</span> or drag and drop
+          <span class="font-semibold">Click to add replay(s)</span> or drag and drop
         </p>
         <p class="text-xs text-gray-500 dark:text-gray-400">One or multiple aoe2record savegames</p>
       </div>
