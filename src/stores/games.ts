@@ -9,15 +9,15 @@ export const useGamesStore = defineStore('games', () => {
 
   async function addRec(file: File) {
     const recording = await parseRec(file)
-    const gameTypes = Object.groupBy(games.value, (game) => game.isDummy() ? 'dummy' : 'real');
+    const gameTypes = Object.groupBy(games.value, (game) => (game.isDummy() ? 'dummy' : 'real'))
 
     const newGame = new Game([new Replay(file, recording)])
-    const realGames = [...gameTypes['real'] || [], newGame]
+    const realGames = [...(gameTypes['real'] || []), newGame]
     const sortedGames = realGames.sort(
       (game1, game2) => (game1?.date?.getTime() ?? 0) - (game2?.date?.getTime() ?? 0)
     )
 
-    games.value = [...sortedGames, ...gameTypes['dummy']?.slice(0, -1) || []]
+    games.value = [...sortedGames, ...(gameTypes['dummy']?.slice(0, -1) || [])]
     setGamesNumber(games.value.length)
   }
 

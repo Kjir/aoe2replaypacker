@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { formatDistanceToNow, intlFormat } from 'date-fns'
+import { format, formatDistanceToNow, intlFormat } from 'date-fns'
+import { UTCDate } from '@date-fns/utc'
 import GameReorder from '@/components/GameReorder.vue'
 import GameToolbox from '@/components/GameToolbox.vue'
 import type { Game } from '@/entities/game'
@@ -38,6 +39,7 @@ const rightName = computed(() => {
     <h3 class="text-center text-2xl">Game {{ props.index + 1 }}</h3>
     <h4 class="text-center text-lg">{{ props.game.mapName }}</h4>
     <p v-if="props.game.date" class="text-center text-sm text-gray-500 dark:text-gray-400">
+      Played
       <abbr
         :title="
           intlFormat(props.game.date, {
@@ -52,6 +54,7 @@ const rightName = computed(() => {
         "
         >{{ formatDistanceToNow(props.game.date) }} ago</abbr
       >
+      and lasted {{ format(new UTCDate(props.game.duration), 'HH:mm:ss') }}
     </p>
     <div class="flex mt-6 pl-6 pr-6">
       <div class="inline-flex w-1/2 h-full">
