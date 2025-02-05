@@ -162,21 +162,22 @@ function downloadZip() {
   }
 
   for (const [gameIdx, game] of gamesStore.games.entries()) {
-    for (const [replayIdx, replay] of game.replays.entries()) {
-      const replay_filename = computeReplayFilename(
-        player1.value,
-        player2.value,
-        game,
-        gameIdx,
-        replayIdx
-      )
-      if (replay.file) {
+    if (game.isDummy()) {
+      const replay_filename = computeReplayFilename(player1.value, player2.value, game, gameIdx, 0)
+      const suffixArray = new Uint8Array(getRandomInt(1e5, 3e6))
+      //window.crypto.getRandomValues(array);
+      const dummyFile = new Blob([dummyBase, suffixArray])
+      zip.file(replay_filename, dummyFile)
+    } else {
+      for (const [replayIdx, replay] of game.replays.entries()) {
+        const replay_filename = computeReplayFilename(
+          player1.value,
+          player2.value,
+          game,
+          gameIdx,
+          replayIdx
+        )
         zip.file(replay_filename, replay.file)
-      } else {
-        const suffixArray = new Uint8Array(getRandomInt(1e5, 3e6))
-        //window.crypto.getRandomValues(array);
-        const dummyFile = new Blob([dummyBase, suffixArray])
-        zip.file(replay_filename, dummyFile)
       }
     }
   }

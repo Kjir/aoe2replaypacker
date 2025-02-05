@@ -197,7 +197,7 @@ export function computeReplayFilenamePreview(
   player2: string,
   game: Game,
   gameIdx: number,
-  replay: Replay,
+  dummy: boolean,
   replayIdx: number
 ) {
   const filename = computeReplayFilename(
@@ -207,7 +207,7 @@ export function computeReplayFilenamePreview(
     gameIdx,
     replayIdx
   )
-  const dummyIndicator = replay.file ? '' : ' (dummy file)'
+  const dummyIndicator = !dummy ? '' : ' (dummy file)'
 
   return `${filename}${dummyIndicator}`
 }
