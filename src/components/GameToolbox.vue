@@ -3,8 +3,8 @@ import { useGamesStore } from '@/stores/games'
 
 const gamesStore = useGamesStore()
 
-const { game, showClear = true } = defineProps<{
-  game: number
+const { gameIndex, showClear = true } = defineProps<{
+  gameIndex: number
   showClear?: boolean
 }>()
 </script>
@@ -15,7 +15,7 @@ const { game, showClear = true } = defineProps<{
       class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
       type="button"
       title="Clear info"
-      @click="gamesStore.clearGame(game)"
+      @click="gamesStore.clearGame(gameIndex)"
     >
       <svg
         class="w-6 h-6 inline-block"
@@ -35,7 +35,7 @@ const { game, showClear = true } = defineProps<{
       class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
       type="button"
       title="Remove game"
-      @click="gamesStore.removeGame(game)"
+      @click="gamesStore.removeGame(gameIndex)"
     >
       <svg
         class="w-6 h-6 text-red-400 dark:text-red-300 inline-block"

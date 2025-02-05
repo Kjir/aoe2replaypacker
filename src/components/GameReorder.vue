@@ -1,6 +1,13 @@
+<script setup lang="ts">
+const props = defineProps<{
+  top: boolean
+  bottom: boolean
+}>()
+</script>
 <template>
   <div class="flex flex-col h-full justify-between">
     <button
+      v-if="!props.top"
       class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5 text-left"
       type="button"
       title="Move up"
@@ -20,7 +27,10 @@
       </svg>
       <span class="h-6 p-3">Move up</span>
     </button>
+    <div v-else></div>
+
     <button
+      v-if="!props.bottom"
       class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5 text-left"
       type="button"
       title="Move down"
@@ -40,5 +50,6 @@
       </svg>
       <span class="h-6 p-3">Move down</span>
     </button>
+    <div v-else></div>
   </div>
 </template>

@@ -10,6 +10,7 @@ import { computed } from 'vue'
 
 const props = defineProps<{
   index: number
+  numGames: number
   game: Game
 }>()
 
@@ -28,8 +29,12 @@ const rightName = computed(() => {
 </script>
 <template>
   <div>
-    <GameReorder class="absolute left-0 top-0" />
-    <GameToolbox class="absolute right-0 top-1" :game="props.index" />
+    <GameReorder
+      class="absolute left-0 top-0"
+      :top="props.index == 0"
+      :bottom="props.index + 1 == props.numGames"
+    />
+    <GameToolbox class="absolute right-0 top-1" :game-index="props.index" />
     <h3 class="text-center text-2xl">Game {{ props.index + 1 }}</h3>
     <h4 class="text-center text-lg">{{ props.game.mapName }}</h4>
     <p v-if="props.game.date" class="text-center text-sm text-gray-500 dark:text-gray-400">
@@ -97,7 +102,12 @@ const rightName = computed(() => {
       </div>
     </div>
     <div class="w-full grid grid-cols-2 gap-12 justify-items-between mt-4 mb-12 pl-6 pr-6">
-      <GameTeam v-for="team in props.game.teams" :key="team.id" :team="team" />
+      <GameTeam
+        v-for="(team, index) in props.game.teams"
+        :key="team.id"
+        :team="team"
+        :position="index % 2 ? 'right' : 'left'"
+      />
     </div>
   </div>
 </template>
