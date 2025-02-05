@@ -82,6 +82,7 @@ export class Replay {
 }
 
 export type ParsedReplay = {
+  operations: never[] | null
   zheader: {
     game_settings: {
       resolved_map_id: number

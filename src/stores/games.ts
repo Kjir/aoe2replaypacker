@@ -33,6 +33,7 @@ export const useGamesStore = defineStore('games', () => {
           }
           try {
             const recording: ParsedReplay = parse_rec(event.target.result as ArrayBuffer)
+            recording.operations = null
             recordings.value = { ...recordings.value, [file.name]: recording }
             resolve(recording)
           } catch (error) {
