@@ -8,7 +8,10 @@ const UNICODE_NORMALIZATION = false // Setting this to true doubles the code siz
 let gameCounter = 0
 let replayCounter = 0
 
+type player_id = number
+
 export class Player {
+  id: player_id
   name: string
   profile: string
   civ: string
@@ -16,13 +19,22 @@ export class Player {
   color: number
   resigned: boolean
 
-  constructor(name: string, profile: string, civ: string, team_id: number, color: number) {
+  constructor(
+    id: player_id,
+    name: string,
+    profile: string,
+    civ: string,
+    team_id: number,
+    color: number,
+    resigned: boolean
+  ) {
+    this.id = id
     this.name = name
     this.profile = profile
     this.civ = civ
     this.team_id = team_id
     this.color = color
-    this.resigned = true
+    this.resigned = resigned
   }
 }
 
@@ -33,7 +45,7 @@ export class Team {
   constructor(team_id: number, players: Player[]) {
     this.id = team_id
     this.players = players
-    this.winner = false
+    this.winner = players.some((player) => !player.resigned)
   }
 }
 
@@ -44,10 +56,14 @@ export class Game {
   date?: Date
   mapName?: string
   teams?: Team[]
+  duration: number
+  resignations: player_id[]
 
   constructor(replays: Replay[] | null = null) {
     this.id = gameCounter++
     this.winner = 'none'
+    this.duration = 0
+    this.resignations = []
     if (Array.isArray(replays)) {
       this.replays = replays
     } else {
@@ -61,7 +77,18 @@ export class Game {
       this.date = new Date(recording.zheader.timestamp * 1000)
       this.mapName =
         mapNames[map_id] ?? game_settings.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
-      this.teams = getTeams(recording)
+      const { duration, resignations } = parseOperations(
+        this.replays[this.replays.length - 1].recording
+      )
+      this.duration = duration
+      this.resignations = resignations
+      this.teams = getTeams(recording, resignations)
+      if (this.teams[0] && this.teams[0].winner) {
+        this.winner = 'left'
+      }
+      if (this.teams[this.teams.length - 1] && this.teams[this.teams.length - 1].winner) {
+        this.winner = 'right'
+      }
     }
   }
 
@@ -81,6 +108,27 @@ export class Replay {
   }
 }
 
+type SyncOperation = {
+  Sync: {
+    next: number
+    time_increment: number
+  }
+}
+
+type ResignAction = {
+  Resign: {
+    player_id: player_id
+  }
+}
+type ActionOperation = {
+  Action: {
+    action_data: ResignAction
+    length: number
+  }
+}
+
+type timestamp = number
+
 export type ParsedReplay = {
   operations: never[] | null
   zheader: {
@@ -88,6 +136,7 @@ export type ParsedReplay = {
       resolved_map_id: number
       rms_strings: string[]
       players: {
+        player_number: player_id
         name: string
         profile_id: string
         civ_id: number
@@ -95,8 +144,12 @@ export type ParsedReplay = {
         resolved_team_id: number
       }[]
     }
-    timestamp: number
+    replay: {
+      world_time: timestamp
+    }
+    timestamp: timestamp
   }
+  operations: Array<SyncOperation | ActionOperation>
 }
 
 export function normalizePlayerName(playerName: string, defaultName: string) {
@@ -158,17 +211,19 @@ export function computeReplayFilenamePreview(
   return `${filename}${dummyIndicator}`
 }
 
-function getTeams(replay: ParsedReplay) {
+function getTeams(replay: ParsedReplay, resignations: player_id[]) {
   const players = replay.zheader.game_settings.players
   const parsedPlayers = players.map((player, index) => {
     const resolved_team_id = player.resolved_team_id
     const team_id = resolved_team_id == 1 ? 9 + index : resolved_team_id
     return new Player(
+      player.player_number,
       player.name,
       player.profile_id,
       civNames[player.civ_id],
       team_id,
-      player.color_id + 1
+      player.color_id + 1,
+      resignations.includes(player.player_number)
     )
   })
   const team_ids = new Set(parsedPlayers.map((player) => player.team_id))
@@ -178,5 +233,35 @@ function getTeams(replay: ParsedReplay) {
         team_id,
         parsedPlayers.filter((player) => player.team_id == team_id)
       )
+  )
+}
+
+function parseOperations(replay: ParsedReplay | null) {
+  if (!replay) {
+    return { duration: 0, resignations: [] }
+  }
+  return replay.operations.reduce(
+    (operationStats, operation) => {
+      if ('Sync' in operation) {
+        return {
+          ...operationStats,
+          duration: operationStats.duration + operation.Sync.time_increment
+        }
+      }
+      if ('Action' in operation && 'Resign' in operation.Action.action_data) {
+        return {
+          ...operationStats,
+          resignations: [
+            ...operationStats.resignations,
+            operation.Action.action_data.Resign.player_id
+          ]
+        }
+      }
+      return { ...operationStats }
+    },
+    { duration: replay.zheader.replay.world_time, resignations: [] } as {
+      duration: number
+      resignations: player_id[]
+    }
   )
 }
