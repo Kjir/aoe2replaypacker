@@ -5,7 +5,7 @@ import { Game, Replay, type ParsedReplay } from '@/entities/game'
 
 export const useGamesStore = defineStore('games', () => {
   const recordings: Ref<Record<string, ParsedReplay>> = ref({})
-  const games: Ref<Game[]> = ref([])
+  const games: Ref<Game[]> = ref([new Game(), new Game(), new Game()])
 
   async function addRec(file: File) {
     const recording = await parseRec(file)
