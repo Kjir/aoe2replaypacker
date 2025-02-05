@@ -14,6 +14,7 @@ export class Player {
   civ: string
   team_id: number
   color: number
+  resigned: boolean
 
   constructor(name: string, profile: string, civ: string, team_id: number, color: number) {
     this.name = name
@@ -21,15 +22,18 @@ export class Player {
     this.civ = civ
     this.team_id = team_id
     this.color = color
+    this.resigned = true
   }
 }
 
 export class Team {
   id: number
   players: Player[]
+  winner: boolean
   constructor(team_id: number, players: Player[]) {
     this.id = team_id
     this.players = players
+    this.winner = false
   }
 }
 

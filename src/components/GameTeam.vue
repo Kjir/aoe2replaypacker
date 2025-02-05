@@ -9,7 +9,7 @@ const { team } = defineProps<{
 </script>
 
 <template>
-  <div class="border-2 p-6 rounded-lg">
+  <div class="border-4 p-6 rounded-lg shadow-lg flex flex-col justify-stretch">
     <div v-for="player in team.players" :key="player.profile" class="flex items-center gap-4">
       <PlayerColor :color="player.color ?? 0" class="w-9 h-9" />
       <div class="w-[150px] text-center overflow-hidden text-ellipsis font-medium dark:text-white">

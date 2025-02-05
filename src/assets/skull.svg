@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" viewBox="0 0 34 34">
+  <defs>
+    <linearGradient id="d">
+      <stop style="stop-color:#f2f2f2;stop-opacity:1" offset="0"/>
+      <stop style="stop-color:#f9f9f9;stop-opacity:1" offset="1"/>
+    </linearGradient>
+    <linearGradient id="c">
+      <stop style="stop-color:#fc0;stop-opacity:1" offset="0"/>
+      <stop style="stop-color:#fd5;stop-opacity:1" offset="1"/>
+    </linearGradient>
+    <linearGradient id="a">
+      <stop style="stop-color:red;stop-opacity:1" offset="0"/>
+      <stop style="stop-color:#f55;stop-opacity:1" offset="1"/>
+    </linearGradient>
+    <linearGradient id="b">
+      <stop style="stop-color:#d40000;stop-opacity:1" offset="0"/>
+      <stop style="stop-color:#d40000;stop-opacity:1" offset="1"/>
+    </linearGradient>
+    <linearGradient xlink:href="#d" id="e" x1="20.385" y1="22.754" x2="10.74" y2="12.004" gradientUnits="userSpaceOnUse"/>
+  </defs>
+  <path style="fill:url(#e);fill-rule:evenodd;stroke:#1a1a1a;stroke-width:1.436;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1" d="M17.003 9.602c-.36.004-8.187-.243-7.826 6.56.146 2.75 1.109 4.127 2.797 4.304 1.088.113 1.14.727.313 2.562-.25.555.5 1.379.5 1.379 2.81-.003 5.622-.006 8.433 0 0 0 .75-.824.5-1.379-.828-1.835-.776-2.449.313-2.562 1.688-.177 2.701-1.553 2.796-4.303.237-6.835-7.466-6.564-7.826-6.56ZM14 13.642c.739-.002 1.338.766 1.338 1.714s-.6 1.716-1.338 1.715c-.737 0-1.335-.768-1.336-1.715 0-.947.599-1.714 1.336-1.715zm6 0c.739-.002 1.338.766 1.338 1.714s-.6 1.716-1.338 1.715c-.737 0-1.335-.768-1.336-1.715 0-.947.599-1.714 1.336-1.715z"/>
+  <path style="fill:none;fill-rule:evenodd;stroke:#1a1a1a;stroke-width:1.436;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" d="M15.107 20.104c.292.571.053 1.222.128 1.828l-.002.026v.005M17.094 19.89c.197.408.143.881.115 1.318-.074.287-.062.658-.115.901M19.219 19.922c.001.327.015.656-.063.976-.052.335-.104.671-.14 1.008"/>
+</svg>
