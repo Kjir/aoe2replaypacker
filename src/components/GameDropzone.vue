@@ -4,13 +4,14 @@ import { useGamesStore } from '@/stores/games'
 const gamesStore = useGamesStore()
 
 function changeReplay(event: Event) {
-  const files = (event.target as HTMLInputElement).files
-  if (!files) {
+  const target = event.target as HTMLInputElement
+  if (!target.files) {
     return
   }
-  for (const file of files) {
+  for (const file of target.files) {
     gamesStore.addRec(file)
   }
+  target.value = ''
 }
 
 function handleDrop(event: DragEvent) {
