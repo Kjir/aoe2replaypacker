@@ -56,6 +56,14 @@ const rightName = computed(() => {
       >
       and lasted {{ format(new UTCDate(props.game.duration), 'HH:mm:ss') }}
     </p>
+    <p
+      v-if="props.game.replays.length > 1"
+      class="text-center text-sm text-gray-500 dark:text-gray-400"
+    >
+      Game was restored {{ props.game.replays.length - 1 }} time{{
+        props.game.replays.length > 2 ? 's' : ''
+      }}
+    </p>
     <div class="flex mt-6 pl-6 pr-6">
       <div class="inline-flex w-1/2 h-full">
         <input

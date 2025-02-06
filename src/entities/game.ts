@@ -72,30 +72,73 @@ export class Game {
 
     if (this.replays.length > 0 && this.replays[0].recording) {
       const recording = this.replays[0].recording
-      const game_settings = recording.zheader.game_settings
-      const map_id = game_settings.resolved_map_id
-      this.date = new Date(recording.zheader.timestamp * 1000)
-      this.mapName =
-        mapNames[map_id] ?? game_settings.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
-      const lastRecording = this.replays[this.replays.length - 1].recording
-      const { duration, resignations } = parseOperations(
-        lastRecording
-      )
-      lastRecording.operations = []
+      const { date, mapName, duration, resignations, teams } = extractRecordingInfo(recording)
+      this.date = date
+      this.mapName = mapName
       this.duration = duration
       this.resignations = resignations
-      this.teams = getTeams(recording, resignations)
-      if (this.teams[0] && this.teams[0].winner) {
-        this.winner = 'left'
-      }
-      if (this.teams[this.teams.length - 1] && this.teams[this.teams.length - 1].winner) {
-        this.winner = 'right'
-      }
+      this.teams = teams
+      this.setWinner()
+    }
+  }
+
+  setWinner() {
+    if (this.teams && this.teams[0] && this.teams[0].winner) {
+      this.winner = 'left'
+    }
+    if (
+      this.teams &&
+      this.teams[this.teams.length - 1] &&
+      this.teams[this.teams.length - 1].winner
+    ) {
+      this.winner = 'right'
     }
   }
 
   isDummy() {
     return this.replays.length == 0 || this.replays.findIndex((replay) => !!replay.recording) == -1
+  }
+
+  matchesRecording(recording: ParsedReplay) {
+    const recordingInfo = extractRecordingInfo(recording)
+    if (recordingInfo.mapName != this.mapName) {
+      return false
+    }
+    if (recordingInfo.teams.length != (this?.teams?.length ?? -1)) {
+      return false
+    }
+    return recordingInfo.teams.every((team, index) => {
+      const recordingPlayers = team.players
+      if (!this.teams || !this.teams[index]) {
+        return false
+      }
+      const players = this.teams[index].players
+      if (recordingPlayers.length != players.length) {
+        return false
+      }
+      return recordingPlayers.every((recordingPlayer, playerIndex) => {
+        if (recordingPlayer.profile != players[playerIndex].profile) {
+          return false
+        }
+        if (recordingPlayer.civ != players[playerIndex].civ) {
+          return false
+        }
+        return true
+      })
+    })
+  }
+
+  addRecording(file: File, recording: ParsedReplay) {
+    this.replays = [...this.replays, new Replay(file, recording)].sort(
+      (replayA, replayB) =>
+        (replayA.recording?.zheader?.timestamp ?? 0) - (replayB.recording?.zheader?.timestamp ?? 0)
+    )
+    const lastReplay = this.replays.findLast((replay) => !!replay.recording)
+    const recordingInfo = extractRecordingInfo(lastReplay?.recording ?? recording)
+    this.duration = recordingInfo.duration
+    this.resignations = recordingInfo.resignations
+    this.teams = recordingInfo.teams
+    this.setWinner()
   }
 }
 
@@ -262,4 +305,15 @@ function parseOperations(replay: ParsedReplay) {
       resignations: player_id[]
     }
   )
+}
+
+export function extractRecordingInfo(recording: ParsedReplay) {
+  const game_settings = recording.zheader.game_settings
+  const map_id = game_settings.resolved_map_id
+  const date = new Date(recording.zheader.timestamp * 1000)
+  const mapName =
+    mapNames[map_id] ?? game_settings.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
+  const { duration, resignations } = parseOperations(recording)
+  const teams = getTeams(recording, resignations)
+  return { date, mapName, duration, resignations, teams }
 }
