@@ -17,6 +17,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   setWinner: [winner: 'left' | 'none' | 'right']
+  up: []
+  down: []
 }>()
 
 const leftName = computed(() => props.game.teams?.[0]?.players?.[0]?.name)
@@ -34,6 +36,8 @@ const rightName = computed(() => {
       class="absolute left-0 top-0"
       :top="props.index == 0"
       :bottom="props.index + 1 == props.numGames"
+      @up="emit('up')"
+      @down="emit('down')"
     />
     <GameToolbox class="absolute right-0 top-1" :game-index="props.index" />
     <h3 class="text-center text-2xl">Game {{ props.index + 1 }}</h3>
@@ -68,15 +72,15 @@ const rightName = computed(() => {
       <div class="inline-flex w-1/2 h-full">
         <input
           type="radio"
-          :id="`winner-${props.index + 1}`"
-          :name="`winlose-${props.index + 1}`"
+          :id="`winner-${props.game.id}`"
+          :name="`winlose-${props.game.id}`"
           class="peer hidden"
           @change="emit('setWinner', 'left')"
           :checked="props.game.winner == 'left'"
           :value="'left'"
         />
         <label
-          :for="`winner-${props.index + 1}`"
+          :for="`winner-${props.game.id}`"
           class="inline-flex items-center justify-center w-full p-2 bg-white border-r border-l-2 border-y-2 rounded-l-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
         >
           <img
@@ -91,15 +95,15 @@ const rightName = computed(() => {
       <div class="inline-flex w-1/2 h-full">
         <input
           type="radio"
-          :id="`loser-${props.index + 1}`"
-          :name="`winlose-${props.index + 1}`"
+          :id="`loser-${props.game.id}`"
+          :name="`winlose-${props.game.id}`"
           class="peer hidden"
           @change="emit('setWinner', 'right')"
           :checked="props.game.winner == 'right'"
           :value="'right'"
         />
         <label
-          :for="`loser-${props.index + 1}`"
+          :for="`loser-${props.game.id}`"
           class="inline-flex items-center justify-center w-full p-2 bg-white border-l border-r-2 border-y-2 rounded-r-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
         >
           {{ rightName }}

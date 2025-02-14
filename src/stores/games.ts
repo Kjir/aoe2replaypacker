@@ -17,12 +17,12 @@ export const useGamesStore = defineStore('games', () => {
     }
 
     const newGame = new Game([new Replay(file, recording)])
-    const realGames = [...(gameTypes['real'] ?? []), newGame]
-    const sortedGames = realGames.sort(
-      (game1, game2) => (game1?.date?.getTime() ?? 0) - (game2?.date?.getTime() ?? 0)
+    const realGames = Object.groupBy(gameTypes.real ?? [], (game) =>
+      (game.date?.getTime() ?? 0) < (newGame.date?.getTime() ?? 0) ? 'before' : 'after'
     )
+    const sortedGames = [...(realGames.before ?? []), newGame, ...(realGames.after ?? [])]
 
-    games.value = [...sortedGames, ...(gameTypes['dummy']?.slice(0, -1) || [])]
+    games.value = [...sortedGames, ...(gameTypes['dummy']?.slice(0, -1) ?? [])]
     setGamesNumber(games.value.length)
   }
 
@@ -69,6 +69,15 @@ export const useGamesStore = defineStore('games', () => {
     }
   }
 
+  function moveGame(index: number, positionShift: number) {
+    const otherIndex = index + positionShift
+    if (otherIndex < 0 || otherIndex > realGamesCount.value || otherIndex == index) {
+      return
+    }
+    ;[games.value[index], games.value[otherIndex]] = [games.value[otherIndex], games.value[index]]
+  }
+
   const hasGames = computed(() => Object.values(recordings.value).length > 0)
-  return { addRec, parseRec, games, hasGames, clearGame, removeGame, setGamesNumber }
+  const realGamesCount = computed(() => games.value.filter((game) => !game.isDummy()).length)
+  return { addRec, parseRec, games, hasGames, clearGame, removeGame, setGamesNumber, moveGame }
 })

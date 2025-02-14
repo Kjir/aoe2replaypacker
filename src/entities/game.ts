@@ -200,7 +200,7 @@ export function normalizePlayerName(playerName: string, defaultName: string) {
   const asciiName = UNICODE_NORMALIZATION
     ? unidecode(playerName)
     : // eslint-disable-next-line no-control-regex
-    playerName.replace(/[^\x00-\x7F]/g, '')
+      playerName.replace(/[^\x00-\x7F]/g, '')
 
   const noWhitespaceName = asciiName.replace(/\s/g, '')
   // eslint-disable-next-line no-control-regex

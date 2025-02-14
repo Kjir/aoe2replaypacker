@@ -20,6 +20,8 @@ const gamesStore = useGamesStore()
       :index="index"
       :num-games="gamesStore.games.length"
       @set-winner="game.winner = $event"
+      @up="gamesStore.moveGame(index, -1)"
+      @down="gamesStore.moveGame(index, 1)"
     >
     </component>
   </div>
