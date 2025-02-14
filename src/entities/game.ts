@@ -72,6 +72,10 @@ export class Game {
 
     if (this.replays.length > 0 && this.replays[0].recording) {
       const recording = this.replays[0].recording
+      if (!recording.success) {
+        this.date = new Date(recording.zheader.timestamp)
+        return
+      }
       const { date, mapName, duration, resignations, teams } = extractRecordingInfo(recording)
       this.date = date
       this.mapName = mapName
@@ -99,7 +103,10 @@ export class Game {
     return this.replays.length == 0 || this.replays.findIndex((replay) => !!replay.recording) == -1
   }
 
-  matchesRecording(recording: ParsedReplay) {
+  matchesRecording(recording: TrueReplay | DummyReplay) {
+    if (!recording.success) {
+      return false
+    }
     const recordingInfo = extractRecordingInfo(recording)
     if (recordingInfo.mapName != this.mapName) {
       return false
@@ -128,13 +135,19 @@ export class Game {
     })
   }
 
-  addRecording(file: File, recording: ParsedReplay) {
+  addRecording(file: File, recording: TrueReplay | DummyReplay) {
     this.replays = [...this.replays, new Replay(file, recording)].sort(
       (replayA, replayB) =>
         (replayA.recording?.zheader?.timestamp ?? 0) - (replayB.recording?.zheader?.timestamp ?? 0)
     )
-    const lastReplay = this.replays.findLast((replay) => !!replay.recording)
-    const recordingInfo = extractRecordingInfo(lastReplay?.recording ?? recording)
+    const lastReplay = this.replays.findLast(
+      (replay) => !!replay.recording && replay.recording.success
+    )
+    const latestRecording = lastReplay?.recording ?? recording
+    if (!latestRecording.success) {
+      return
+    }
+    const recordingInfo = extractRecordingInfo(latestRecording)
     this.duration = recordingInfo.duration
     this.resignations = recordingInfo.resignations
     this.teams = recordingInfo.teams
@@ -145,8 +158,8 @@ export class Game {
 export class Replay {
   id: number
   file: File
-  recording: ParsedReplay
-  constructor(file: File, recording: ParsedReplay) {
+  recording: TrueReplay | DummyReplay
+  constructor(file: File, recording: TrueReplay | DummyReplay) {
     this.id = replayCounter++
     this.file = file
     this.recording = recording
@@ -194,6 +207,12 @@ export type ParsedReplay = {
     timestamp: timestamp
   }
   operations: Array<SyncOperation | ActionOperation>
+}
+
+export type TrueReplay = ParsedReplay & { success: true }
+
+export type DummyReplay = ParsedReplay & {
+  success: false
 }
 
 export function normalizePlayerName(playerName: string, defaultName: string) {
@@ -255,7 +274,7 @@ export function computeReplayFilenamePreview(
   return `${filename}${dummyIndicator}`
 }
 
-function getTeams(replay: ParsedReplay, resignations: player_id[]) {
+function getTeams(replay: TrueReplay, resignations: player_id[]) {
   const players = replay.zheader.game_settings.players
   const parsedPlayers = players.map((player, index) => {
     const resolved_team_id = player.resolved_team_id
@@ -280,7 +299,7 @@ function getTeams(replay: ParsedReplay, resignations: player_id[]) {
   )
 }
 
-function parseOperations(replay: ParsedReplay) {
+function parseOperations(replay: TrueReplay) {
   return replay.operations.reduce(
     (operationStats, operation) => {
       if ('Sync' in operation) {
@@ -307,7 +326,7 @@ function parseOperations(replay: ParsedReplay) {
   )
 }
 
-export function extractRecordingInfo(recording: ParsedReplay) {
+export function extractRecordingInfo(recording: TrueReplay) {
   const game_settings = recording.zheader.game_settings
   const map_id = game_settings.resolved_map_id
   const date = new Date(recording.zheader.timestamp * 1000)

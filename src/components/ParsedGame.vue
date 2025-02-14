@@ -29,6 +29,13 @@ const rightName = computed(() => {
   const teamsCount = props.game.teams.length
   return props.game.teams[teamsCount - 1]?.players?.[0]?.name
 })
+
+const isUnparseable = computed(
+  () =>
+    !props.game.mapName &&
+    props.game.replays.length > 0 &&
+    props.game.replays.every((replay) => !replay.recording.success)
+)
 </script>
 <template>
   <div>
@@ -41,6 +48,9 @@ const rightName = computed(() => {
     />
     <GameToolbox class="absolute right-0 top-1" :game-index="props.index" />
     <h3 class="text-center text-2xl">Game {{ props.index + 1 }}</h3>
+    <h4 class="text-center text-lg text-yellow-500 dark:text-yellow-200" v-if="isUnparseable">
+      Unparseable game
+    </h4>
     <h4 class="text-center text-lg">{{ props.game.mapName }}</h4>
     <p v-if="props.game.date" class="text-center text-sm text-gray-500 dark:text-gray-400">
       Played
@@ -123,6 +133,21 @@ const rightName = computed(() => {
         :team="team"
         :position="index % 2 ? 'right' : 'left'"
       />
+    </div>
+    <div v-if="isUnparseable">
+      <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+        This game <strong>could not be parsed</strong> by the replay packer.
+      </p>
+      <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+        Please check that you selected the <strong>correct file.</strong> Consider
+        <a class="underline" href="https://forms.gle/NDKqE8acLdYR2JrKA" target="_blank"
+          >reporting a bug</a
+        >.
+      </p>
+      <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+        The uploaded file will still be included in the downloaded Zip. You can proceed with the
+        submission of your results regardless of this issue.
+      </p>
     </div>
   </div>
 </template>
