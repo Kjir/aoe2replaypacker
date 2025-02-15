@@ -19,7 +19,7 @@ const gamesStore = useGamesStore()
       :game="game"
       :index="index"
       :num-games="gamesStore.realGamesCount"
-      @set-winner="game.winner = $event"
+      @set-winner="(winner: 'left' | 'none' | 'right') => (game.winner = winner)"
       @move="(direction: 'up' | 'down') => gamesStore.moveGame(index, direction == 'up' ? -1 : 1)"
     >
     </component>
