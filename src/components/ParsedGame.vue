@@ -124,28 +124,28 @@ const isUnparseable = computed(
         </label>
       </div>
     </div>
-    <div class="w-full grid grid-cols-2 gap-12 justify-items-between mt-4 mb-12 pl-6 pr-6">
-      <GameTeam
-        v-for="(team, index) in props.game.teams"
-        :key="team.id"
-        :team="team"
-        :position="index % 2 ? 'right' : 'left'"
-      />
-    </div>
-    <div v-if="isUnparseable">
+    <div v-if="isUnparseable" class="w-full mt-4">
       <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-        This game <strong>could not be parsed</strong> by the replay packer.
+        This recording <strong>could not be parsed</strong> by the replay packer.
       </p>
       <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-        Please check that you selected the <strong>correct file.</strong> Consider
+        Please check that you have selected the <strong>correct file</strong>. Consider
         <a class="underline" href="https://forms.gle/NDKqE8acLdYR2JrKA" target="_blank"
-          >reporting a bug</a
+          >reporting an issue</a
         >.
       </p>
       <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
         The uploaded file will still be included in the downloaded Zip. You can proceed with the
         submission of your results regardless of this issue.
       </p>
+    </div>
+    <div v-else class="w-full grid grid-cols-2 gap-12 justify-items-between mt-4 mb-12 pl-6 pr-6">
+      <GameTeam
+        v-for="(team, index) in props.game.teams"
+        :key="team.id"
+        :team="team"
+        :position="index % 2 ? 'right' : 'left'"
+      />
     </div>
   </div>
 </template>

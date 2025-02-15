@@ -36,7 +36,7 @@ const [civDraftPresets, mapDraftPresets] = getPresets(urlParams)
           Created by <a class="underline" href="https://github.com/ZetaTwo">ZetaTwo</a> &amp;
           <a class="underline" href="https://github.com/Kjir">Beargwyn</a> -
           <a class="underline" href="https://github.com/ZetaTwo/aoe2replaypacker">Source code</a> -
-          <a class="underline" href="https://forms.gle/NDKqE8acLdYR2JrKA">Report a bug</a>
+          <a class="underline" href="https://forms.gle/NDKqE8acLdYR2JrKA">Report an issue</a>
         </p>
       </div>
     </footer>
