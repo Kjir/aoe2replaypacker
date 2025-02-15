@@ -17,8 +17,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   setWinner: [winner: 'left' | 'none' | 'right']
-  up: []
-  down: []
+  move: [direction: 'up' | 'down']
 }>()
 
 const leftName = computed(() => props.game.teams?.[0]?.players?.[0]?.name)
@@ -43,8 +42,7 @@ const isUnparseable = computed(
       class="absolute left-0 top-0"
       :top="props.index == 0"
       :bottom="props.index + 1 == props.numGames"
-      @up="emit('up')"
-      @down="emit('down')"
+      @move="(direction: 'up' | 'down') => emit('move', direction)"
     />
     <GameToolbox class="absolute right-0 top-1" :game-index="props.index" />
     <h3 class="text-center text-2xl">Game {{ props.index + 1 }}</h3>
