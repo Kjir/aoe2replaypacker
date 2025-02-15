@@ -5,9 +5,11 @@ import GameReorder from '@/components/GameReorder.vue'
 import GameToolbox from '@/components/GameToolbox.vue'
 import type { Game } from '@/entities/game'
 import GameTeam from '@/components/GameTeam.vue'
+import ExpandButton from '@/components/ExpandButton.vue'
 import winner from '@/assets/crown.svg'
 import loser from '@/assets/skull.svg'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { readableSize } from '@/lib/maths'
 
 const props = defineProps<{
   index: number
@@ -35,6 +37,11 @@ const isUnparseable = computed(
     props.game.replays.length > 0 &&
     props.game.replays.every((replay) => !replay.recording.success)
 )
+
+const replayExpandText = computed(
+  () => `${props.game.replays.length} replay${props.game.replays.length > 1 ? 's' : ''}`
+)
+const showReplays = ref<boolean>(false)
 </script>
 <template>
   <div>
@@ -146,6 +153,25 @@ const isUnparseable = computed(
         :team="team"
         :position="index % 2 ? 'right' : 'left'"
       />
+    </div>
+    <div class="flex justify-end">
+      <div class="flex flex-col content-end">
+        <span class="flex justify-end">
+          <expand-button
+            :open-text="replayExpandText"
+            :close-text="replayExpandText"
+            @click="showReplays = !showReplays"
+          />
+        </span>
+        <ul
+          :class="showReplays ? ['max-h-screen'] : ['max-h-0']"
+          class="mt-2 transition-max-height overflow-hidden duration-500"
+        >
+          <li v-for="replay in props.game.replays" :key="replay.id">
+            {{ replay.file.name }} ({{ readableSize(replay.file.size) }})
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>

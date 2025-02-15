@@ -18,3 +18,13 @@ export function getRandomInt(min: number, max: number) {
   const maxFloored = Math.floor(max)
   return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled) // The maximum is exclusive and the minimum is inclusive
 }
+
+export function readableSize(bytes: number) {
+  const sizeInKb = bytes / 1024
+
+  if (sizeInKb > 1024) {
+    return `${Math.round((sizeInKb / 1024) * 100) / 100} Mb`
+  } else {
+    return `${Math.round(sizeInKb)} Kb`
+  }
+}

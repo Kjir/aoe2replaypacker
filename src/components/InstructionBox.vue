@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import ExpandButton from '@/components/ExpandButton.vue'
 const open = ref(false)
 
 function toggleOpen() {
@@ -13,12 +14,7 @@ function toggleOpen() {
     <p>
       This page will help you create a zip file of replays for submitting your AoE2 match results.
     </p>
-    <button
-      @click="toggleOpen()"
-      class="mt-2 border-2 px-1 py-1 rounded-lg cursor-pointer text-gray-500 bg-white dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
-    >
-      <template v-if="open">Hide Help</template><template v-else>Show Help</template>
-    </button>
+    <expand-button @click="toggleOpen()" open-text="Show Help" close-text="Hide Help" />
     <div
       :class="{ 'max-h-0': !open, 'max-h-screen': open }"
       class="mt-2 transition-max-height overflow-hidden duration-1000"
