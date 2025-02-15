@@ -74,7 +74,7 @@ export const useGamesStore = defineStore('games', () => {
 
   function moveGame(index: number, positionShift: number) {
     const otherIndex = index + positionShift
-    if (otherIndex < 0 || otherIndex > realGamesCount.value || otherIndex == index) {
+    if (otherIndex < 0 || otherIndex >= realGamesCount.value || otherIndex == index) {
       return
     }
     ;[games.value[index], games.value[otherIndex]] = [games.value[otherIndex], games.value[index]]
@@ -82,5 +82,15 @@ export const useGamesStore = defineStore('games', () => {
 
   const hasGames = computed(() => Object.values(recordings.value).length > 0)
   const realGamesCount = computed(() => games.value.filter((game) => !game.isDummy()).length)
-  return { addRec, parseRec, games, hasGames, clearGame, removeGame, setGamesNumber, moveGame }
+  return {
+    addRec,
+    parseRec,
+    games,
+    hasGames,
+    clearGame,
+    removeGame,
+    setGamesNumber,
+    moveGame,
+    realGamesCount
+  }
 })

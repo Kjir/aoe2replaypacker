@@ -18,7 +18,7 @@ const gamesStore = useGamesStore()
       :is="game.isDummy() ? DummyGame : ParsedGame"
       :game="game"
       :index="index"
-      :num-games="gamesStore.games.length"
+      :num-games="gamesStore.realGamesCount"
       @set-winner="game.winner = $event"
       @up="gamesStore.moveGame(index, -1)"
       @down="gamesStore.moveGame(index, 1)"
