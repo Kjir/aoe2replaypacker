@@ -16,7 +16,7 @@ const expanded = ref(false)
       close-text="Hide Help"
     />
     <div
-      :class="{ 'max-h-0': !open, 'max-h-screen': open }"
+      :class="expanded ? ['max-h-screen'] : ['max-h-0']"
       class="mt-2 transition-max-height overflow-hidden duration-1000"
     >
       <p>To use it follow, these simple steps:</p>
