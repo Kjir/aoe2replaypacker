@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ExpandButton from '@/components/ExpandButton.vue'
-const open = ref(false)
-
-function toggleOpen() {
-  open.value = !open.value
-}
+const expanded = ref(false)
 </script>
 
 <template>
@@ -14,7 +10,11 @@ function toggleOpen() {
     <p>
       This page will help you create a zip file of replays for submitting your AoE2 match results.
     </p>
-    <expand-button @click="toggleOpen()" open-text="Show Help" close-text="Hide Help" />
+    <expand-button
+      @set-expanded="(value: boolean) => (expanded = value)"
+      open-text="Show Help"
+      close-text="Hide Help"
+    />
     <div
       :class="{ 'max-h-0': !open, 'max-h-screen': open }"
       class="mt-2 transition-max-height overflow-hidden duration-1000"

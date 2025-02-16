@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 const emit = defineEmits<{
-  click: [event: Event]
+  setExpanded: [expanded: boolean]
 }>()
 
 const { openText = 'Expand', closeText = 'Hide' } = defineProps<{
@@ -12,9 +12,9 @@ const { openText = 'Expand', closeText = 'Hide' } = defineProps<{
 
 const expanded = ref<boolean>(false)
 
-function toggleExpand(event: Event) {
-  emit('click', event)
+function toggleExpand() {
   expanded.value = !expanded.value
+  emit('setExpanded', expanded.value)
 }
 </script>
 <template>

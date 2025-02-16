@@ -160,7 +160,7 @@ const showReplays = ref<boolean>(false)
           <expand-button
             :open-text="replayExpandText"
             :close-text="replayExpandText"
-            @click="showReplays = !showReplays"
+            @set-expanded="(value: boolean) => (showReplays = value)"
           />
         </span>
         <ul
