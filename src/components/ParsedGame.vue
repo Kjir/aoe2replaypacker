@@ -165,7 +165,7 @@ const showReplays = ref<boolean>(false)
         </span>
         <ul
           :class="showReplays ? ['max-h-screen'] : ['max-h-0']"
-          class="mt-2 transition-max-height overflow-hidden duration-500"
+          class="mt-2 transition-max-height overflow-hidden duration-200"
         >
           <li v-for="replay in props.game.replays" :key="replay.id">
             {{ replay.file.name }} ({{ readableSize(replay.file.size) }})
