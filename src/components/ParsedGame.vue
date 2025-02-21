@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { format, formatDistanceToNow, intlFormat } from 'date-fns'
+import { format } from 'date-fns'
 import { UTCDate } from '@date-fns/utc'
 import GameReorder from '@/components/GameReorder.vue'
 import GameToolbox from '@/components/GameToolbox.vue'
@@ -10,6 +10,10 @@ import winner from '@/assets/crown.svg'
 import loser from '@/assets/skull.svg'
 import { computed, ref } from 'vue'
 import { readableSize } from '@/lib/maths'
+import MoveButton from '@/components/MoveButton.vue'
+import MoveModal from '@/components/MoveReplayModal.vue'
+import GameDate from './GameDate.vue'
+import { useGamesStore } from '@/stores/games'
 
 const props = defineProps<{
   index: number
@@ -21,6 +25,8 @@ const emit = defineEmits<{
   setWinner: [winner: 'left' | 'none' | 'right']
   move: [direction: 'up' | 'down']
 }>()
+
+const { moveReplay } = useGamesStore()
 
 const leftName = computed(() => props.game.teams?.[0]?.players?.[0]?.name)
 const rightName = computed(() => {
@@ -42,6 +48,12 @@ const replayExpandText = computed(
   () => `${props.game.replays.length} replay${props.game.replays.length > 1 ? 's' : ''}`
 )
 const showReplays = ref<boolean>(false)
+const showModal = ref(-1)
+
+function moveGameReplay(replayId: number, targetGame: number) {
+  showModal.value = -1
+  moveReplay(replayId, props.index, targetGame)
+}
 </script>
 <template>
   <div>
@@ -58,22 +70,8 @@ const showReplays = ref<boolean>(false)
     </h4>
     <h4 class="text-center text-lg">{{ props.game.mapName }}</h4>
     <p v-if="props.game.date" class="text-center text-sm text-gray-500 dark:text-gray-400">
-      Played
-      <abbr
-        :title="
-          intlFormat(props.game.date, {
-            weekday: 'short',
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric'
-          })
-        "
-        >{{ formatDistanceToNow(props.game.date) }} ago</abbr
-      >
-      and lasted {{ format(new UTCDate(props.game.duration), 'HH:mm:ss') }}
+      Played <game-date :date="props.game.date" /> and lasted
+      {{ format(new UTCDate(props.game.duration), 'HH:mm:ss') }}
     </p>
     <p
       v-if="props.game.replays.length > 1"
@@ -152,6 +150,7 @@ const showReplays = ref<boolean>(false)
         :key="team.id"
         :team="team"
         :position="index % 2 ? 'right' : 'left'"
+        class="border-2 p-4"
       />
     </div>
     <div class="flex justify-end">
@@ -167,8 +166,17 @@ const showReplays = ref<boolean>(false)
           :class="showReplays ? ['max-h-screen'] : ['max-h-0']"
           class="mt-2 transition-max-height overflow-hidden duration-200"
         >
-          <li v-for="replay in props.game.replays" :key="replay.id">
+          <li v-for="replay in props.game.replays" :key="replay.id" class="flex gap-2 mb-2">
             {{ replay.file.name }} ({{ readableSize(replay.file.size) }})
+            <move-button @click="showModal = replay.id" />
+            <move-modal
+              :show="showModal == replay.id"
+              @close="showModal = -1"
+              :current-game="props.index"
+              @move="(targetGame) => moveGameReplay(replay.id, targetGame)"
+              :total-games="props.numGames"
+              :replay="replay"
+            />
           </li>
         </ul>
       </div>

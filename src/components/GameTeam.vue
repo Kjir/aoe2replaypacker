@@ -10,7 +10,7 @@ const { team } = defineProps<{
 </script>
 
 <template>
-  <div class="border-2 p-6 rounded-lg flex flex-col justify-stretch">
+  <div class="rounded-lg flex flex-col justify-stretch">
     <template v-if="position == 'left'">
       <div
         v-for="player in team.players"

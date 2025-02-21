@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import InstructionBox from './components/InstructionBox.vue'
-import ReplayForm from './components/ReplayForm.vue'
+import InstructionBox from '@/components/InstructionBox.vue'
+import ReplayForm from '@/components/ReplayForm.vue'
 import tournamentsData from 'virtual:tournaments-data'
 
 function getPresets(params: URLSearchParams): [string[] | null, string[] | null] {

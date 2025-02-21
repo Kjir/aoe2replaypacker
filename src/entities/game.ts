@@ -136,14 +136,18 @@ export class Game {
   }
 
   addRecording(file: File, recording: TrueReplay | DummyReplay) {
-    this.replays = [...this.replays, new Replay(file, recording)].sort(
+    this.addReplay(new Replay(file, recording))
+  }
+
+  addReplay(replay: Replay) {
+    this.replays = [...this.replays, replay].sort(
       (replayA, replayB) =>
         (replayA.recording?.zheader?.timestamp ?? 0) - (replayB.recording?.zheader?.timestamp ?? 0)
     )
     const lastReplay = this.replays.findLast(
       (replay) => !!replay.recording && replay.recording.success
     )
-    const latestRecording = lastReplay?.recording ?? recording
+    const latestRecording = lastReplay?.recording ?? replay.recording
     if (!latestRecording.success) {
       return
     }

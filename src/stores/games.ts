@@ -17,13 +17,7 @@ export const useGamesStore = defineStore('games', () => {
     }
 
     const newGame = new Game([new Replay(file, recording)])
-    const realGames = Object.groupBy(gameTypes.real ?? [], (game) =>
-      (game.date?.getTime() ?? 0) < (newGame.date?.getTime() ?? 0) ? 'before' : 'after'
-    )
-    const sortedGames = [...(realGames.before ?? []), newGame, ...(realGames.after ?? [])]
-
-    games.value = [...sortedGames, ...(gameTypes['dummy']?.slice(0, -1) ?? [])]
-    setGamesNumber(games.value.length)
+    addGame(newGame)
   }
 
   async function parseRec(file: File) {
@@ -55,6 +49,18 @@ export const useGamesStore = defineStore('games', () => {
     })
   }
 
+  function addGame(newGame: Game) {
+    const gameTypes = Object.groupBy(games.value, (game) => (game.isDummy() ? 'dummy' : 'real'))
+
+    const realGames = Object.groupBy(gameTypes.real ?? [], (game) =>
+      (game.date?.getTime() ?? 0) < (newGame.date?.getTime() ?? 0) ? 'before' : 'after'
+    )
+    const sortedGames = [...(realGames.before ?? []), newGame, ...(realGames.after ?? [])]
+
+    games.value = [...sortedGames, ...(gameTypes['dummy']?.slice(0, -1) ?? [])]
+    setGamesNumber(games.value.length)
+  }
+
   function clearGame(index: number) {
     games.value = games.value.filter((_game, game_index) => index != game_index)
     games.value.push(new Game())
@@ -80,6 +86,34 @@ export const useGamesStore = defineStore('games', () => {
     ;[games.value[index], games.value[otherIndex]] = [games.value[otherIndex], games.value[index]]
   }
 
+  function moveReplay(replayId: number, sourceGame: number, targetGame: number) {
+    if (sourceGame >= games.value.length) {
+      return
+    }
+
+    const replayToMove = games.value[sourceGame].replays.find((replay) => replay.id == replayId)
+
+    if (!replayToMove) {
+      return
+    }
+
+    games.value = games.value
+      .map((game, index) => {
+        if (index == sourceGame) {
+          return new Game(game.replays.filter((replay) => replay.id != replayId))
+        }
+        if (index == targetGame) {
+          game.addReplay(replayToMove)
+        }
+        return game
+      })
+      .toSorted((game1, game2) => +game1.isDummy() - +game2.isDummy())
+
+    if (targetGame == -1) {
+      addGame(new Game([replayToMove]))
+    }
+  }
+
   const hasGames = computed(() => Object.values(recordings.value).length > 0)
   const realGamesCount = computed(() => games.value.filter((game) => !game.isDummy()).length)
   return {
@@ -91,6 +125,7 @@ export const useGamesStore = defineStore('games', () => {
     removeGame,
     setGamesNumber,
     moveGame,
-    realGamesCount
+    realGamesCount,
+    moveReplay
   }
 })
