@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@date-fns/utc": "^2.1.0",
-    "aoe2rec-js": "^0.1.4",
+    "aoe2rec-js": "^0.1.7",
     "date-fns": "^4.1.0",
     "lodash.debounce": "^4.0.8",
     "pinia": "^2.2.6",

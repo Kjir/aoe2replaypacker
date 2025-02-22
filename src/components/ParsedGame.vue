@@ -41,7 +41,7 @@ const isUnparseable = computed(
   () =>
     !props.game.mapName &&
     props.game.replays.length > 0 &&
-    props.game.replays.every((replay) => !replay.recording.success)
+    props.game.replays.every((replay) => 'dummy' in replay.recording)
 )
 
 const replayExpandText = computed(

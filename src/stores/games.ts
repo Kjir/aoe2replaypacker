@@ -1,10 +1,10 @@
 import { computed, ref, type Ref } from 'vue'
 import { defineStore } from 'pinia'
-import { parse_rec } from 'aoe2rec-js'
-import { Game, Replay, type DummyReplay, type ParsedReplay, type TrueReplay } from '@/entities/game'
+import { parse_rec_summary, SavegameSummary } from 'aoe2rec-js'
+import { Game, Replay, type DummyReplay } from '@/entities/game'
 
 export const useGamesStore = defineStore('games', () => {
-  const recordings: Ref<Record<string, TrueReplay>> = ref({})
+  const recordings: Ref<Record<string, SavegameSummary>> = ref({})
   const games: Ref<Game[]> = ref([new Game(), new Game(), new Game()])
 
   async function addRec(file: File) {
@@ -21,7 +21,7 @@ export const useGamesStore = defineStore('games', () => {
   }
 
   async function parseRec(file: File) {
-    return new Promise<TrueReplay | DummyReplay>((resolve) => {
+    return new Promise<SavegameSummary | DummyReplay>((resolve) => {
       const reader = new FileReader()
       reader.addEventListener(
         'loadend',
@@ -31,16 +31,13 @@ export const useGamesStore = defineStore('games', () => {
             return
           }
           try {
-            const recording: TrueReplay = {
-              ...(parse_rec(event.target.result as ArrayBuffer) as ParsedReplay),
-              success: true
-            }
+            const recording = parse_rec_summary(event.target.result as ArrayBuffer)
             recordings.value = { ...recordings.value, [file.name]: recording }
             resolve(recording)
           } catch (error) {
             console.error('Failed to parse')
             console.error(error)
-            resolve({ zheader: { timestamp: file.lastModified }, success: false } as DummyReplay)
+            resolve({ header: { timestamp: file.lastModified }, dummy: true } as DummyReplay)
           }
         },
         false

@@ -2,6 +2,7 @@ import unidecode from 'unidecode'
 import { logn, toBase26 } from '../lib/maths'
 import { mapNames } from './maps'
 import { civNames } from './civs'
+import type { SavegameSummary, Team as SavegameTeam } from 'aoe2rec-js'
 
 const UNICODE_NORMALIZATION = false // Setting this to true doubles the code size
 
@@ -57,13 +58,11 @@ export class Game {
   mapName?: string
   teams?: Team[]
   duration: number
-  resignations: player_id[]
 
   constructor(replays: Replay[] | null = null) {
     this.id = gameCounter++
     this.winner = 'none'
     this.duration = 0
-    this.resignations = []
     if (Array.isArray(replays)) {
       this.replays = replays
     } else {
@@ -72,15 +71,14 @@ export class Game {
 
     if (this.replays.length > 0 && this.replays[0].recording) {
       const recording = this.replays[0].recording
-      if (!recording.success) {
-        this.date = new Date(recording.zheader.timestamp)
+      if ('dummy' in recording) {
+        this.date = new Date(recording.header.timestamp)
         return
       }
-      const { date, mapName, duration, resignations, teams } = extractRecordingInfo(recording)
+      const { date, mapName, duration, teams } = extractRecordingInfo(recording)
       this.date = date
       this.mapName = mapName
       this.duration = duration
-      this.resignations = resignations
       this.teams = teams
       this.setWinner()
     }
@@ -103,8 +101,8 @@ export class Game {
     return this.replays.length == 0 || this.replays.findIndex((replay) => !!replay.recording) == -1
   }
 
-  matchesRecording(recording: TrueReplay | DummyReplay) {
-    if (!recording.success) {
+  matchesRecording(recording: SavegameSummary | DummyReplay) {
+    if ('dummy' in recording) {
       return false
     }
     const recordingInfo = extractRecordingInfo(recording)
@@ -135,25 +133,24 @@ export class Game {
     })
   }
 
-  addRecording(file: File, recording: TrueReplay | DummyReplay) {
+  addRecording(file: File, recording: SavegameSummary | DummyReplay) {
     this.addReplay(new Replay(file, recording))
   }
 
   addReplay(replay: Replay) {
     this.replays = [...this.replays, replay].sort(
       (replayA, replayB) =>
-        (replayA.recording?.zheader?.timestamp ?? 0) - (replayB.recording?.zheader?.timestamp ?? 0)
+        (replayA.recording?.header?.timestamp ?? 0) - (replayB.recording?.header?.timestamp ?? 0)
     )
     const lastReplay = this.replays.findLast(
-      (replay) => !!replay.recording && replay.recording.success
+      (replay) => !!replay.recording && !('dummy' in replay.recording)
     )
     const latestRecording = lastReplay?.recording ?? replay.recording
-    if (!latestRecording.success) {
+    if ('dummy' in latestRecording) {
       return
     }
     const recordingInfo = extractRecordingInfo(latestRecording)
     this.duration = recordingInfo.duration
-    this.resignations = recordingInfo.resignations
     this.teams = recordingInfo.teams
     this.setWinner()
   }
@@ -162,61 +159,16 @@ export class Game {
 export class Replay {
   id: number
   file: File
-  recording: TrueReplay | DummyReplay
-  constructor(file: File, recording: TrueReplay | DummyReplay) {
+  recording: SavegameSummary | DummyReplay
+  constructor(file: File, recording: SavegameSummary | DummyReplay) {
     this.id = replayCounter++
     this.file = file
     this.recording = recording
   }
 }
 
-type SyncOperation = {
-  Sync: {
-    next: number
-    time_increment: number
-  }
-}
-
-type ResignAction = {
-  Resign: {
-    player_id: player_id
-  }
-}
-type ActionOperation = {
-  Action: {
-    action_data: ResignAction
-    length: number
-  }
-}
-
-type timestamp = number
-
-export type ParsedReplay = {
-  zheader: {
-    game_settings: {
-      resolved_map_id: number
-      rms_strings: string[]
-      players: {
-        player_number: player_id
-        name: string
-        profile_id: string
-        civ_id: number
-        color_id: number
-        resolved_team_id: number
-      }[]
-    }
-    replay: {
-      world_time: timestamp
-    }
-    timestamp: timestamp
-  }
-  operations: Array<SyncOperation | ActionOperation>
-}
-
-export type TrueReplay = ParsedReplay & { success: true }
-
-export type DummyReplay = ParsedReplay & {
-  success: false
+export type DummyReplay = { header: { timestamp: number } } & {
+  dummy: true
 }
 
 export function normalizePlayerName(playerName: string, defaultName: string) {
@@ -278,65 +230,34 @@ export function computeReplayFilenamePreview(
   return `${filename}${dummyIndicator}`
 }
 
-function getTeams(replay: TrueReplay, resignations: player_id[]) {
-  const players = replay.zheader.game_settings.players
-  const parsedPlayers = players.map((player, index) => {
-    const resolved_team_id = player.resolved_team_id
-    const team_id = resolved_team_id == 1 ? 9 + index : resolved_team_id
-    return new Player(
-      player.player_number,
-      player.name,
-      player.profile_id,
-      civNames[player.civ_id],
+function getTeams(teams: SavegameTeam[]) {
+  return teams.map((team) => {
+    const team_id = team.players.at(0)?.resolved_team_id ?? -1
+    return new Team(
       team_id,
-      player.color_id + 1,
-      resignations.includes(player.player_number)
+      team.players.map(
+        (player) =>
+          new Player(
+            player.player_number,
+            player.name,
+            `${player.profile_id}`,
+            civNames[player.civ_id],
+            team_id,
+            player.color_id + 1,
+            player.resigned
+          )
+      )
     )
   })
-  const team_ids = new Set(parsedPlayers.map((player) => player.team_id))
-  return Array.from(team_ids).map(
-    (team_id) =>
-      new Team(
-        team_id,
-        parsedPlayers.filter((player) => player.team_id == team_id)
-      )
-  )
 }
 
-function parseOperations(replay: TrueReplay) {
-  return replay.operations.reduce(
-    (operationStats, operation) => {
-      if ('Sync' in operation) {
-        return {
-          ...operationStats,
-          duration: operationStats.duration + operation.Sync.time_increment
-        }
-      }
-      if ('Action' in operation && 'Resign' in operation.Action.action_data) {
-        return {
-          ...operationStats,
-          resignations: [
-            ...operationStats.resignations,
-            operation.Action.action_data.Resign.player_id
-          ]
-        }
-      }
-      return operationStats
-    },
-    { duration: replay.zheader.replay.world_time, resignations: [] } as {
-      duration: number
-      resignations: player_id[]
-    }
-  )
-}
-
-export function extractRecordingInfo(recording: TrueReplay) {
-  const game_settings = recording.zheader.game_settings
+export function extractRecordingInfo(recording: SavegameSummary) {
+  const game_settings = recording.header.game_settings
   const map_id = game_settings.resolved_map_id
-  const date = new Date(recording.zheader.timestamp * 1000)
+  const date = new Date(recording.header.timestamp * 1000)
   const mapName =
     mapNames[map_id] ?? game_settings.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
-  const { duration, resignations } = parseOperations(recording)
-  const teams = getTeams(recording, resignations)
-  return { date, mapName, duration, resignations, teams }
+  const duration = recording.duration
+  const teams = getTeams(recording.teams)
+  return { date, mapName, duration, teams }
 }
