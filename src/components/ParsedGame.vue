@@ -164,9 +164,13 @@ function moveGameReplay(replayId: number, targetGame: number) {
         </span>
         <ul
           :class="showReplays ? ['max-h-screen'] : ['max-h-0']"
-          class="mt-2 transition-max-height overflow-hidden duration-200"
+          class="mt-2 transition-max-height overflow-hidden duration-200 justify-items-end"
         >
-          <li v-for="replay in props.game.replays" :key="replay.id" class="flex gap-2 mb-2">
+          <li
+            v-for="replay in props.game.replays"
+            :key="replay.id"
+            class="flex gap-2 mb-2 flex-row items-center"
+          >
             {{ replay.file.name }} ({{ readableSize(replay.file.size) }})
             <move-button @click="showModal = replay.id" />
             <move-modal
