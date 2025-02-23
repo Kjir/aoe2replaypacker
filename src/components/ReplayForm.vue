@@ -11,6 +11,7 @@ import GameTable from './GameTable.vue'
 import ZipPreviewPane from './ZipPreviewPane.vue'
 import RecentDrafts from './RecentDrafts.vue'
 import DiscordMessage from './DiscordMessage.vue'
+import ToggleButton from '@/components/ToggleButton.vue'
 import { useGamesStore } from '@/stores/games'
 import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
 
@@ -37,6 +38,7 @@ const meta: Ref<ReplayMetadata> = ref({
   player2_score: null
 })
 const metaErrors: Ref<ReplayErrors> = ref({ maps: null, civs: null })
+const scoreEnabled = ref(true)
 
 const downloadWarningReplayMissing = computed(() => {
   if (boPa.value == 'best-of') {
@@ -200,7 +202,9 @@ function downloadZip() {
 
 const discordMessage = computed(() => {
   const boPaLabel = boPa.value == 'best-of' ? 'Best of' : 'Play all'
-  return `${player1.value} || ${leftScore.value} - ${rightScore.value} || ${player2.value}
+  const scorePreview = scoreEnabled.value ? `|| ${leftScore.value} - ${rightScore.value} ||` : 'vs'
+  console.log(scorePreview)
+  return `${player1.value} ${scorePreview} ${player2.value}
 ${boPaLabel} ${gamesStore.games.length}
 Map draft: ${extractDraftUrl(mapDraft.value)}
 Civ draft: ${extractDraftUrl(civDraft.value)}`
@@ -250,9 +254,11 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
     @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
   />
 
+  <ToggleButton class="mt-4" label="Enable score (spoilers)" v-model="scoreEnabled" />
+
   <GameDropzone />
-  <GameTable />
-  <div id="message_box" class="mt-4 text-center p-4 border-2 rounded-lg col-span-3 hidden"></div>
+  <GameTable :show-score="scoreEnabled" />
+  <div id=" message_box" class="mt-4 text-center p-4 border-2 rounded-lg col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 rounded-lg col-span-3 mt-4">
     <ZipPreviewPane :games="gamesStore.games" :player1="player1" :player2="player2" :meta="meta" />
     <button

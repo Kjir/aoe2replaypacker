@@ -4,6 +4,10 @@ import ParsedGame from '@/components/ParsedGame.vue'
 import { useGamesStore } from '@/stores/games'
 
 const gamesStore = useGamesStore()
+
+const { showScore = true } = defineProps<{
+  showScore: boolean
+}>()
 </script>
 <template>
   <div class="flex flex-col items-center gap-4 p-4 border-2 rounded-lg col-span-3 mt-4">
@@ -19,6 +23,7 @@ const gamesStore = useGamesStore()
       :game="game"
       :index="index"
       :num-games="gamesStore.realGamesCount"
+      :show-score="showScore"
       @set-winner="(winner: 'left' | 'none' | 'right') => (game.winner = winner)"
       @move="(direction: 'up' | 'down') => gamesStore.moveGame(index, direction == 'up' ? -1 : 1)"
     >
