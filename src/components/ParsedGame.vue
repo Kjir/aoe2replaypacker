@@ -160,7 +160,7 @@ function moveGameReplay(replayId: number, targetGame: number) {
           <expand-button
             :open-text="replayExpandText"
             :close-text="replayExpandText"
-            @set-expanded="(value: boolean) => (showReplays = value)"
+            v-model="showReplays"
           />
         </span>
         <ul

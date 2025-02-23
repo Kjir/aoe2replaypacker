@@ -1,25 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
-const emit = defineEmits<{
-  setExpanded: [expanded: boolean]
-}>()
+const expanded = defineModel<boolean>()
 
 const { openText = 'Expand', closeText = 'Hide' } = defineProps<{
   openText?: string
   closeText?: string
 }>()
-
-const expanded = ref<boolean>(false)
-
-function toggleExpand() {
-  expanded.value = !expanded.value
-  emit('setExpanded', expanded.value)
-}
 </script>
 <template>
   <button
-    @click="toggleExpand"
+    @click="expanded = !expanded"
     class="text-sm mt-2 pl-2 pr-2 rounded-full border-2 cursor-pointer text-gray-500 dark:hover:text-gray-300 hover:text-gray-600 dark:text-gray-400 dark:border-gray-700"
   >
     <svg

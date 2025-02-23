@@ -10,11 +10,7 @@ const expanded = ref(false)
     <p>
       This page will help you create a zip file of replays for submitting your AoE2 match results.
     </p>
-    <expand-button
-      @set-expanded="(value: boolean) => (expanded = value)"
-      open-text="Show Help"
-      close-text="Hide Help"
-    />
+    <expand-button v-model="expanded" open-text="Show Help" close-text="Hide Help" />
     <div
       :class="expanded ? ['max-h-screen'] : ['max-h-0']"
       class="mt-2 transition-max-height overflow-hidden duration-1000"
