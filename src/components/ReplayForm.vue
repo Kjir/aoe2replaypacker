@@ -203,7 +203,6 @@ function downloadZip() {
 const discordMessage = computed(() => {
   const boPaLabel = boPa.value == 'best-of' ? 'Best of' : 'Play all'
   const scorePreview = scoreEnabled.value ? `|| ${leftScore.value} - ${rightScore.value} ||` : 'vs'
-  console.log(scorePreview)
   return `${player1.value} ${scorePreview} ${player2.value}
 ${boPaLabel} ${gamesStore.games.length}
 Map draft: ${extractDraftUrl(mapDraft.value)}
