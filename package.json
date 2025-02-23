@@ -19,7 +19,7 @@
     "date-fns": "^4.1.0",
     "libarchive.js": "^2.0.2",
     "lodash.debounce": "^4.0.8",
-    "pinia": "^2.2.6",
+    "pinia": "^3.0.1",
     "vue": "^3.4.21"
   },
   "devDependencies": {
