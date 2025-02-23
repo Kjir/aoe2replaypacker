@@ -8,9 +8,7 @@ function changeReplay(event: Event) {
   if (!target.files) {
     return
   }
-  for (const file of target.files) {
-    gamesStore.addRec(file)
-  }
+  addFiles(target.files)
   target.value = ''
 }
 
@@ -18,8 +16,16 @@ function handleDrop(event: DragEvent) {
   if (!event?.dataTransfer?.files) {
     return
   }
-  for (const file of event.dataTransfer.files) {
-    gamesStore.addRec(file)
+  addFiles(event.dataTransfer.files)
+}
+
+function addFiles(files: FileList) {
+  for (const file of files) {
+    if (file.name.endsWith('.aoe2record')) {
+      gamesStore.addRec(file)
+    } else {
+      gamesStore.expandArchive(file)
+    }
   }
 }
 </script>
@@ -54,7 +60,7 @@ function handleDrop(event: DragEvent) {
       </div>
       <input
         id="dropzone-file"
-        accept=".aoe2record"
+        accept=".aoe2record, .zip, .rar, .7z"
         multiple
         type="file"
         class="hidden"
