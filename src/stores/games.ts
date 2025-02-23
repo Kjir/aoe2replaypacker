@@ -2,6 +2,7 @@ import { computed, ref, type Ref } from 'vue'
 import { defineStore } from 'pinia'
 import { parse_rec_summary, SavegameSummary } from 'aoe2rec-js'
 import { Game, Replay, type DummyReplay } from '@/entities/game'
+import webworker from 'libarchive.js/dist/worker-bundle.js?url'
 
 export const useGamesStore = defineStore('games', () => {
   const recordings: Ref<Record<string, SavegameSummary>> = ref({})
@@ -111,6 +112,16 @@ export const useGamesStore = defineStore('games', () => {
     }
   }
 
+  async function expandArchive(file: File) {
+    const { Archive } = await import('libarchive.js')
+    Archive.init({ workerUrl: webworker })
+    const archiveData = await Archive.open(file)
+    const files: { string: File } = await archiveData.extractFiles()
+    Object.values(files)
+      .filter((rec) => rec.name.endsWith('.aoe2record'))
+      .forEach((rec) => addRec(rec))
+  }
+
   const hasGames = computed(() => Object.values(recordings.value).length > 0)
   const realGamesCount = computed(() => games.value.filter((game) => !game.isDummy()).length)
   return {
@@ -123,6 +134,7 @@ export const useGamesStore = defineStore('games', () => {
     setGamesNumber,
     moveGame,
     realGamesCount,
-    moveReplay
+    moveReplay,
+    expandArchive
   }
 })
