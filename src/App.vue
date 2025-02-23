@@ -25,7 +25,7 @@ const [civDraftPresets, mapDraftPresets] = getPresets(urlParams)
 </script>
 
 <template>
-  <div class="lg:container lg:mx-auto lg:max-w-screen-lg">
+  <div class="lg:container lg:mx-auto lg:max-w-(--breakpoint-lg)">
     <main class="mt-10">
       <InstructionBox />
       <ReplayForm :civ-presets="civDraftPresets" :map-presets="mapDraftPresets" />

@@ -12,7 +12,7 @@ const { gameIndex, showClear = true } = defineProps<{
   <div class="flex justify-end">
     <button
       v-if="showClear"
-      class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
+      class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-hidden focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
       type="button"
       title="Clear info"
       @click="gamesStore.clearGame(gameIndex)"
@@ -32,7 +32,7 @@ const { gameIndex, showClear = true } = defineProps<{
       <span class="h-6 p-3">Clear info</span>
     </button>
     <button
-      class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
+      class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-hidden focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5"
       type="button"
       title="Remove game"
       @click="gamesStore.removeGame(gameIndex)"

@@ -36,7 +36,7 @@ const replayInfo = computed<Game>(() => new Game([props.replay]))
     >
       <div class="p-4 w-full max-h-full">
         <!-- Modal content -->
-        <div class="border-2 bg-white rounded-lg shadow-sm dark:bg-gray-700">
+        <div class="border-2 bg-white rounded-lg shadow-xs dark:bg-gray-700">
           <!-- Modal header -->
           <div
             class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200"

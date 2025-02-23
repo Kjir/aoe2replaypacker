@@ -50,7 +50,7 @@ function selectDraft(draft: draft) {
     >
       <li class="flex justify-between" v-for="draft in recentDrafts" :key="draft.draftId">
         <button
-          class="flex-auto text-start hover:bg-slate-100 hover:dark:bg-slate-900"
+          class="flex-auto text-start hover:bg-slate-100 dark:hover:bg-slate-900"
           :class="{
             'bg-slate-300': [currentMapDraftId, currentCivDraftId].includes(draft.draftId),
             'dark:bg-slate-600': [currentMapDraftId, currentCivDraftId].includes(draft.draftId)

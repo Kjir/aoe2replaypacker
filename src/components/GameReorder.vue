@@ -13,7 +13,7 @@ const emit = defineEmits<{
     <button
       v-if="!props.top"
       @click="emit('move', 'up')"
-      class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5 text-left"
+      class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-hidden focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5 text-left"
       type="button"
       title="Move up"
     >
@@ -37,7 +37,7 @@ const emit = defineEmits<{
     <button
       v-if="!props.bottom"
       @click="emit('move', 'down')"
-      class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5 text-left"
+      class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-hidden focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5 text-left"
       type="button"
       title="Move down"
     >

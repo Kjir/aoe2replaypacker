@@ -203,13 +203,13 @@ watch(meta, () => {
     </div>
     <input
       placeholder="Player 1 Name"
-      class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded"
+      class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded-sm"
       type="text"
       v-model="player1"
     /><span class="mx-10">vs</span>
     <input
       placeholder="Player 2 Name"
-      class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded"
+      class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded-sm"
       type="text"
       v-model="player2"
     />
@@ -223,7 +223,7 @@ watch(meta, () => {
           Map draft</label
         >
         <input
-          class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded ml-2"
+          class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded-sm ml-2"
           id="maps"
           type="text"
           placeholder="e.g. XZedf"
@@ -255,7 +255,7 @@ watch(meta, () => {
           Civ draft</label
         >
         <input
-          class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded ml-2"
+          class="border-1 bg-gray-100 dark:bg-gray-800 p-2 rounded-sm ml-2"
           id="civs"
           type="text"
           placeholder="e.g. vbvIP"

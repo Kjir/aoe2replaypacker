@@ -18,7 +18,7 @@ const { showResults = true } = defineProps<{
       v-else
       v-for="(game, index) in gamesStore.games"
       :key="game.id"
-      class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 relative"
+      class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-xs dark:bg-gray-800 dark:border-gray-700 relative"
       :is="game.isDummy() ? DummyGame : ParsedGame"
       :game="game"
       :index="index"
