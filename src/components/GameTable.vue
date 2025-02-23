@@ -5,8 +5,8 @@ import { useGamesStore } from '@/stores/games'
 
 const gamesStore = useGamesStore()
 
-const { showScore = true } = defineProps<{
-  showScore: boolean
+const { showResults = true } = defineProps<{
+  showResults: boolean
 }>()
 </script>
 <template>
@@ -23,7 +23,7 @@ const { showScore = true } = defineProps<{
       :game="game"
       :index="index"
       :num-games="gamesStore.realGamesCount"
-      :show-score="showScore"
+      :show-results="showResults"
       @set-winner="(winner: 'left' | 'none' | 'right') => (game.winner = winner)"
       @move="(direction: 'up' | 'down') => gamesStore.moveGame(index, direction == 'up' ? -1 : 1)"
     >

@@ -19,7 +19,7 @@ const props = defineProps<{
   index: number
   numGames: number
   game: Game
-  showScore: boolean
+  showResults: boolean
 }>()
 
 const emit = defineEmits<{
@@ -82,7 +82,7 @@ function moveGameReplay(replayId: number, targetGame: number) {
         props.game.replays.length > 2 ? 's' : ''
       }}
     </p>
-    <div class="flex mt-6 pl-6 pr-6" v-if="showScore">
+    <div class="flex mt-6 pl-6 pr-6" v-if="showResults">
       <div class="inline-flex w-1/2 h-full">
         <input
           type="radio"

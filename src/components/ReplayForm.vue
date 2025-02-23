@@ -38,7 +38,7 @@ const meta: Ref<ReplayMetadata> = ref({
   player2_score: null
 })
 const metaErrors: Ref<ReplayErrors> = ref({ maps: null, civs: null })
-const showScores = ref(true)
+const showResults = ref(true)
 
 const downloadWarningReplayMissing = computed(() => {
   if (boPa.value == 'best-of') {
@@ -202,7 +202,7 @@ function downloadZip() {
 
 const discordMessage = computed(() => {
   const boPaLabel = boPa.value == 'best-of' ? 'Best of' : 'Play all'
-  const scorePreview = showScores.value ? `|| ${leftScore.value} - ${rightScore.value} ||` : 'vs'
+  const scorePreview = showResults.value ? `|| ${leftScore.value} - ${rightScore.value} ||` : 'vs'
   return `${player1.value} ${scorePreview} ${player2.value}
 ${boPaLabel} ${gamesStore.games.length}
 Map draft: ${extractDraftUrl(mapDraft.value)}
@@ -253,10 +253,10 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
     @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
   />
 
-  <ToggleButton class="mt-4" label="Show scores (spoilers)" v-model="showScores" />
+  <ToggleButton class="mt-4" label="Show results (spoilers)" v-model="showResults" />
 
   <GameDropzone />
-  <GameTable :show-score="showScores" />
+  <GameTable :show-results="showResults" />
   <div id=" message_box" class="mt-4 text-center p-4 border-2 rounded-lg col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 rounded-lg col-span-3 mt-4">
     <ZipPreviewPane :games="gamesStore.games" :player1="player1" :player2="player2" :meta="meta" />
