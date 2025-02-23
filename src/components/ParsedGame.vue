@@ -48,10 +48,10 @@ const replayExpandText = computed(
   () => `${props.game.replays.length} replay${props.game.replays.length > 1 ? 's' : ''}`
 )
 const showReplays = ref<boolean>(false)
-const showModal = ref(-1)
+const showModal = ref<number | null>(null)
 
 function moveGameReplay(replayId: number, targetGame: number) {
-  showModal.value = -1
+  showModal.value = null
   moveReplay(replayId, props.index, targetGame)
 }
 </script>
@@ -171,7 +171,7 @@ function moveGameReplay(replayId: number, targetGame: number) {
             <move-button @click="showModal = replay.id" />
             <move-modal
               :show="showModal == replay.id"
-              @close="showModal = -1"
+              @close="showModal = null"
               :current-game="props.index"
               @move="(targetGame) => moveGameReplay(replay.id, targetGame)"
               :total-games="props.numGames"
