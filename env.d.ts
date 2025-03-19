@@ -2,6 +2,7 @@
 
 declare module 'virtual:tournaments-data' {
   type Tournament = {
+    name: string,
     civs: string[]
     maps: string[]
   }

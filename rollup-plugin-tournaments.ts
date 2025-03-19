@@ -33,6 +33,7 @@ async function getTournamentDirectories(): Promise<Dir> {
 }
 
 type Tournament = {
+  name: string,
   maps: string[],
   civs: string[],
 }
@@ -49,7 +50,7 @@ async function getTournamentData(): Promise<Record<string, Tournament>> {
     const tournamentdata = parseYaml(tournamentYaml)
     const civPresets: string[] = Object.values(tournamentdata['presets']['civs']) || []
     const mapPresets: string[] = Object.values(tournamentdata['presets']['maps']) || []
-    tournaments[dirent.name] = { civs: civPresets, maps: mapPresets }
+    tournaments[dirent.name] = { name: tournamentdata.name, civs: civPresets, maps: mapPresets }
   }
 
   return tournaments
