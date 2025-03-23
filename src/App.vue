@@ -3,7 +3,7 @@ import InstructionBox from '@/components/InstructionBox.vue'
 import ReplayForm from '@/components/ReplayForm.vue'
 import tournamentsData from 'virtual:tournaments-data'
 
-function getPresets(params: URLSearchParams): [string[] | null, string[] | null] {
+const getPresets = (params: URLSearchParams): [string[] | null, string[] | null] => {
   const civDraftPresets = params.get('civpresets')?.split(',') || []
   const mapDraftPresets = params.get('mappresets')?.split(',') || []
   const tournamentId = params.get('tournament')
@@ -20,14 +20,27 @@ function getPresets(params: URLSearchParams): [string[] | null, string[] | null]
   ]
 }
 
+const getTournamentTitle = (params: URLSearchParams) => {
+  const tournamentId = params.get('tournament')
+  if (!tournamentId) {
+    return null
+  }
+  const tournament = tournamentsData[tournamentId]
+  if (!tournament) {
+    return null
+  }
+  return tournament.name
+}
+
 const urlParams = new URLSearchParams(window.location.search)
 const [civDraftPresets, mapDraftPresets] = getPresets(urlParams)
+const tournamentTitle = getTournamentTitle(urlParams)
 </script>
 
 <template>
   <div class="lg:container lg:mx-auto lg:max-w-(--breakpoint-lg)">
     <main class="mt-10">
-      <InstructionBox />
+      <InstructionBox :tournament-title="tournamentTitle" />
       <ReplayForm :civ-presets="civDraftPresets" :map-presets="mapDraftPresets" />
     </main>
     <footer>

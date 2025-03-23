@@ -1,29 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ExpandButton from '@/components/ExpandButton.vue'
-import tournamentsData from 'virtual:tournaments-data'
 
 const expanded = ref(false)
-
-const getTournamentTitle = () => {
-  const params = new URLSearchParams(window.location.search)
-  const tournamentId = params.get('tournament')
-  if (!tournamentId) {
-    return null
-  }
-  const tournament = tournamentsData[tournamentId]
-  if (!tournament) {
-    return null
-  }
-  return tournament.name
-}
-const tournamentTitle = getTournamentTitle()
+defineProps<{
+  tournamentTitle: string | null
+}>()
 </script>
 
 <template>
   <div class="p-4 border-2 rounded-lg col-span-3 mb-4">
     <h1 class="text-3xl text-center">AoE2 Replay Pack Generator</h1>
-    <h2 class="text-2xl text-center">{{ tournamentTitle }}</h2>
+    <h2 v-if="tournamentTitle" class="text-2xl text-center">{{ tournamentTitle }}</h2>
     <p>
       This page will help you create a zip file of replays for submitting your AoE2 match results.
     </p>
