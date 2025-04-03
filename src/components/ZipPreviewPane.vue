@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Game, zipFilename, computeReplayFilenamePreview } from '../entities/game'
+import { Game, zipFilename } from '../entities/game'
 import type { ReplayMetadata } from '../entities/gamemeta'
+import ZipPreviewFile from './ZipPreviewFile.vue'
 
 const props = defineProps<{
   games: Game[]
@@ -17,50 +18,24 @@ const props = defineProps<{
     <template v-if="meta.civs || meta.maps"><span>├──metadata.json</span><br /></template>
     <template v-for="(game, gameIdx) in props.games" :key="game.id">
       <template v-if="game.isDummy()">
-        <template v-if="gameIdx == props.games.length - 1">
-          <span
-            >└──{{
-              computeReplayFilenamePreview(props.player1, props.player2, game, gameIdx, true, 0)
-            }}</span
-          ><br />
-        </template>
-        <template v-else>
-          <span
-            >├──{{
-              computeReplayFilenamePreview(props.player1, props.player2, game, gameIdx, true, 0)
-            }}</span
-          ><br />
-        </template>
+        <ZipPreviewFile
+          :game="game"
+          :player1="player1"
+          :player2="player2"
+          :game-idx="gameIdx"
+          :replay-idx="0"
+          :last="gameIdx == props.games.length - 1"
+        /><br />
       </template>
       <template v-else v-for="(replay, replayIdx) in game.replays" :key="replay.id">
-        <template v-if="gameIdx == props.games.length - 1 && replayIdx == game.replays.length - 1">
-          <span
-            >└──{{
-              computeReplayFilenamePreview(
-                props.player1,
-                props.player2,
-                game,
-                gameIdx,
-                false,
-                replayIdx
-              )
-            }}</span
-          ><br />
-        </template>
-        <template v-else>
-          <span
-            >├──{{
-              computeReplayFilenamePreview(
-                props.player1,
-                props.player2,
-                game,
-                gameIdx,
-                false,
-                replayIdx
-              )
-            }}</span
-          ><br />
-        </template>
+        <ZipPreviewFile
+          :game="game"
+          :player1="player1"
+          :player2="player2"
+          :game-idx="gameIdx"
+          :replay-idx="replayIdx"
+          :last="gameIdx == props.games.length - 1 && replayIdx == game.replays.length - 1"
+        /><br />
       </template>
     </template>
   </div>

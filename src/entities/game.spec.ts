@@ -4,7 +4,6 @@ import {
   matchName,
   zipFilename,
   computeReplayFilename,
-  computeReplayFilenamePreview,
   Game,
   Replay
 } from './game'
@@ -54,28 +53,6 @@ describe('computeReplayFilename', () => {
     )
     expect(computeReplayFilename('Playe<>r 3', ' Pl ay::er 4 ', game1, 2, 28)).toBe(
       'Player3_vs_Player4_G3bc.aoe2record'
-    )
-  })
-})
-
-describe('computeReplayFilenamePreview', () => {
-  it('create some replay file names', () => {
-    const game1 = new Game()
-    for (let i = 0; i < 30; i++) {
-      game1.replays.push({} as Replay) // Actual object is irrelevant
-    }
-    game1.replays[27].file = new File([''], 'testfile.aoe2record', {
-      type: 'application/octet-stream'
-    })
-
-    expect(computeReplayFilenamePreview('Playe<>r 3', ' Pl ay::er 4 ', game1, 0, false, 27)).toBe(
-      'Player3_vs_Player4_G1bb.aoe2record'
-    )
-    expect(computeReplayFilenamePreview('Playe<>r 3', ' Pl ay::er 4 ', game1, 1, true, 25)).toBe(
-      'Player3_vs_Player4_G2az.aoe2record (dummy file)'
-    )
-    expect(computeReplayFilenamePreview('Playe<>r 3', ' Pl ay::er 4 ', game1, 2, true, 28)).toBe(
-      'Player3_vs_Player4_G3bc.aoe2record (dummy file)'
     )
   })
 })

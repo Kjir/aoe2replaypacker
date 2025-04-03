@@ -210,26 +210,6 @@ export function computeReplayFilename(
   return `${matchName(normalizePlayerName(player1, 'Player1'), normalizePlayerName(player2, 'Player2'))}_G${gameIdx + 1}${replaySubNumbering}.aoe2record`
 }
 
-export function computeReplayFilenamePreview(
-  player1: string,
-  player2: string,
-  game: Game,
-  gameIdx: number,
-  dummy: boolean,
-  replayIdx: number
-) {
-  const filename = computeReplayFilename(
-    normalizePlayerName(player1, 'Player1'),
-    normalizePlayerName(player2, 'Player2'),
-    game,
-    gameIdx,
-    replayIdx
-  )
-  const dummyIndicator = !dummy ? '' : ' (dummy file)'
-
-  return `${filename}${dummyIndicator}`
-}
-
 function getTeams(teams: SavegameTeam[]) {
   return teams.map((team) => {
     const team_id = team.players.at(0)?.resolved_team_id ?? -1
