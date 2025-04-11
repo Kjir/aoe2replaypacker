@@ -5,7 +5,7 @@ import { Game, Replay, type DummyReplay } from '@/entities/game'
 import webworker from 'libarchive.js/dist/worker-bundle.js?url'
 
 export const useGamesStore = defineStore('games', () => {
-  const recordings: Ref<Record<string, SavegameSummary>> = ref({})
+  const recordings: Ref<Record<string, SavegameSummary | DummyReplay>> = ref({})
   const games: Ref<Game[]> = ref([new Game(), new Game(), new Game()])
 
   async function addRec(file: File) {
@@ -38,7 +38,9 @@ export const useGamesStore = defineStore('games', () => {
           } catch (error) {
             console.error('Failed to parse')
             console.error(error)
-            resolve({ header: { timestamp: file.lastModified }, dummy: true } as DummyReplay)
+            const recording: DummyReplay = { header: { timestamp: file.lastModified }, dummy: true }
+            recordings.value = { ...recordings.value, [file.name]: recording }
+            resolve(recording)
           }
         },
         false
