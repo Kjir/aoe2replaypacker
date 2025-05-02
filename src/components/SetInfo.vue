@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const customGameCount = ref(9)
 const bestOf = ref<number | 'custom'>(props.gamesCount)
-const boPa = ref<'best-of' | 'play-all'>('best-of')
+const boPa = ref<'best-of' | 'play-all' | ''>('')
 
 watch(customGameCount, async (newCount, oldCount) => {
   if (newCount == oldCount) {
@@ -66,6 +66,9 @@ watch(boPa, (newBoPa, oldBoPa) => {
   if (newBoPa == oldBoPa) {
     return
   }
+  if (newBoPa == '') {
+    return
+  }
   emit('setBoPa', newBoPa)
 })
 </script>
@@ -82,7 +85,6 @@ watch(boPa, (newBoPa, oldBoPa) => {
               class="hidden peer"
               value="best-of"
               v-model="boPa"
-              :checked="boPa == 'best-of'"
             />
             <label
               for="best-of"
@@ -99,7 +101,6 @@ watch(boPa, (newBoPa, oldBoPa) => {
               class="hidden peer"
               value="play-all"
               v-model="boPa"
-              :checked="boPa == 'play-all'"
             />
             <label
               for="play-all"
@@ -119,7 +120,6 @@ watch(boPa, (newBoPa, oldBoPa) => {
           :value="count"
           class="hidden peer"
           required
-          :checked="bestOf == count"
         />
         <label
           :for="`bo${count}`"

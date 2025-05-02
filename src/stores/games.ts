@@ -58,7 +58,6 @@ export const useGamesStore = defineStore('games', () => {
     const sortedGames = [...(realGames.before ?? []), newGame, ...(realGames.after ?? [])]
 
     games.value = [...sortedGames, ...(gameTypes['dummy']?.slice(0, -1) ?? [])]
-    setGamesNumber(games.value.length)
   }
 
   function clearGame(index: number) {
@@ -68,7 +67,6 @@ export const useGamesStore = defineStore('games', () => {
 
   function removeGame(index: number) {
     games.value = games.value.filter((_game, game_index) => index != game_index)
-    setGamesNumber(games.value.length)
   }
 
   function setGamesNumber(gamesNumber: number) {

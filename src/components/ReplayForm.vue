@@ -28,7 +28,8 @@ const gamesStore = useGamesStore()
 
 const player1 = ref('Player1')
 const player2 = ref('Player2')
-const boPa = ref<'best-of' | 'play-all'>('best-of')
+const boPa = ref<'best-of' | 'play-all' | ''>('')
+const expectedGamesCount = ref<number>(0)
 const mapDraft: Ref<string> = ref('')
 const civDraft: Ref<string> = ref('')
 const meta: Ref<ReplayMetadata> = ref({
@@ -117,9 +118,9 @@ const downloadWarningMapDraftMissing = computed(() => {
   return true
 })
 
-const downloadEnabled = computed(() => {
+const downloadDisabledMessage = computed(() => {
   if (metaErrors.value.civs || metaErrors.value.maps) {
-    return false
+    return 'The draft links have some issues'
   }
 
   // Force civ draft entry if preset is specified
@@ -132,15 +133,27 @@ const downloadEnabled = computed(() => {
     return false
   }*/
 
+  // If Best of/Play all and number of games was not selected
+  if (boPa.value == '' || expectedGamesCount.value == 0) {
+    return 'You must define the type of set (e.g. Best of 5)'
+  }
+
   for (const game of gamesStore.games) {
     for (const replay of game.replays) {
       if (replay.file) {
-        return true
+        return null
       }
     }
   }
-  return false
+  return 'Replays are missing'
 })
+
+const downloadEnabled = computed(() => downloadDisabledMessage.value == null)
+
+function setExpectedGamesCount(count: number) {
+  gamesStore.setGamesNumber(count)
+  expectedGamesCount.value = count
+}
 
 function getFirstReplayFile(): File | null {
   for (const game of gamesStore.games) {
@@ -204,7 +217,7 @@ const discordMessage = computed(() => {
   const boPaLabel = boPa.value == 'best-of' ? 'Best of' : 'Play all'
   const scorePreview = showResults.value ? `|| ${leftScore.value} - ${rightScore.value} ||` : 'vs'
   return `${player1.value} ${scorePreview} ${player2.value}
-${boPaLabel} ${gamesStore.games.length}
+${boPaLabel} ${expectedGamesCount.value}
 Map draft: ${extractDraftUrl(mapDraft.value)}
 Civ draft: ${extractDraftUrl(civDraft.value)}`
 })
@@ -224,7 +237,7 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
     </template>
   </Suspense>
   <GameInfo
-    :games="gamesStore.games"
+    :expected-games-count="expectedGamesCount"
     v-model:player1="player1"
     v-model:player2="player2"
     v-model:map-draft="mapDraft"
@@ -237,9 +250,9 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
         if (newMeta?.maps?.pickedMaps?.length) {
           const numOfMaps = newMeta.maps.pickedMaps.length
           if (numOfMaps % 2 == 0) {
-            gamesStore.setGamesNumber(numOfMaps - 1)
+            setExpectedGamesCount(numOfMaps + 1)
           } else {
-            gamesStore.setGamesNumber(numOfMaps)
+            setExpectedGamesCount(numOfMaps)
           }
         }
         meta = newMeta
@@ -247,16 +260,16 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
       }
     "
   />
-  <SetInfo
-    :games-count="gamesStore.games.length"
-    @set-games="gamesStore.setGamesNumber"
-    @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
-  />
 
   <ToggleButton class="mt-4" label="Show results (spoilers)" v-model="showResults" />
 
   <GameDropzone />
   <GameTable :show-results="showResults" />
+  <SetInfo
+    :games-count="expectedGamesCount"
+    @set-games="setExpectedGamesCount"
+    @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
+  />
   <div id=" message_box" class="mt-4 text-center p-4 border-2 rounded-lg col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 rounded-lg col-span-3 mt-4">
     <ZipPreviewPane :games="gamesStore.games" :player1="player1" :player2="player2" :meta="meta" />
@@ -273,6 +286,12 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
     >
       Download
     </button>
+    <div
+      v-if="!downloadEnabled"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-ruby-100 dark:bg-ruby-400 dark:text-ruby-800"
+    >
+      {{ downloadDisabledMessage }}
+    </div>
     <div
       v-if="downloadWarningReplayMissing"
       class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
