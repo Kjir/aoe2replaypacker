@@ -135,7 +135,7 @@ const downloadDisabledMessage = computed(() => {
 
   // If Best of/Play all and number of games was not selected
   if (boPa.value == '' || expectedGamesCount.value == 0) {
-    return 'You must define the type of set (e.g. Best of 5)'
+    return 'You must choose the type of set (e.g. Best of 5)'
   }
 
   for (const game of gamesStore.games) {
@@ -145,6 +145,7 @@ const downloadDisabledMessage = computed(() => {
       }
     }
   }
+
   return 'Replays are missing'
 })
 
@@ -261,15 +262,17 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
     "
   />
 
-  <ToggleButton class="mt-4" label="Show results (spoilers)" v-model="showResults" />
-
-  <GameDropzone />
-  <GameTable :show-results="showResults" />
   <SetInfo
     :games-count="expectedGamesCount"
     @set-games="setExpectedGamesCount"
     @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
   />
+
+  <ToggleButton class="mt-4" label="Show results (spoilers)" v-model="showResults" />
+
+  <GameDropzone />
+  <GameTable :show-results="showResults" />
+
   <div id=" message_box" class="mt-4 text-center p-4 border-2 rounded-lg col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 rounded-lg col-span-3 mt-4">
     <ZipPreviewPane :games="gamesStore.games" :player1="player1" :player2="player2" :meta="meta" />
