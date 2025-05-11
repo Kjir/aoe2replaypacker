@@ -15,7 +15,6 @@ function parseMatchSetType(matchSetType: string): MatchSetType {
 }
 
 export class MatchSetDefinition {
-  /*label: string*/
   type: MatchSetType
   length: number
 
