@@ -16,8 +16,7 @@ import DiscordMessage from './DiscordMessage.vue'
 import ToggleButton from '@/components/ToggleButton.vue'
 import { useGamesStore } from '@/stores/games'
 import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
-import { expandSetAbbreviation } from '@/entities/set'
-import type { SetType } from '@/entities/set'
+import { MatchSetDefinition, MatchSetType } from '@/entities/matchset'
 
 import { zipFilename, computeReplayFilename } from '../entities/game'
 import { extractDraftUrl } from '../entities/draft'
@@ -33,7 +32,7 @@ const gamesStore = useGamesStore()
 
 const player1 = ref('Player1')
 const player2 = ref('Player2')
-const boPa = ref<'best-of' | 'play-all' | ''>('')
+const boPa = ref<MatchSetType | null>(null)
 const expectedGamesCount = ref<number>(0)
 const mapDraft: Ref<string> = ref('')
 const civDraft: Ref<string> = ref('')
@@ -46,27 +45,15 @@ const meta: Ref<ReplayMetadata> = ref({
 const metaErrors: Ref<ReplayErrors> = ref({ maps: null, civs: null })
 const showResults = ref(true)
 
-const setTypeRestrictions = computed((): SetType[] | undefined => {
+const setTypeRestrictions = computed((): MatchSetDefinition[] | undefined => {
   if (!props.tournament) {
     return
   }
-  return [
-    ...new Set(
-      Object.keys(props.tournament.maps).map((key) => {
-        const [setType, setLength] = expandSetAbbreviation(key)
-        return {
-          label:
-            setType[0].toUpperCase() + setType.substring(1).replace('-', ' ') + ` ${setLength}`,
-          type: setType,
-          length: setLength
-        }
-      })
-    )
-  ]
+  return [...new Set(Object.keys(props.tournament.maps).map(MatchSetDefinition.parse))]
 })
 
 const downloadWarningReplayMissing = computed(() => {
-  if (boPa.value == 'best-of') {
+  if (boPa.value == MatchSetType.BestOf) {
     return false
   }
 
@@ -104,7 +91,7 @@ watch([leftScore, rightScore], ([newLeftScore, newRightScore], [oldLeftScore, ol
 })
 
 const downloadWarningScore = computed(() => {
-  if (boPa.value == 'play-all') {
+  if (boPa.value == MatchSetType.PlayAll) {
     return false
   }
 
@@ -158,7 +145,7 @@ const downloadDisabledMessage = computed(() => {
   }*/
 
   // If Best of/Play all and number of games was not selected
-  if (boPa.value == '' || expectedGamesCount.value == 0) {
+  if (boPa.value == null || expectedGamesCount.value == 0) {
     return 'You must choose the type of set (e.g. Best of 5)'
   }
 
@@ -197,7 +184,7 @@ function downloadZip() {
 
   const dummyBase = getFirstReplayFile()
   if (!dummyBase) {
-    console.log('Could not find any valid replay files')
+    console.error('Could not find any valid replay files')
     return
   }
 
@@ -239,7 +226,7 @@ function downloadZip() {
 }
 
 const discordMessage = computed(() => {
-  const boPaLabel = boPa.value == 'best-of' ? 'Best of' : 'Play all'
+  const boPaLabel = boPa.value?.toString() ?? 'Best of' // TODO: should there be a default value?
   const scorePreview = showResults.value ? `|| ${leftScore.value} - ${rightScore.value} ||` : 'vs'
   return `${player1.value} ${scorePreview} ${player2.value}
 ${boPaLabel} ${expectedGamesCount.value}
@@ -248,6 +235,7 @@ Civ draft: ${extractDraftUrl(civDraft.value)}`
 })
 
 function updateMeta(newErrors: ReplayErrors, newMeta: ReplayMetadata) {
+  // Guess set length based on map draft
   if (!props.tournament && newMeta?.maps?.pickedMaps?.length) {
     const numOfMaps = newMeta.maps.pickedMaps.length
     if (numOfMaps % 2 == 0) {
@@ -256,67 +244,48 @@ function updateMeta(newErrors: ReplayErrors, newMeta: ReplayMetadata) {
       setExpectedGamesCount(numOfMaps)
     }
   }
+
   meta.value = newMeta
   metaErrors.value = newErrors
+
   if (!props.tournament || !meta.value.maps?.preset) {
     return
   }
-  const presetToSetType = Object.fromEntries(
+
+  const presetToSetType: Record<string, MatchSetDefinition> = Object.fromEntries(
     Object.entries(props.tournament.maps).map(([setType, preset]) => [
       preset,
-      expandSetAbbreviation(setType)
+      MatchSetDefinition.parse(setType)
     ])
   )
+
   if (!(meta.value.maps.preset in presetToSetType)) {
     console.error('Map preset is not in the tournament set, but it should')
     return
   }
 
-  const [setType, setLength] = presetToSetType[meta.value.maps.preset]
-  setExpectedGamesCount(setLength)
-  boPa.value = setType
+  const setDefinition = presetToSetType[meta.value.maps.preset]
+  setExpectedGamesCount(setDefinition.length)
+  boPa.value = setDefinition.type
 }
 </script>
 
 <template>
   <Suspense>
-    <RecentDrafts
-      v-if="mapPresets || civPresets"
-      :civ-presets="civPresets"
-      :map-presets="mapPresets"
-      v-model:map-draft="mapDraft"
-      v-model:civ-draft="civDraft"
-    />
+    <RecentDrafts v-if="mapPresets || civPresets" :civ-presets="civPresets" :map-presets="mapPresets"
+      v-model:map-draft="mapDraft" v-model:civ-draft="civDraft" />
     <template #fallback>
       <div class="text-center p-4 border-2 col-span-3 mt-4 h-80">Loading Drafts...</div>
     </template>
   </Suspense>
-  <GameInfo
-    :expected-games-count="expectedGamesCount"
-    v-model:player1="player1"
-    v-model:player2="player2"
-    v-model:map-draft="mapDraft"
-    v-model:civ-draft="civDraft"
-    :civ-presets="civPresets"
-    :map-presets="mapPresets"
-    :bo-pa="boPa"
-    @update-meta="updateMeta"
-  />
+  <GameInfo :expected-games-count="expectedGamesCount" v-model:player1="player1" v-model:player2="player2"
+    v-model:map-draft="mapDraft" v-model:civ-draft="civDraft" :civ-presets="civPresets" :map-presets="mapPresets"
+    :bo-pa="boPa" @update-meta="updateMeta" />
 
-  <SetInfo
-    v-if="!setTypeRestrictions"
-    :games-count="expectedGamesCount"
-    @set-games="setExpectedGamesCount"
-    @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
-  />
-  <TournamentSet
-    v-else
-    :set-types="setTypeRestrictions"
-    :type="boPa"
-    :length="expectedGamesCount"
-    @set-games="setExpectedGamesCount"
-    @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
-  />
+  <SetInfo v-if="!setTypeRestrictions" :games-count="expectedGamesCount" @set-games="setExpectedGamesCount"
+    @set-bo-pa="(newBoPa) => (boPa = newBoPa)" />
+  <TournamentSet v-else :set-types="setTypeRestrictions" :type="boPa" :length="expectedGamesCount"
+    @set-games="setExpectedGamesCount" @set-bo-pa="(newBoPa) => (boPa = newBoPa)" />
 
   <ToggleButton class="mt-4" label="Show results (spoilers)" v-model="showResults" />
 
@@ -326,47 +295,32 @@ function updateMeta(newErrors: ReplayErrors, newMeta: ReplayMetadata) {
   <div id=" message_box" class="mt-4 text-center p-4 border-2 rounded-lg col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 rounded-lg col-span-3 mt-4">
     <ZipPreviewPane :games="gamesStore.games" :player1="player1" :player2="player2" :meta="meta" />
-    <button
-      :disabled="!downloadEnabled"
-      class="btn text-2xl text-white dark:text-black"
-      :class="{
-        'bg-blue-500': downloadEnabled,
-        'bg-blue-200': !downloadEnabled,
-        'dark:bg-blue-700': downloadEnabled,
-        'dark:bg-blue-300': !downloadEnabled
-      }"
-      @click="downloadZip"
-    >
+    <button :disabled="!downloadEnabled" class="btn text-2xl text-white dark:text-black" :class="{
+      'bg-blue-500': downloadEnabled,
+      'bg-blue-200': !downloadEnabled,
+      'dark:bg-blue-700': downloadEnabled,
+      'dark:bg-blue-300': !downloadEnabled
+    }" @click="downloadZip">
       Download
     </button>
-    <div
-      v-if="!downloadEnabled"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-ruby-100 dark:bg-ruby-400 dark:text-ruby-800"
-    >
+    <div v-if="!downloadEnabled"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-ruby-100 dark:bg-ruby-400 dark:text-ruby-800">
       {{ downloadDisabledMessage }}
     </div>
-    <div
-      v-if="downloadWarningReplayMissing"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningReplayMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: You have selected "play all" but not provided all replays.
     </div>
-    <div
-      v-if="downloadWarningCivDraftMissing"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningCivDraftMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: You have not provided a civilization draft link.
     </div>
-    <div
-      v-if="downloadWarningMapDraftMissing"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningMapDraftMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: You have not provided a map draft link.
     </div>
-    <div
-      v-if="downloadWarningScore"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningScore"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: The score does not make sense for a best-of set.
     </div>
   </div>

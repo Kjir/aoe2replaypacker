@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { MatchSetType } from '@/entities/matchset'
 
 const emit = defineEmits<{
   setGames: [number]
-  setBoPa: ['best-of' | 'play-all']
+  setBoPa: [MatchSetType]
 }>()
 
 const props = defineProps<{
@@ -12,7 +13,7 @@ const props = defineProps<{
 
 const customGameCount = ref(9)
 const bestOf = ref<number | 'custom'>(props.gamesCount)
-const boPa = ref<'best-of' | 'play-all' | ''>('')
+const boPa = ref<MatchSetType | null>(null)
 
 watch(customGameCount, async (newCount, oldCount) => {
   if (newCount == oldCount) {
@@ -66,7 +67,7 @@ watch(boPa, (newBoPa, oldBoPa) => {
   if (newBoPa == oldBoPa) {
     return
   }
-  if (newBoPa == '') {
+  if (newBoPa == null) {
     return
   }
   emit('setBoPa', newBoPa)
@@ -83,7 +84,7 @@ watch(boPa, (newBoPa, oldBoPa) => {
               id="best-of"
               name="bo-pa"
               class="hidden peer"
-              value="best-of"
+              :value="MatchSetType.BestOf"
               v-model="boPa"
             />
             <label
@@ -99,7 +100,7 @@ watch(boPa, (newBoPa, oldBoPa) => {
               id="play-all"
               name="bo-pa"
               class="hidden peer"
-              value="play-all"
+              :value="MatchSetType.PlayAll"
               v-model="boPa"
             />
             <label

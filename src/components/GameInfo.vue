@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import type { Aoe2CmEvent, Aoe2CmDraftOption } from '../entities/aoe2cm'
 import type { ReplayMetadata, ReplayErrors } from '../entities/gamemeta'
+import { MatchSetType } from '@/entities/matchset'
 import debounce from 'lodash.debounce'
 import CivIcon from './CivIcon.vue'
 import { extractDraftId } from '../entities/draft'
@@ -11,7 +12,7 @@ const props = defineProps<{
   expectedGamesCount: number
   civPresets: string[] | null
   mapPresets: string[] | null
-  boPa: 'best-of' | 'play-all' | ''
+  boPa: MatchSetType | null
 }>()
 
 const player1 = defineModel('player1')
@@ -195,8 +196,8 @@ watch(meta, () => {
 <template>
   <div class="text-center p-4 border-2 rounded-lg mt-4">
     <h2 class="text-center text-2xl mb-2">Game Info</h2>
-    <div v-if="boPa != '' && expectedGamesCount > 0">
-      <template v-if="boPa == 'best-of'">Best of</template>
+    <div v-if="boPa != null && expectedGamesCount > 0">
+      <template v-if="boPa == MatchSetType.BestOf">Best of</template>
       <template v-else>Play all</template>
       {{ expectedGamesCount }}
     </div>
