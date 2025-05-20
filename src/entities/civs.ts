@@ -46,5 +46,10 @@ export const civNames: Record<number, string> = {
   45: 'Georgians',
   46: 'Achaemenids',
   47: 'Athenians',
-  48: 'Spartans'
+  48: 'Spartans',
+  49: 'Shu',
+  50: 'Wu',
+  51: 'Wei',
+  52: 'Jurchens',
+  53: 'Khitans'
 }
