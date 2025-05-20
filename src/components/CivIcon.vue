@@ -26,6 +26,8 @@ const civs: Record<string, string> = {
   hindustanis: 'indians',
   italians: 'italians',
   japanese: 'japanese',
+  jurchens: 'jurchens',
+  khitans: 'khitans',
   khmer: 'khmer',
   koreans: 'koreans',
   lithuanians: 'lithuanians',
@@ -39,6 +41,7 @@ const civs: Record<string, string> = {
   portuguese: 'portuguese',
   romans: 'romans',
   saracens: 'saracens',
+  shu: 'shu',
   sicilians: 'sicilians',
   slavs: 'slavs',
   spanish: 'spanish',
@@ -46,7 +49,9 @@ const civs: Record<string, string> = {
   teutons: 'teutons',
   turks: 'turks',
   vietnamese: 'vietnamese',
-  vikings: 'vikings'
+  vikings: 'vikings',
+  wei: 'wei',
+  wu: 'wu'
 }
 
 const civIcons = import.meta.glob('../assets/civs/*.png', {
