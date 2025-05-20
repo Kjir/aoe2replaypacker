@@ -61,10 +61,17 @@ export class Team {
 }
 
 type GameWinner = {
-  team_id: Team['id']
+  team_id?: Team['id']
   side: 'left' | 'right'
-  firstPlayer: Player
+  firstPlayer?: Player
   players: Player[]
+}
+
+export const dummyWinner = (side: 'left' | 'right') => {
+  return {
+    side: side,
+    players: []
+  }
 }
 
 export type GameOutcome = GameWinner | null
@@ -75,12 +82,13 @@ export class Game {
   id: number
   date?: Date
   mapName?: string
-  teams?: Team[]
+  teams: Team[]
   duration: number
 
   constructor(replays: Replay[] | null = null) {
     this.id = gameCounter++
     this.outcome = null
+    this.teams = []
     this.duration = 0
     if (Array.isArray(replays)) {
       this.replays = replays
@@ -92,7 +100,6 @@ export class Game {
       const recording = this.replays[0].recording
       if ('dummy' in recording) {
         this.date = new Date(recording.header.timestamp)
-        this.teams = []
         return
       }
       const { date, mapName, duration, teams } = extractRecordingInfo(recording)

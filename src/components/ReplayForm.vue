@@ -71,13 +71,24 @@ const downloadWarningReplayMissing = computed(() => {
 const winCount = computed(() => {
   return gamesStore.games.reduce(
     (count, game) => {
-      const winnerProfile = game.outcome?.firstPlayer.profile
-      if (winnerProfile) {
-        count[winnerProfile] = (count[winnerProfile] ?? 0) + 1
+      const outcome = game.outcome
+      if (outcome) {
+        const winnerProfile = outcome.firstPlayer?.profile
+        if (winnerProfile) {
+          count.players[winnerProfile] = (count.players[winnerProfile] ?? 0) + 1
+        } else if (outcome.side == 'left') {
+          count.left += 1
+        } else if (outcome.side == 'right') {
+          count.right += 1
+        }
       }
       return count
     },
-    {} as Record<Player['profile'], number>
+    { left: 0, right: 0, players: {} } as {
+      left: number
+      right: number
+      players: Record<Player['profile'], number>
+    }
   )
 })
 
@@ -142,11 +153,11 @@ const playerSides = computed(() => {
 })
 
 const leftScore = computed(() => {
-  return winCount.value[playerSides?.value?.left ?? ''] ?? 0
+  return (winCount.value.players[playerSides?.value?.left ?? ''] ?? 0) + winCount.value.left
 })
 
 const rightScore = computed(() => {
-  return winCount.value[playerSides?.value?.right ?? ''] ?? 0
+  return (winCount.value.players[playerSides?.value?.right ?? ''] ?? 0) + winCount.value.right
 })
 
 watch([leftScore, rightScore], ([newLeftScore, newRightScore], [oldLeftScore, oldRightScore]) => {

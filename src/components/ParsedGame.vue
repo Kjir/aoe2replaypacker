@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import { UTCDate } from '@date-fns/utc'
 import GameReorder from '@/components/GameReorder.vue'
 import GameToolbox from '@/components/GameToolbox.vue'
-import type { Game, GameOutcome } from '@/entities/game'
+import { type Game, type GameOutcome, dummyWinner } from '@/entities/game'
 import GameTeam from '@/components/GameTeam.vue'
 import ExpandButton from '@/components/ExpandButton.vue'
 import winner from '@/assets/crown.svg'
@@ -29,13 +29,13 @@ const emit = defineEmits<{
 
 const { moveReplay } = useGamesStore()
 
-const leftName = computed(() => props.game.teams?.[0]?.players?.[0]?.name)
+const leftName = computed(() => props.game.teams[0]?.players?.[0]?.name)
 const rightName = computed(() => {
   if (typeof props.game.teams == 'undefined') {
     return ''
   }
-  const teamsCount = props.game.teams.length
-  return props.game.teams[teamsCount - 1]?.players?.[0]?.name
+
+  return props.game.teams[1]?.players?.[0]?.name
 })
 
 const replayExpandText = computed(
@@ -85,9 +85,11 @@ function moveGameReplay(replayId: number, targetGame: number) {
           :id="`winner-${props.game.id}`"
           :name="`winlose-${props.game.id}`"
           class="peer hidden"
-          @change="emit('setOutcome', props.game.teams![0].asGameWinner('left'))"
+          @change="
+            emit('setOutcome', props.game.teams[0]?.asGameWinner('left') ?? dummyWinner('left'))
+          "
           :checked="props.game.outcome?.side == 'left'"
-          :value="'left'"
+          value="left"
         />
         <label
           :for="`winner-${props.game.id}`"
@@ -109,13 +111,10 @@ function moveGameReplay(replayId: number, targetGame: number) {
           :name="`winlose-${props.game.id}`"
           class="peer hidden"
           @change="
-            emit(
-              'setOutcome',
-              props.game.teams![props.game.teams!.length - 1].asGameWinner('right')
-            )
+            emit('setOutcome', props.game.teams[1]?.asGameWinner('right') ?? dummyWinner('right'))
           "
           :checked="props.game.outcome?.side == 'right'"
-          :value="'right'"
+          value="right"
         />
         <label
           :for="`loser-${props.game.id}`"

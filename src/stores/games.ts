@@ -36,8 +36,7 @@ export const useGamesStore = defineStore('games', () => {
             recordings.value = { ...recordings.value, [file.name]: recording }
             resolve(recording)
           } catch (error) {
-            console.error('Failed to parse')
-            console.error(error)
+            console.error('Failed to parse', error)
             const recording: DummyReplay = { header: { timestamp: file.lastModified }, dummy: true }
             recordings.value = { ...recordings.value, [file.name]: recording }
             resolve(recording)
