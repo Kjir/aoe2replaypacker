@@ -71,52 +71,63 @@ const downloadWarningReplayMissing = computed(() => {
 const winCount = computed(() => {
   return gamesStore.games.reduce(
     (count, game) => {
-      if (!game.outcome) {
-        return count
+      const winnerProfile = game.outcome?.firstPlayer.profile
+      if (winnerProfile) {
+        count[winnerProfile] = (count[winnerProfile] ?? 0) + 1
       }
-      return {
-        ...count,
-        [game.outcome?.firstPlayer.profile]: (count[game.outcome?.firstPlayer.profile] ?? 0) + 1
-      }
+      return count
     },
     {} as Record<Player['profile'], number>
   )
 })
 
-const playerSide = computed(() => {
+const playerSides = computed(() => {
   if (
     gamesStore.games.length == 0 ||
     !gamesStore.games[0].teams ||
     gamesStore.games[0].teams.length < 2
   ) {
-    return ''
+    return null
   }
-  const isPlayer = (draftPlayer: typeof player1 | typeof player2) => (player: Player) =>
+
+  const playerNameIsSimilarTo = (draftPlayer: Ref<string>) => (player: Player) =>
     player.name.toLowerCase().includes(draftPlayer.value.toLowerCase()) ||
     draftPlayer.value.toLowerCase().includes(player.name.toLowerCase())
+
   for (const game of gamesStore.games) {
     if (game.isUnparseable() || game.isDummy()) {
       continue
     }
-    const profile1 = game.teams?.[0].asGameWinner('left').firstPlayer?.profile
-    const profile2 = game.teams?.[game.teams.length - 1].asGameWinner('right').firstPlayer?.profile
-    const first_team_p1_match = game.teams?.[0].players.find(isPlayer(player1))
-    if (first_team_p1_match) {
+    const team1 = game.teams?.[0]
+    const team2 = game.teams?.[1]
+
+    if (!team1 || !team2) {
+      continue
+    }
+
+    const profile1 = team1.asGameWinner('left').firstPlayer?.profile
+    const profile2 = team2.asGameWinner('right').firstPlayer?.profile
+
+    const team1players = team1.players
+    const team2players = team2.players
+
+    if (team1players.find(playerNameIsSimilarTo(player1))) {
       return { left: profile1, right: profile2 }
     }
-    const last_team_p2_match = game.teams?.[game.teams.length - 1].players.find(isPlayer(player2))
-    if (last_team_p2_match) {
-      return { left: profile1, right: profile2 }
-    }
-    const fist_team_p2_match = game.teams?.[0].players.find(isPlayer(player2))
-    if (fist_team_p2_match) {
+
+    if (team1players.find(playerNameIsSimilarTo(player2))) {
       return { left: profile2, right: profile1 }
     }
-    const last_team_p1_match = game.teams?.[game.teams.length - 1].players.find(isPlayer(player1))
-    if (last_team_p1_match) {
+
+    if (team2players.find(playerNameIsSimilarTo(player2))) {
+      return { left: profile1, right: profile2 }
+    }
+
+    if (team2players.find(playerNameIsSimilarTo(player1))) {
       return { left: profile2, right: profile1 }
     }
   }
+
   for (const game of gamesStore.games) {
     if (game.isUnparseable() || game.isDummy()) {
       continue
@@ -126,19 +137,16 @@ const playerSide = computed(() => {
       right: game.teams![game.teams!.length - 1].asGameWinner('left').firstPlayer?.profile
     }
   }
-  return { left: '__dummy1__', right: '__dummy2__' }
+
+  return null
 })
+
 const leftScore = computed(() => {
-  if (!playerSide.value) {
-    return 0
-  }
-  return (winCount.value[playerSide.value.left ?? ''] ?? 0) + (winCount.value['__dummy1__'] ?? 0)
+  return winCount.value[playerSides?.value?.left ?? ''] ?? 0
 })
+
 const rightScore = computed(() => {
-  if (!playerSide.value) {
-    return 0
-  }
-  return (winCount.value[playerSide.value.right ?? ''] ?? 0) + (winCount.value['__dummy2__'] ?? 0)
+  return winCount.value[playerSides?.value?.right ?? ''] ?? 0
 })
 
 watch([leftScore, rightScore], ([newLeftScore, newRightScore], [oldLeftScore, oldRightScore]) => {

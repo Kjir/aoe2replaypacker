@@ -92,7 +92,7 @@ export class Game {
       const recording = this.replays[0].recording
       if ('dummy' in recording) {
         this.date = new Date(recording.header.timestamp)
-        this.teams = dummyTeams()
+        this.teams = []
         return
       }
       const { date, mapName, duration, teams } = extractRecordingInfo(recording)
@@ -257,13 +257,6 @@ function getTeams(teams: SavegameTeam[]) {
       )
     )
   })
-}
-
-function dummyTeams() {
-  return [
-    new Team(1, [new Player(1, '', '__dummy1__', '__dummy_civ__', 1, 1, false)]),
-    new Team(2, [new Player(2, '', '__dummy2__', '__dummy_civ__', 2, 2, false)])
-  ]
 }
 
 export function extractRecordingInfo(recording: SavegameSummary) {
