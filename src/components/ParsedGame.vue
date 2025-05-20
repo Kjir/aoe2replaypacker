@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import { UTCDate } from '@date-fns/utc'
 import GameReorder from '@/components/GameReorder.vue'
 import GameToolbox from '@/components/GameToolbox.vue'
-import type { Game, GameWinner } from '@/entities/game'
+import type { Game, GameOutcome } from '@/entities/game'
 import GameTeam from '@/components/GameTeam.vue'
 import ExpandButton from '@/components/ExpandButton.vue'
 import winner from '@/assets/crown.svg'
@@ -23,7 +23,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  setWinner: [winner: GameWinner]
+  setOutcome: [outcome: GameOutcome]
   move: [direction: 'up' | 'down']
 }>()
 
@@ -85,8 +85,8 @@ function moveGameReplay(replayId: number, targetGame: number) {
           :id="`winner-${props.game.id}`"
           :name="`winlose-${props.game.id}`"
           class="peer hidden"
-          @change="emit('setWinner', props.game.teams![0].asGameWinner('left'))"
-          :checked="props.game.winner.side == 'left'"
+          @change="emit('setOutcome', props.game.teams![0].asGameWinner('left'))"
+          :checked="props.game.outcome?.side == 'left'"
           :value="'left'"
         />
         <label
@@ -94,7 +94,7 @@ function moveGameReplay(replayId: number, targetGame: number) {
           class="inline-flex items-center justify-center w-full p-2 bg-white border-r border-l-2 border-y-2 rounded-l-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700"
         >
           <img
-            :src="props.game.winner.side == 'left' ? winner : loser"
+            :src="props.game.outcome?.side == 'left' ? winner : loser"
             width="35"
             height="35"
             class="-mt-1 -mb-1"
@@ -109,9 +109,12 @@ function moveGameReplay(replayId: number, targetGame: number) {
           :name="`winlose-${props.game.id}`"
           class="peer hidden"
           @change="
-            emit('setWinner', props.game.teams![props.game.teams!.length - 1].asGameWinner('right'))
+            emit(
+              'setOutcome',
+              props.game.teams![props.game.teams!.length - 1].asGameWinner('right')
+            )
           "
-          :checked="props.game.winner.side == 'right'"
+          :checked="props.game.outcome?.side == 'right'"
           :value="'right'"
         />
         <label
@@ -120,7 +123,7 @@ function moveGameReplay(replayId: number, targetGame: number) {
         >
           {{ rightName }}
           <img
-            :src="props.game.winner.side == 'right' ? winner : loser"
+            :src="props.game.outcome?.side == 'right' ? winner : loser"
             width="35"
             height="35"
             class="-mt-1 -mb-1"

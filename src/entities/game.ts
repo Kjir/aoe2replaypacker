@@ -60,23 +60,18 @@ export class Team {
   }
 }
 
-export type GameWinner =
-  | {
-      team_id: null
-      side: 'none'
-      firstPlayer: null
-      players: []
-    }
-  | {
-      team_id: Team['id']
-      side: 'left' | 'right'
-      firstPlayer: Player
-      players: Player[]
-    }
+type GameWinner = {
+  team_id: Team['id']
+  side: 'left' | 'right'
+  firstPlayer: Player
+  players: Player[]
+}
+
+export type GameOutcome = GameWinner | null
 
 export class Game {
   replays: Replay[] = []
-  winner: GameWinner
+  outcome: GameOutcome
   id: number
   date?: Date
   mapName?: string
@@ -85,12 +80,7 @@ export class Game {
 
   constructor(replays: Replay[] | null = null) {
     this.id = gameCounter++
-    this.winner = {
-      team_id: null,
-      side: 'none',
-      firstPlayer: null,
-      players: []
-    }
+    this.outcome = null
     this.duration = 0
     if (Array.isArray(replays)) {
       this.replays = replays
@@ -116,14 +106,14 @@ export class Game {
 
   setWinner() {
     if (this.teams && this.teams[0] && this.teams[0].winner) {
-      this.winner = this.teams[0].asGameWinner('left')
+      this.outcome = this.teams[0].asGameWinner('left')
     }
     if (
       this.teams &&
       this.teams[this.teams.length - 1] &&
       this.teams[this.teams.length - 1].winner
     ) {
-      this.winner = this.teams[this.teams.length - 1].asGameWinner('right')
+      this.outcome = this.teams[this.teams.length - 1].asGameWinner('right')
     }
   }
 

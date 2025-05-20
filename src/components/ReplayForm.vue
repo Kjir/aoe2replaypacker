@@ -71,12 +71,12 @@ const downloadWarningReplayMissing = computed(() => {
 const winCount = computed(() => {
   return gamesStore.games.reduce(
     (count, game) => {
-      if (game.winner.side == 'none') {
+      if (!game.outcome) {
         return count
       }
       return {
         ...count,
-        [game.winner.firstPlayer.profile]: (count[game.winner.firstPlayer.profile] ?? 0) + 1
+        [game.outcome?.firstPlayer.profile]: (count[game.outcome?.firstPlayer.profile] ?? 0) + 1
       }
     },
     {} as Record<Player['profile'], number>
