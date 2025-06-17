@@ -315,8 +315,8 @@ const discordMessage = computed(() => {
   const scorePreview = showResults.value ? `|| ${leftScore.value} - ${rightScore.value} ||` : 'vs'
   return `${player1.value} ${scorePreview} ${player2.value}
 ${boPaLabel} ${expectedGamesCount.value}
-Map draft: ${extractDraftUrl(mapDraft.value)}
-Civ draft: ${extractDraftUrl(civDraft.value)}`
+Map draft: <${extractDraftUrl(mapDraft.value)}>
+Civ draft: <${extractDraftUrl(civDraft.value)}>`
 })
 
 function updateMeta(newErrors: ReplayErrors, newMeta: ReplayMetadata) {
