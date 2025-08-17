@@ -276,9 +276,10 @@ function downloadZip() {
   for (const [gameIdx, game] of gamesStore.games.entries()) {
     if (game.isDummy()) {
       const replay_filename = computeReplayFilename(player1.value, player2.value, game, gameIdx, 0)
-      const suffixArray = new Uint8Array(getRandomInt(1e5, 3e6))
-      //window.crypto.getRandomValues(array);
-      const dummyFile = new Blob([dummyBase, suffixArray])
+      const suffixLen = getRandomInt(1e5, 5e5)
+      const suffixArray = new Uint8Array(suffixLen).fill(0xaa)
+
+      const dummyFile = new Blob([dummyBase, suffixArray, new Uint32Array([suffixLen]), 'DUMMYREC'])
       zip.file(replay_filename, dummyFile)
     } else {
       for (const [replayIdx, replay] of game.replays.entries()) {
