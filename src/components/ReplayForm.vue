@@ -49,7 +49,13 @@ const setTypeRestrictions = computed((): MatchSetDefinition[] | undefined => {
   if (!props.tournament) {
     return
   }
-  return [...new Set(Object.keys(props.tournament.maps).map(MatchSetDefinition.parse))]
+  return [
+    ...new Set(
+      [...Object.keys(props.tournament.maps), ...Object.keys(props.tournament.civs)].map(
+        MatchSetDefinition.parse
+      )
+    )
+  ]
 })
 
 const downloadWarningReplayMissing = computed(() => {
@@ -334,23 +340,28 @@ function updateMeta(newErrors: ReplayErrors, newMeta: ReplayMetadata) {
   meta.value = newMeta
   metaErrors.value = newErrors
 
-  if (!props.tournament || !meta.value.maps?.preset) {
+  const preset = meta.value.maps?.preset ?? meta.value.civs?.preset
+  if (!props.tournament || !preset) {
     return
   }
 
-  const presetToSetType: Record<string, MatchSetDefinition> = Object.fromEntries(
-    Object.entries(props.tournament.maps).map(([setType, preset]) => [
+  const presetToSetType: Record<string, MatchSetDefinition> = Object.fromEntries([
+    ...Object.entries(props.tournament.maps).map(([setType, preset]) => [
+      preset,
+      MatchSetDefinition.parse(setType)
+    ]),
+    ...Object.entries(props.tournament.civs).map(([setType, preset]) => [
       preset,
       MatchSetDefinition.parse(setType)
     ])
-  )
+  ])
 
-  if (!(meta.value.maps.preset in presetToSetType)) {
-    console.error('Map preset is not in the tournament set, but it should')
+  if (!(preset in presetToSetType)) {
+    console.error('Preset is not in the tournament set, but it should')
     return
   }
 
-  const setDefinition = presetToSetType[meta.value.maps.preset]
+  const setDefinition = presetToSetType[preset]
   setExpectedGamesCount(setDefinition.length)
   boPa.value = setDefinition.type
 }
