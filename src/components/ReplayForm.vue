@@ -345,16 +345,11 @@ function updateMeta(newErrors: ReplayErrors, newMeta: ReplayMetadata) {
     return
   }
 
-  const presetToSetType: Record<string, MatchSetDefinition> = Object.fromEntries([
-    ...Object.entries(props.tournament.maps).map(([setType, preset]) => [
-      preset,
-      MatchSetDefinition.parse(setType)
-    ]),
-    ...Object.entries(props.tournament.civs).map(([setType, preset]) => [
-      preset,
-      MatchSetDefinition.parse(setType)
-    ])
-  ])
+  const presetToSetType: Record<string, MatchSetDefinition> = Object.fromEntries(
+    [...Object.entries(props.tournament.maps), ...Object.entries(props.tournament.civs)].map(
+      ([setType, preset]) => [preset, MatchSetDefinition.parse(setType)]
+    )
+  )
 
   if (!(preset in presetToSetType)) {
     console.error('Preset is not in the tournament set, but it should')
