@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@date-fns/utc": "^2.1.0",
-    "aoe2rec-js": "^0.1.7",
+    "aoe2rec-js": "^0.1.13",
     "date-fns": "^4.1.0",
     "libarchive.js": "^2.0.2",
     "lodash.debounce": "^4.0.8",
