@@ -77,18 +77,20 @@ export const useGamesStore = defineStore('games', () => {
 
   function moveGame(index: number, positionShift: number) {
     const otherIndex = index + positionShift
-    if (otherIndex < 0 || otherIndex >= realGamesCount.value || otherIndex == index) {
+    if (!games.value[index] || !games.value[otherIndex] || otherIndex == index) {
       return
     }
-    ;[games.value[index], games.value[otherIndex]] = [games.value[otherIndex], games.value[index]]
+
+    [games.value[index], games.value[otherIndex]] = [games.value[otherIndex], games.value[index]]
   }
 
-  function moveReplay(replayId: number, sourceGame: number, targetGame: number) {
-    if (sourceGame >= games.value.length) {
+  function moveReplay(replayId: number, sourceGameIdx: number, targetGameIdx: number) {
+    const sourceGame = games.value[sourceGameIdx]
+    if (!sourceGame) {
       return
     }
 
-    const replayToMove = games.value[sourceGame].replays.find((replay) => replay.id == replayId)
+    const replayToMove = sourceGame.replays.find((replay) => replay.id == replayId)
 
     if (!replayToMove) {
       return
@@ -96,17 +98,17 @@ export const useGamesStore = defineStore('games', () => {
 
     games.value = games.value
       .map((game, index) => {
-        if (index == sourceGame) {
+        if (index == sourceGameIdx) {
           return new Game(game.replays.filter((replay) => replay.id != replayId))
         }
-        if (index == targetGame) {
+        if (index == targetGameIdx) {
           game.addReplay(replayToMove)
         }
         return game
       })
       .toSorted((game1, game2) => +game1.isDummy() - +game2.isDummy())
 
-    if (targetGame == -1) {
+    if (targetGameIdx == -1) {
       addGame(new Game([replayToMove]))
     }
   }

@@ -30,7 +30,7 @@ export class MatchSetDefinition {
   public static parse(matchSet: string): MatchSetDefinition {
     const matchSetRegex = new RegExp('^(bo|pa)([0-9]+)$')
     const matchSetMatch = matchSet.match(matchSetRegex)
-    if (!matchSetMatch) {
+    if (!matchSetMatch || !matchSetMatch[1] || !matchSetMatch[2]) {
       throw new Error(`Invalid set definition: ${matchSet}`)
     }
 

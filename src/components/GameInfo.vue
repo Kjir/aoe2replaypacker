@@ -35,7 +35,10 @@ const errors: Ref<ReplayErrors> = ref({
   civs: null
 })
 
-function mapImageUrl(imageUri: string) {
+function mapImageUrl(imageUri: string | null) {
+  if (!imageUri) {
+    return 'https://aoe2cm.net/TODO.png' // TODO: get URL to question mark map icon
+  }
   if (URL.canParse(imageUri)) {
     return imageUri
   } else {
@@ -239,12 +242,12 @@ watch(meta, () => {
               <div class="aspect-square h-36">
                 <img
                   class="mx-auto w-full h-full"
-                  :src="mapImageUrl(meta.maps.availableMaps[map].image)"
-                  :alt="meta.maps.availableMaps[map].name"
+                  :src="mapImageUrl(meta.maps.availableMaps[map]?.image ?? null)"
+                  :alt="meta.maps.availableMaps[map]?.name ?? 'Unknown map'"
                 />
               </div>
               <div>
-                {{ meta.maps.availableMaps[map].name }}
+                {{ meta.maps.availableMaps[map]?.name ?? 'Unknown map' }}
               </div>
             </li>
           </ul>

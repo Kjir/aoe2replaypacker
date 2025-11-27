@@ -99,11 +99,7 @@ const winCount = computed(() => {
 })
 
 const playerSides = computed(() => {
-  if (
-    gamesStore.games.length == 0 ||
-    !gamesStore.games[0].teams ||
-    gamesStore.games[0].teams.length < 2
-  ) {
+  if (gamesStore.games[0]?.teams?.length ?? 0 < 2) {
     return null
   }
 
@@ -115,8 +111,9 @@ const playerSides = computed(() => {
     if (game.isUnparseable() || game.isDummy()) {
       continue
     }
-    const team1 = game.teams?.[0]
-    const team2 = game.teams?.[1]
+
+    const team1 = game.teams[0]
+    const team2 = game.teams[1]
 
     if (!team1 || !team2) {
       continue
@@ -149,9 +146,16 @@ const playerSides = computed(() => {
     if (game.isUnparseable() || game.isDummy()) {
       continue
     }
+
+    const team1 = game.teams[0]
+    const team2 = game.teams[game.teams.length - 1]
+    if (!team1 || !team2) {
+      continue
+    }
+
     return {
-      left: game.teams![0].asGameWinner('left').firstPlayer?.profile,
-      right: game.teams![game.teams!.length - 1].asGameWinner('left').firstPlayer?.profile
+      left: team1.asGameWinner('left').firstPlayer?.profile,
+      right: team2.asGameWinner('left').firstPlayer?.profile
     }
   }
 
@@ -351,12 +355,12 @@ function updateMeta(newErrors: ReplayErrors, newMeta: ReplayMetadata) {
     )
   )
 
-  if (!(preset in presetToSetType)) {
+  const setDefinition = presetToSetType[preset]
+  if (!setDefinition) {
     console.error('Preset is not in the tournament set, but it should')
     return
   }
 
-  const setDefinition = presetToSetType[preset]
   setExpectedGamesCount(setDefinition.length)
   boPa.value = setDefinition.type
 }

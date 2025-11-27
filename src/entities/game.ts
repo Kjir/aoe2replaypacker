@@ -96,8 +96,8 @@ export class Game {
       this.replays = []
     }
 
-    if (this.replays.length > 0 && this.replays[0].recording) {
-      const recording = this.replays[0].recording
+    const recording = this.replays[0]?.recording
+    if (recording) {
       if ('dummy' in recording) {
         this.date = new Date(recording.header.timestamp)
         return
@@ -112,15 +112,13 @@ export class Game {
   }
 
   setWinner() {
-    if (this.teams && this.teams[0] && this.teams[0].winner) {
-      this.outcome = this.teams[0].asGameWinner('left')
+    const left_team = this.teams[0]
+    if (left_team?.winner) {
+      this.outcome = left_team.asGameWinner('left')
     }
-    if (
-      this.teams &&
-      this.teams[this.teams.length - 1] &&
-      this.teams[this.teams.length - 1].winner
-    ) {
-      this.outcome = this.teams[this.teams.length - 1].asGameWinner('right')
+    const right_team = this.teams[this.teams.length - 1]
+    if (right_team?.winner) {
+      this.outcome = right_team.asGameWinner('right')
     }
   }
 
@@ -157,10 +155,11 @@ export class Game {
         return false
       }
       return recordingPlayers.every((recordingPlayer, playerIndex) => {
-        if (recordingPlayer.profile != players[playerIndex].profile) {
+        const player = players[playerIndex]
+        if (recordingPlayer.profile != player?.profile) {
           return false
         }
-        if (recordingPlayer.civ != players[playerIndex].civ) {
+        if (recordingPlayer.civ != player?.civ) {
           return false
         }
         return true
@@ -256,7 +255,7 @@ function getTeams(teams: SavegameTeam[]) {
             player.player_number,
             player.name,
             `${player.profile_id}`,
-            civNames[player.civ_id],
+            civNames[player.civ_id] ?? 'Unknown Civ',
             team_id,
             player.color_id + 1,
             player.resigned
@@ -271,7 +270,9 @@ export function extractRecordingInfo(recording: SavegameSummary) {
   const map_id = game_settings.resolved_map_id
   const date = new Date(recording.header.timestamp * 1000)
   const mapName =
-    mapNames[map_id] ?? game_settings.rms_strings[1].split(':')[2].replace(/\.rms$/, '')
+    mapNames[map_id] ??
+    game_settings.rms_strings[1]?.split(':')[2]?.replace(/\.rms$/, '') ??
+    'Unknown map'
   const duration = recording.duration
   const teams = getTeams(recording.teams)
   return { date, mapName, duration, teams }
