@@ -81,7 +81,7 @@ export const useGamesStore = defineStore('games', () => {
       return
     }
 
-    [games.value[index], games.value[otherIndex]] = [games.value[otherIndex], games.value[index]]
+    ;[games.value[index], games.value[otherIndex]] = [games.value[otherIndex], games.value[index]]
   }
 
   function moveReplay(replayId: number, sourceGameIdx: number, targetGameIdx: number) {
