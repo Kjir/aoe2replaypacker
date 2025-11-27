@@ -28,6 +28,10 @@ const props = defineProps<{
   tournament?: Tournament
 }>()
 
+const drafts = computed((): 'both' | 'map' | 'civ' | 'none' => {
+  return props.tournament?.drafts ?? 'both'
+})
+
 const gamesStore = useGamesStore()
 
 const player1 = ref('Player1')
@@ -387,6 +391,7 @@ function updateMeta(newErrors: ReplayErrors, newMeta: ReplayMetadata) {
     v-model:civ-draft="civDraft"
     :civ-presets="civPresets"
     :map-presets="mapPresets"
+    :drafts="drafts"
     :bo-pa="boPa"
     @update-meta="updateMeta"
   />

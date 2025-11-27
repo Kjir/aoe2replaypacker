@@ -36,6 +36,7 @@ type Tournament = {
   name: string,
   maps: Record<'bo3' | 'bo5' | 'bo7' | 'bo9' | 'pa2' | 'pa3' | 'pa5' | 'pa7', string>,
   civs: Record<'bo3' | 'bo5' | 'bo7' | 'bo9' | 'pa2' | 'pa3' | 'pa5' | 'pa7', string>,
+  drafts: 'both' | 'civ' | 'map' | 'none'
 }
 
 async function getTournamentData(): Promise<Record<string, Tournament>> {
@@ -50,7 +51,8 @@ async function getTournamentData(): Promise<Record<string, Tournament>> {
     const tournamentdata = parseYaml(tournamentYaml)
     const civPresets = tournamentdata['presets']['civs'] || {}
     const mapPresets = tournamentdata['presets']['maps'] || {}
-    tournaments[dirent.name] = { name: tournamentdata.name, civs: civPresets, maps: mapPresets }
+    const draftsFormat = tournamentdata['drafts'] || 'both'
+    tournaments[dirent.name] = { name: tournamentdata.name, civs: civPresets, maps: mapPresets, drafts: draftsFormat }
   }
 
   return tournaments
