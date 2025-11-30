@@ -54,12 +54,8 @@ const setTypeRestrictions = computed((): MatchSetDefinition[] | undefined => {
     return
   }
   return [
-    ...new Set(
-      [...Object.keys(props.tournament.maps), ...Object.keys(props.tournament.civs)].map(
-        MatchSetDefinition.parse
-      )
-    )
-  ]
+    ...new Set([...Object.keys(props.tournament.maps), ...Object.keys(props.tournament.civs)])
+  ].map(MatchSetDefinition.parse)
 })
 
 const downloadWarningReplayMissing = computed(() => {
