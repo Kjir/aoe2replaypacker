@@ -99,7 +99,7 @@ const winCount = computed(() => {
 })
 
 const playerSides = computed(() => {
-  if (gamesStore.games[0]?.teams?.length ?? 0 < 2) {
+  if ((gamesStore.games[0]?.teams?.length ?? 0) < 2) {
     return null
   }
 
@@ -368,44 +368,20 @@ function updateMeta(newErrors: ReplayErrors, newMeta: ReplayMetadata) {
 
 <template>
   <Suspense>
-    <RecentDrafts
-      v-if="mapPresets || civPresets"
-      :civ-presets="civPresets"
-      :map-presets="mapPresets"
-      v-model:map-draft="mapDraft"
-      v-model:civ-draft="civDraft"
-    />
+    <RecentDrafts v-if="mapPresets || civPresets" :civ-presets="civPresets" :map-presets="mapPresets"
+      v-model:map-draft="mapDraft" v-model:civ-draft="civDraft" />
     <template #fallback>
       <div class="text-center p-4 border-2 col-span-3 mt-4 h-80">Loading Drafts...</div>
     </template>
   </Suspense>
-  <GameInfo
-    :expected-games-count="expectedGamesCount"
-    v-model:player1="player1"
-    v-model:player2="player2"
-    v-model:map-draft="mapDraft"
-    v-model:civ-draft="civDraft"
-    :civ-presets="civPresets"
-    :map-presets="mapPresets"
-    :drafts="drafts"
-    :bo-pa="boPa"
-    @update-meta="updateMeta"
-  />
+  <GameInfo :expected-games-count="expectedGamesCount" v-model:player1="player1" v-model:player2="player2"
+    v-model:map-draft="mapDraft" v-model:civ-draft="civDraft" :civ-presets="civPresets" :map-presets="mapPresets"
+    :drafts="drafts" :bo-pa="boPa" @update-meta="updateMeta" />
 
-  <SetInfo
-    v-if="!setTypeRestrictions"
-    :games-count="expectedGamesCount"
-    @set-games="setExpectedGamesCount"
-    @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
-  />
-  <TournamentSet
-    v-else
-    :set-types="setTypeRestrictions"
-    :type="boPa"
-    :length="expectedGamesCount"
-    @set-games="setExpectedGamesCount"
-    @set-bo-pa="(newBoPa) => (boPa = newBoPa)"
-  />
+  <SetInfo v-if="!setTypeRestrictions" :games-count="expectedGamesCount" @set-games="setExpectedGamesCount"
+    @set-bo-pa="(newBoPa) => (boPa = newBoPa)" />
+  <TournamentSet v-else :set-types="setTypeRestrictions" :type="boPa" :length="expectedGamesCount"
+    @set-games="setExpectedGamesCount" @set-bo-pa="(newBoPa) => (boPa = newBoPa)" />
 
   <ToggleButton class="mt-4" label="Show results (spoilers)" v-model="showResults" />
 
@@ -415,47 +391,32 @@ function updateMeta(newErrors: ReplayErrors, newMeta: ReplayMetadata) {
   <div id=" message_box" class="mt-4 text-center p-4 border-2 rounded-lg col-span-3 hidden"></div>
   <div class="text-center p-4 border-2 rounded-lg col-span-3 mt-4">
     <ZipPreviewPane :games="gamesStore.games" :player1="player1" :player2="player2" :meta="meta" />
-    <button
-      :disabled="!downloadEnabled"
-      class="btn text-2xl text-white dark:text-black"
-      :class="{
-        'bg-blue-500': downloadEnabled,
-        'bg-blue-200': !downloadEnabled,
-        'dark:bg-blue-700': downloadEnabled,
-        'dark:bg-blue-300': !downloadEnabled
-      }"
-      @click="downloadZip"
-    >
+    <button :disabled="!downloadEnabled" class="btn text-2xl text-white dark:text-black" :class="{
+      'bg-blue-500': downloadEnabled,
+      'bg-blue-200': !downloadEnabled,
+      'dark:bg-blue-700': downloadEnabled,
+      'dark:bg-blue-300': !downloadEnabled
+    }" @click="downloadZip">
       Download
     </button>
-    <div
-      v-if="!downloadEnabled"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-ruby-100 dark:bg-ruby-400 dark:text-ruby-800"
-    >
+    <div v-if="!downloadEnabled"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-ruby-100 dark:bg-ruby-400 dark:text-ruby-800">
       {{ downloadDisabledMessage }}
     </div>
-    <div
-      v-if="downloadWarningReplayMissing"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningReplayMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: You have selected "play all" but not provided all replays.
     </div>
-    <div
-      v-if="downloadWarningCivDraftMissing"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningCivDraftMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: You have not provided a civilization draft link.
     </div>
-    <div
-      v-if="downloadWarningMapDraftMissing"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningMapDraftMissing"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: You have not provided a map draft link.
     </div>
-    <div
-      v-if="downloadWarningScore"
-      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800"
-    >
+    <div v-if="downloadWarningScore"
+      class="p-2 mt-4 text-sm text-amber-800 rounded-lg bg-amber-100 dark:bg-amber-400 dark:text-amber-800">
       WARNING: The score does not make sense for a best-of set.
     </div>
   </div>
