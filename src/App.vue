@@ -11,8 +11,8 @@ const getPresets = (
   const civDraftPresets = params.get('civpresets')?.split(',') || []
   const mapDraftPresets = params.get('mappresets')?.split(',') || []
   if (tournament) {
-    civDraftPresets.push(...Object.values(tournament.civs))
-    mapDraftPresets.push(...Object.values(tournament.maps))
+    civDraftPresets.push(...Object.values(tournament.civs).flat())
+    mapDraftPresets.push(...Object.values(tournament.maps).flat())
   }
   return [
     civDraftPresets.length > 0 ? civDraftPresets : null,
