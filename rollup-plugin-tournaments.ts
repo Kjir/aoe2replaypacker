@@ -32,10 +32,11 @@ async function getTournamentDirectories(): Promise<Dir> {
   }
 }
 
+type SetFormat = 'bo3' | 'bo5' | 'bo7' | 'bo9' | 'pa2' | 'pa3' | 'pa5' | 'pa7';
 type Tournament = {
   name: string,
-  maps: Record<'bo3' | 'bo5' | 'bo7' | 'bo9' | 'pa2' | 'pa3' | 'pa5' | 'pa7', string>,
-  civs: Record<'bo3' | 'bo5' | 'bo7' | 'bo9' | 'pa2' | 'pa3' | 'pa5' | 'pa7', string>,
+  maps: Record<SetFormat, string[]>,
+  civs: Record<SetFormat, string[]>,
   drafts: 'both' | 'civ' | 'map' | 'none'
 }
 
@@ -49,8 +50,9 @@ async function getTournamentData(): Promise<Record<string, Tournament>> {
     const tournamentPath = joinPath(dirent.parentPath, dirent.name, 'tournament.yaml')
     const tournamentYaml = await readFile(tournamentPath, 'utf-8')
     const tournamentdata = parseYaml(tournamentYaml)
-    const civPresets = tournamentdata['presets']['civs'] || {}
-    const mapPresets = tournamentdata['presets']['maps'] || {}
+    const ensureArray = (presets: Record<SetFormat, string | string[]>) => Object.fromEntries(Object.entries(presets).map(([format, preset]) => [format, Array.isArray(preset) ? preset : [preset]])) as Record<SetFormat, string[]>
+    const civPresets = ensureArray(tournamentdata['presets']['civs'] || {})
+    const mapPresets = ensureArray(tournamentdata['presets']['maps'] || {})
     const draftsFormat = tournamentdata['drafts'] || 'both'
     tournaments[dirent.name] = { name: tournamentdata.name, civs: civPresets, maps: mapPresets, drafts: draftsFormat }
   }
