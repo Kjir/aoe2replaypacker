@@ -7,6 +7,7 @@ import { MatchSetType } from '@/entities/matchset'
 import debounce from 'lodash.debounce'
 import CivIcon from './CivIcon.vue'
 import { extractDraftId } from '../entities/draft'
+import { civNames } from '@/entities/civs'
 
 const props = defineProps<{
   expectedGamesCount: number
@@ -126,7 +127,11 @@ const debouncedFetchCivs = debounce(async () => {
   }
 
   const json = await response.json()
-  if (!('encodedCivilisations' in json.preset)) {
+  const civNamesSet = new Set(Object.values(civNames))
+  if (
+    !('encodedCivilisations' in json.preset) &&
+    json.preset.draftOptions.every(({ id }: { id: string }) => !civNamesSet.has(id))
+  ) {
     errors.value.civs = 'This does not seem to be a civ draft'
     emit('updateMeta', errors.value, meta.value)
     return
