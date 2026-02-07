@@ -83,36 +83,40 @@ function downloadZip() {
     <div class="p-4 border-2 rounded-lg col-span-3 mt-4 mb-4">
 
         <table>
-            <tr>
-                <th class="border p-1">Name</th>
-                <th class="border p-1">Size</th>
-                <th class="border p-1">Padded size</th>
-                <th class="border p-1">Download</th>
-            </tr>
-            <tr>
-                <td class="border p-1">All replays</td>
-                <td class="border p-1"></td>
-                <td class="border p-1"></td>
-                <td class="border p-1"><button @click="downloadZip" class="btn text-1xl text-white dark:text-black"
-                        :class="{
-                            'bg-blue-500': downloadEnabled,
-                            'bg-blue-200': !downloadEnabled,
-                            'dark:bg-blue-700': downloadEnabled,
-                            'dark:bg-blue-300': !downloadEnabled
-                        }">DOWNLOAD</button></td>
-            </tr>
-            <tr v-for="recording in spoilerStore.recordings">
-                <td class="border p-1">{{ formatRecordName(recording.name) }}</td>
-                <td class="border p-1">{{ readableSize(recording.size) }}</td>
-                <td class="border p-1">{{ readableSize(paddedSize) }}</td>
-                <td class="border p-1"><button @click="downloadPadded(recording)"
-                        class="btn text-1xl text-white dark:text-black" :class="{
-                            'bg-blue-500': downloadEnabled,
-                            'bg-blue-200': !downloadEnabled,
-                            'dark:bg-blue-700': downloadEnabled,
-                            'dark:bg-blue-300': !downloadEnabled
-                        }">DOWNLOAD</button></td>
-            </tr>
+            <thead>
+                <tr>
+                    <th class="border p-1">Name</th>
+                    <th class="border p-1">Size</th>
+                    <th class="border p-1">Padded size</th>
+                    <th class="border p-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="border p-1">All replays</td>
+                    <td class="border p-1"></td>
+                    <td class="border p-1"></td>
+                    <td class="border p-1"><button @click="downloadZip" class="btn text-1xl text-white dark:text-black"
+                            :class="{
+                                'bg-blue-500': downloadEnabled,
+                                'bg-blue-200': !downloadEnabled,
+                                'dark:bg-blue-700': downloadEnabled,
+                                'dark:bg-blue-300': !downloadEnabled
+                            }">Download</button></td>
+                </tr>
+                <tr v-for="recording in spoilerStore.recordings">
+                    <td class="border p-1">{{ formatRecordName(recording.name) }}</td>
+                    <td class="border p-1">{{ readableSize(recording.size) }}</td>
+                    <td class="border p-1">{{ readableSize(paddedSize) }}</td>
+                    <td class="border p-1"><button @click="downloadPadded(recording)"
+                            class="btn text-1xl text-white dark:text-black" :class="{
+                                'bg-blue-500': downloadEnabled,
+                                'bg-blue-200': !downloadEnabled,
+                                'dark:bg-blue-700': downloadEnabled,
+                                'dark:bg-blue-300': !downloadEnabled
+                            }">Download</button></td>
+                </tr>
+            </tbody>
 
         </table>
 
