@@ -2,7 +2,7 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import Spoiler from './Spoiler.vue'
+import Spoiler from './SpoilerTool.vue'
 
 const app = createApp(Spoiler)
 
