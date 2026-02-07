@@ -10,8 +10,6 @@ const spoilerStore = useSpoilerStore()
 
 const downloadEnabled = computed(() => spoilerStore.recordings.length > 0)
 
-
-
 const formatRecordName = (name: string) => {
     if (name.endsWith('.aoe2record')) {
         name = name.substring(0, name.length - '.aoe2record'.length)
@@ -22,7 +20,7 @@ const formatRecordName = (name: string) => {
 
 const paddedSize = computed(() => {
     if (spoilerStore.recordings.length == 0) {
-        return 0;
+        return 0
     }
 
     return Math.max(...spoilerStore.recordings.map((recording) => recording.size))
@@ -58,8 +56,10 @@ function downloadZip() {
     }
 
     // TODO: This is a bit hacky but works for now
-    let zipName = commonPrefix(spoilerStore.recordings.map((recording) => recording.name)) || "padded-recordings.zip"
-    if (zipName.endsWith("_G")) {
+    let zipName =
+        commonPrefix(spoilerStore.recordings.map((recording) => recording.name)) ||
+        'padded-recordings.zip'
+    if (zipName.endsWith('_G')) {
         zipName = zipName.substring(0, zipName.length - 2)
     }
 
@@ -76,12 +76,10 @@ function downloadZip() {
             saveAs(blob, zipName)
         })
 }
-
 </script>
 
 <template>
     <div class="p-4 border-2 rounded-lg col-span-3 mt-4 mb-4">
-
         <table>
             <thead>
                 <tr>
@@ -96,29 +94,34 @@ function downloadZip() {
                     <td class="border p-1">All replays</td>
                     <td class="border p-1"></td>
                     <td class="border p-1"></td>
-                    <td class="border p-1"><button @click="downloadZip" class="btn text-1xl text-white dark:text-black"
+                    <td class="border p-1">
+                        <button @click="downloadZip" class="btn text-1xl text-white dark:text-black" :class="{
+                            'bg-blue-500': downloadEnabled,
+                            'bg-blue-200': !downloadEnabled,
+                            'dark:bg-blue-700': downloadEnabled,
+                            'dark:bg-blue-300': !downloadEnabled
+                        }">
+                            Download
+                        </button>
+                    </td>
+                </tr>
+                <tr v-for="recording in spoilerStore.recordings" v-bind:key="recording.name">
+                    <td class="border p-1">{{ formatRecordName(recording.name) }}</td>
+                    <td class="border p-1">{{ readableSize(recording.size) }}</td>
+                    <td class="border p-1">{{ readableSize(paddedSize) }}</td>
+                    <td class="border p-1">
+                        <button @click="downloadPadded(recording)" class="btn text-1xl text-white dark:text-black"
                             :class="{
                                 'bg-blue-500': downloadEnabled,
                                 'bg-blue-200': !downloadEnabled,
                                 'dark:bg-blue-700': downloadEnabled,
                                 'dark:bg-blue-300': !downloadEnabled
-                            }">Download</button></td>
-                </tr>
-                <tr v-for="recording in spoilerStore.recordings">
-                    <td class="border p-1">{{ formatRecordName(recording.name) }}</td>
-                    <td class="border p-1">{{ readableSize(recording.size) }}</td>
-                    <td class="border p-1">{{ readableSize(paddedSize) }}</td>
-                    <td class="border p-1"><button @click="downloadPadded(recording)"
-                            class="btn text-1xl text-white dark:text-black" :class="{
-                                'bg-blue-500': downloadEnabled,
-                                'bg-blue-200': !downloadEnabled,
-                                'dark:bg-blue-700': downloadEnabled,
-                                'dark:bg-blue-300': !downloadEnabled
-                            }">Download</button></td>
+                            }">
+                            Download
+                        </button>
+                    </td>
                 </tr>
             </tbody>
-
         </table>
-
     </div>
 </template>
