@@ -45,11 +45,7 @@ const tournamentTitle = getTournamentTitle(tournament)
   <div class="lg:container lg:mx-auto lg:max-w-(--breakpoint-lg)">
     <main class="mt-10">
       <InstructionBox :tournament-title="tournamentTitle" />
-      <ReplayForm
-        :civ-presets="civDraftPresets"
-        :map-presets="mapDraftPresets"
-        :tournament="tournament"
-      />
+      <ReplayForm :civ-presets="civDraftPresets" :map-presets="mapDraftPresets" :tournament="tournament" />
     </main>
     <footer>
       <div class="text-center p-4 border-2 rounded-lg col-span-3 mt-4">
