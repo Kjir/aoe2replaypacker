@@ -12,8 +12,8 @@ importers:
         specifier: ^2.1.0
         version: 2.1.1
       aoe2rec-js:
-        specifier: ^0.1.13
-        version: 0.1.19
+        specifier: ^0.1.21
+        version: 0.1.21
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1329,8 +1329,8 @@ packages:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
 
-  aoe2rec-js@0.1.19:
-    resolution: {integrity: sha512-ChvO2FKSMBu23QZoCynHuOyRd44amHQPXCEPDwqmUHwvyN1IYlQFWCfKcnnkAuSPIZX5uSxNl2YuPtCJ1eUlJg==}
+  aoe2rec-js@0.1.21:
+    resolution: {integrity: sha512-Z97V4oqE9px0hWqHZ++X5iPmzxzQCFvrCDtGJQqf5sgesvPcb5GTA9xTD+KRBX/8QeKQASeOlmjf6rm1bmVDFA==}
 
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
@@ -3771,7 +3771,7 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  aoe2rec-js@0.1.19: {}
+  aoe2rec-js@0.1.21: {}
 
   argparse@2.0.1: {}
 
