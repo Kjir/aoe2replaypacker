@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
-import type { Aoe2CmEvent, Aoe2CmDraftOption } from '@/entities/aoe2cm'
+import type { Aoe2CmEvent, Aoe2CmDraftOption, Aoe2CmPreset } from '@/entities/aoe2cm'
 import type { ReplayMetadata, ReplayErrors } from '@/entities/gamemeta'
 import { MatchSetType } from '@/entities/matchset'
 import debounce from 'lodash.debounce'
@@ -48,7 +48,7 @@ function mapImageUrl(imageUri: string | null) {
   }
 }
 
-function getPresetPool(draft: Record<string, any>) {
+function getPresetPool(draft: { preset: Aoe2CmPreset }) {
   if ('pools' in draft.preset) {
     return draft.preset.pools[0]
   }
