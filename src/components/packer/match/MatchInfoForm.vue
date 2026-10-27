@@ -48,6 +48,13 @@ function mapImageUrl(imageUri: string | null) {
   }
 }
 
+function getPresetPool(draft: Record<string, any>) {
+  if ('pools' in draft.preset) {
+    return draft.preset.pools[0]
+  }
+  return draft.preset
+}
+
 const debouncedFetchMaps = debounce(async () => {
   meta.value.maps = null
   errors.value.maps = null
@@ -65,7 +72,8 @@ const debouncedFetchMaps = debounce(async () => {
     return
   }
   const json = await response.json()
-  if ('encodedCivilisations' in json.preset) {
+  const firstPool = getPresetPool(json)
+  if ('encodedCivilisations' in firstPool) {
     errors.value.maps = 'This does not seem to be a map draft'
     emit('updateMeta', errors.value, meta.value)
     return
@@ -77,7 +85,7 @@ const debouncedFetchMaps = debounce(async () => {
     return
   }
 
-  const availableMaps = (Object.values(json.preset.draftOptions) as [Aoe2CmDraftOption]).reduce(
+  const availableMaps = (Object.values(firstPool.draftOptions) as [Aoe2CmDraftOption]).reduce(
     (map, draftMap) => {
       map[draftMap.id] = { name: draftMap.name, image: draftMap.imageUrls.emblem }
       return map
@@ -128,9 +136,11 @@ const debouncedFetchCivs = debounce(async () => {
 
   const json = await response.json()
   const civNamesSet = new Set(Object.values(civNames))
+  const firstPool = getPresetPool(json)
+  console.log({ json })
   if (
-    !('encodedCivilisations' in json.preset) &&
-    json.preset.draftOptions.every(({ id }: { id: string }) => !civNamesSet.has(id))
+    !('encodedCivilisations' in firstPool) &&
+    firstPool.draftOptions.every(({ id }: { id: string }) => !civNamesSet.has(id))
   ) {
     errors.value.civs = 'This does not seem to be a civ draft'
     emit('updateMeta', errors.value, meta.value)
